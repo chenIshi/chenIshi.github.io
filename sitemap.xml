@@ -9,6 +9,20 @@
   </url>
   
   <url>
+    <loc>https://chenishi.github.io/tags/index.html</loc>
+    
+    <lastmod>2020-09-25</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/categories/index.html</loc>
+    
+    <lastmod>2020-09-25</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://chenishi.github.io/2020/09/25/hello-world/</loc>
     
     <lastmod>2020-09-25</lastmod>
@@ -24,6 +38,27 @@
   </url>
 
   
+  <url>
+    <loc>https://chenishi.github.io/tags/Hexo/</loc>
+    <lastmod>2020-09-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/FrontEnd/</loc>
+    <lastmod>2020-09-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 
+  
+  <url>
+    <loc>https://chenishi.github.io/categories/web/</loc>
+    <lastmod>2020-09-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
 </urlset>
