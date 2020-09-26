@@ -20,31 +20,39 @@
     var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Metallurgy in Computer Science">
-<meta property="og:url" content="https://chenishi.github.io/index.html">
+  <meta name="description" content="接續之前在 Medium 寫了一點的 Matrix 介紹，簡單來說 Matrix 這個東西可以理解成類似 Slack &#x2F; telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情） 前情提要  簡單帶過 Matrix 的架構，對於一個用戶 A （上圖中的 Matrix client A）來說，每當他想要對用戶 B 傳送一則訊息，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How Matrix Works ?">
+<meta property="og:url" content="https://chenishi.github.io/2020/09/26/matrix-brief/index.html">
 <meta property="og:site_name" content="Metallurgy in Computer Science">
-<meta property="og:description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+<meta property="og:description" content="接續之前在 Medium 寫了一點的 Matrix 介紹，簡單來說 Matrix 這個東西可以理解成類似 Slack &#x2F; telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情） 前情提要  簡單帶過 Matrix 的架構，對於一個用戶 A （上圖中的 Matrix client A）來說，每當他想要對用戶 B 傳送一則訊息，">
 <meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://chenishi.github.io/2020/09/26/matrix-brief/matrix-data-flow.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/09/26/matrix-brief/in-conflict.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/09/26/matrix-brief/post-conflict.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/09/26/matrix-brief/new-event.png">
+<meta property="article:published_time" content="2020-09-26T06:46:00.000Z">
+<meta property="article:modified_time" content="2020-09-26T14:42:40.824Z">
 <meta property="article:author" content="YiXi Chen">
-<meta property="article:tag" content="Programming, Oversea Experience">
+<meta property="article:tag" content="network">
+<meta property="article:tag" content="software system">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chenishi.github.io/2020/09/26/matrix-brief/matrix-data-flow.png">
 
-<link rel="canonical" href="https://chenishi.github.io/">
+<link rel="canonical" href="https://chenishi.github.io/2020/09/26/matrix-brief/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-tw'
   };
 </script>
 
-  <title>Metallurgy in Computer Science</title>
+  <title>How Matrix Works ? | Metallurgy in Computer Science</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
     <script>
@@ -162,9 +170,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
@@ -180,10 +189,9 @@
       <meta itemprop="name" content="Metallurgy in Computer Science">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/26/matrix-brief/" class="post-title-link" itemprop="url">How Matrix Works ?</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          How Matrix Works ?
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -216,7 +224,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>接續之前在 Medium 寫了一點的 <a target="_blank" rel="noopener" href="https://medium.com/@chen.ishi/what-is-matrix-af0af94c2d86">Matrix 介紹</a>，簡單來說 <a target="_blank" rel="noopener" href="https://matrix.org/">Matrix</a> 這個東西可以理解成類似 Slack / telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情）</p>
+        <p>接續之前在 Medium 寫了一點的 <a target="_blank" rel="noopener" href="https://medium.com/@chen.ishi/what-is-matrix-af0af94c2d86">Matrix 介紹</a>，簡單來說 <a target="_blank" rel="noopener" href="https://matrix.org/">Matrix</a> 這個東西可以理解成類似 Slack / telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情）</p>
 <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><img src="/2020/09/26/matrix-brief/matrix-data-flow.png" class="" title="Data flow diagram in Matrix">
 
 <p>簡單帶過 Matrix 的架構，對於一個用戶 A （上圖中的 Matrix client A）來說，每當他想要對用戶 B 傳送一則訊息，它會把這則訊息包裝成 event 之後透過 API 函式調用 A 的 Homeserver（後面簡稱為伺服器），底層的 Homeserver  是實際的訊息交換主體，一旦 A’s homeserver 收到這則事件後，它會直接更新本地端的聊天紀錄副本（與 Raft 不同，他在更新本地副本前不需要取得共識），隨後 A’s homeserver 嘗試向所有同一個聊天室的用戶伺服器廣播這個更新過的副本（在這個例子裡，這個聊天室只有 A 與 B 兩個用戶），B 的伺服器一旦收到 A 伺服器傳過來的更新副本之後也會更新 B 伺服器自己的副本，最後用戶 B 會透過一個背景 <em>GET</em>  拿到新的訊息</p>
@@ -257,137 +265,47 @@
 <li>Room Version 1, <a target="_blank" rel="noopener" href="https://matrix.org/docs/spec/rooms/v1">https://matrix.org/docs/spec/rooms/v1</a></li>
 </ol>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/network/" rel="tag"># network</a>
+              <a href="/tags/software-system/" rel="tag"># software system</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
-    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/09/25/hexo/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="YiXi Chen">
-      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Metallurgy in Computer Science">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/25/hexo/" class="post-title-link" itemprop="url">Move to Hexo from Medium</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-09-25 21:08:10" itemprop="dateCreated datePublished" datetime="2020-09-25T21:08:10+08:00">2020-09-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-26 00:01:25" itemprop="dateModified" datetime="2020-09-26T00:01:25+08:00">2020-09-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>最近我感覺 Medium 的語法越來越不習慣了，可能是因為我現在極少用 MS Word 等等所見即所得的軟體寫文件，寫進度共筆也偏向用 markdown 的方式寫，或者說寫比較認真的作業報告也是用 Latex 所以像 Medium 這類一定要照它遊戲規則，還要記一些有的沒的快捷鍵，實在有點反人類 / counter-productive</p>
-<p>因此感謝 <a target="_blank" rel="noopener" href="https://tigercosmos.xyz/">tigercosmos</a> 的推薦，下面簡單講一下我目前總體的使用心得</p>
-<h2 id="Hackmd"><a href="#Hackmd" class="headerlink" title="Hackmd"></a>Hackmd</h2><p><a target="_blank" rel="noopener" href="https://hackmd.io/">Hackmd</a> 事實上跟 Blog 應該說一點關係都沒有，它比較接近一個共筆系統，雖然要動手寫 markdown 但是好處是它可以同時看輸出的結果，作為初學 markdown 的人 / 剛打算從 MS 系統跳過來的人真的挺友善的</p>
-<p>功能也挺強大的，畫流程圖拉，還有那個<a target="_blank" rel="noopener" href="https://hackmd.io/s/how-to-create-slide-deck">簡報模式</a>真的很贊，更新頻率也挺頻繁的（我記得之前還沒有範本，直到前一陣子回去用了下發現又蹦出了一些新東西）</p>
-<p>不過這個挺吃身邊有沒有人用的，之前用得很頻繁是因為上課大家要記共筆，但是後來去清華讀研我老闆都用飛書 / 騰訊文件那些，也不太好意思叫老闆改用這個</p>
-<p>另外儘管某些領域 Google 搜尋引擎的確會給你 Hackmd 的共筆資料，但那是特定領域（像是 SSE SIMD 指令那類的估計是因為每學期都要寫共筆搞的每次找的都是 Hackmd 的），要寫文章還是放在其他地方會好一點</p>
-<h2 id="自己架網站"><a href="#自己架網站" class="headerlink" title="自己架網站"></a>自己架網站</h2><p>這個可以說是最靈活的選項了，但是非常非常麻煩，會被一堆瑣事把自己搞的累爆</p>
-<p>我大二修完寫網頁的課之後想說搞一個自己的網站，過程中會遇到一堆有的沒的，有點類似你因為喜歡煮咖啡所以開了一間咖啡店，但是發現大多數時間都在忙泡咖啡以外的事，像是算帳拉進貨拉有的沒的</p>
-<ul>
-<li><p>網頁本身<br>  這部份的選擇非常多，但是基本上都會用到框架（你也可以不用拉，但是要不是會超級醜，不然就是你會因為要搞 RWD（響應式設計） 那些搞到天怒人怨）<br>  就算用了框架，你還是免不掉需要面對我們偉大的 Javascript 程式語言，祝你好運 </p>
-  <img src="/2020/09/25/hexo/float.jpg" class="" title="Praise to the great JS">
-<p>  我原本寫網頁就是想說可以順便弄平面設計的東西，但是算了吧，我大概花了 90% 的時間在調 margin</p>
-</li>
-<li><p>伺服器與網路<br>  正常來說你會需要（一台電腦 ＋ 一個公網 IP ＋ 一個域名）去放這個網頁，如果想要取巧可以走 github <em>gh-pages</em>  那套，但是想要認真搞一個網頁前三者還是免不了，這個就有電腦的維護費用（電費、網路費、機器折舊那些），然後後面兩個也要靠大人的魔法解決</p>
-</li>
-<li><p>不成熟的技術<br>  如果你跟我一樣，都是菜鳥想要練練手，那麼恭喜你，第一步的網頁你可能當初寫的時候少考慮非常多東西，導致你之後開始想認真寫內容時坑一堆，更別提現在網頁要懂的東西也不少</p>
-</li>
-</ul>
-<p>結論就是，你有非常大的可能跟我一樣，寫出一個網頁的初胚之後，覺得「乾這好醜」然後沒有再用過它一次</p>
-<h2 id="Medium"><a href="#Medium" class="headerlink" title="Medium"></a>Medium</h2><p>那個時候 Medium 剛起來名聲不錯，上面的文章也還不錯，另外許多朋友也有在上面寫東西，於是<a target="_blank" rel="noopener" href="https://medium.com/@chen.ishi">我就跑到這邊開始寫</a>了</p>
-<p>的確真的認真的文字工作者（靠這個吃飯的）可以用 Medium 的那套遊戲規則排出不錯看的排版，但是我很討厭學這種有點虛無飄渺的東西（講白一點就是寫框架/系統的人突然改操作界面，你就要重新學的東西），有時候這些改動是有邏輯的，是必需要的，但是也有時候是為了一些其他有的沒的詭異的考量，總而言之，我討厭它的操作</p>
-<p>字大小選擇少，排版詭異（某些字重下間距會很怪），然後用很難看的明體（這可能是因為我自己沒有調好，因為其他人好像可以用好看的字體？）</p>
-<p>不過如果你只是想簡單寫點東西，Medium 還是不錯的，會通知你有誰追蹤拉，還會定期寄信跟你講這個月的瀏覽量分析啥的</p>
-<h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><p>Hexo 其實有點接近自己架網站，不過相關生態系開發的相當完善，從一開始 Helloworld 要怎麼讓它跑起來，到後面想優化裝點有的沒的都有不少的 API，或甚至說教學文件</p>
-<p>就安裝部份我是參考這篇<a target="_blank" rel="noopener" href="https://medium.com/@bebebobohaha/%E4%BD%BF%E7%94%A8-hexo-gitpage-%E6%90%AD%E5%BB%BA%E5%80%8B%E4%BA%BA-blog-5c6ed52f23db">如何搭建個人 Blog 使用 Hexo + Gitpage</a>，基本上流程沒問題，過程中只有遇到一個非常無言的問題</p>
-<p>我部屬之後，firefox 一直沒有切過去 next 的排版（喔對了，儘管很多人都用 next 這個模板，但是這個模板式真的好看），一直卡在 landscape 那個原本預設的模板；我就花了一兩小時去看到底有沒有啥問題，結果後來我換 Chromium 開一次 next 就正常跑出來了，因此我合理猜測這大概是因為 firefox 拿快取的東西搪塞我</p>
-<p>以下這兩個東西都不是必要的，但是都是挺推薦的擴充</p>
-<ul>
-<li><p>Google Analysis<br>  這個是鼎鼎大名的 GA 會幫你分析瀏覽者的資料，如果有裝這個可能會比較大增加你寫文章的動力（看著瀏覽人數往上跑是一件很有成就感的事）</p>
-<p>  我是看<a target="_blank" rel="noopener" href="https://jimmywei01.github.io/2019/05/09/%E4%BD%BF%E7%94%A8GA%E6%9B%BF%E7%B6%B2%E7%AB%99%E4%BD%9C%E5%88%86%E6%9E%90/">這份教學</a>裝的，但是需要注意的是，我用的當前版本已經沒有文中的問題了，除了需要手動把 GA ID 放上去之外，不用再改 <em>.swig</em> 的內容了</p>
-</li>
-<li><p>SEO<br>  這個可能不是那麼需要，它的用處就是讓搜尋引擎更容易找到你，進而提昇你的點擊率</p>
-<p>  我是參考<a target="_blank" rel="noopener" href="https://jimmywei01.github.io/2019/05/09/%E4%BD%BF%E7%94%A8Google-Search-Console%E5%92%8Csitemap%E9%80%B2%E8%A1%8CSEO%E5%84%AA%E5%8C%96/">使用Google_Search_Console和sitemap進行SEO優化</a> 和 <a target="_blank" rel="noopener" href="http://larrynung.github.io/2016/07/18/Hexo-Setup-robots-txt/">Hexo - Setup robots.txt</a> 主要是想知道 robots.txt 要放在哪裡，經過實測證明放 /source 裡面它會自己複製到 /public 裡面</p>
-</li>
-</ul>
-<hr>
-<p>一開始我想說弄一個網站會不會很麻煩（之前寫網頁慘痛的回憶），結果意外用 Hexo 大概裝十幾分鐘加上摸索不會超過半小時（扣掉沒有意義的 debug 那部份），結論就是如果你也跟我一樣不太爽 Medium 那種反人類的設計，投身 Hexo 的成本是很小的 =)</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/25/hexo/" rel="prev" title="Move to Hexo from Medium">
+      <i class="fa fa-chevron-left"></i> Move to Hexo from Medium
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
 
           </div>
           
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -434,6 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%83%85%E6%8F%90%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event-Graph"><span class="nav-number">2.</span> <span class="nav-text">Event Graph</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Merge-Conflict"><span class="nav-number">3.</span> <span class="nav-text">Merge Conflict</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Questions"><span class="nav-number">4.</span> <span class="nav-text">Questions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Number-of-DAG-s"><span class="nav-number">4.1.</span> <span class="nav-text">Number of DAG(s) ?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Where-do-the-%E2%80%9Croom%E2%80%9D-locates"><span class="nav-number">4.2.</span> <span class="nav-text">Where do the “room” locates ?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Further-message-conflict"><span class="nav-number">4.3.</span> <span class="nav-text">Further message conflict ?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State-resolution-Algorithm"><span class="nav-number">5.</span> <span class="nav-text">State resolution Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reference"><span class="nav-number">6.</span> <span class="nav-text">Reference</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -557,6 +476,26 @@
 
   
 
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2020/09/26/matrix-brief/";
+    this.page.identifier = "2020/09/26/matrix-brief/";
+    this.page.title = "How Matrix Works ?";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
 
 </body>
 </html>

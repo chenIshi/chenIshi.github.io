@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://chenishi.github.io/2020/09/26/matrix-brief/</loc>
+    
+    <lastmod>2020-09-26</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://chenishi.github.io/2020/09/25/hexo/</loc>
     
     <lastmod>2020-09-25</lastmod>
@@ -45,10 +52,31 @@
     <priority>0.6</priority>
   </url>
   
+  <url>
+    <loc>https://chenishi.github.io/tags/network/</loc>
+    <lastmod>2020-09-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/software-system/</loc>
+    <lastmod>2020-09-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 
   
   <url>
     <loc>https://chenishi.github.io/categories/web/</loc>
+    <lastmod>2020-09-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/categories/system/</loc>
     <lastmod>2020-09-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
