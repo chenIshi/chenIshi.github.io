@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://chenishi.github.io/2020/09/28/matrix-state/</loc>
+    
+    <lastmod>2020-09-30</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://chenishi.github.io/2020/09/26/matrix-brief/</loc>
     
     <lastmod>2020-09-26</lastmod>
@@ -16,14 +23,14 @@
   </url>
   
   <url>
-    <loc>https://chenishi.github.io/tags/index.html</loc>
+    <loc>https://chenishi.github.io/categories/index.html</loc>
     
     <lastmod>2020-09-25</lastmod>
     
   </url>
   
   <url>
-    <loc>https://chenishi.github.io/categories/index.html</loc>
+    <loc>https://chenishi.github.io/tags/index.html</loc>
     
     <lastmod>2020-09-25</lastmod>
     
@@ -32,7 +39,7 @@
 
   <url>
     <loc>https://chenishi.github.io/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -40,28 +47,42 @@
   
   <url>
     <loc>https://chenishi.github.io/tags/Hexo/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/FrontEnd/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/network/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/software-system/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/network-system/</loc>
+    <lastmod>2020-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/consensus/</loc>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -70,14 +91,21 @@
   
   <url>
     <loc>https://chenishi.github.io/categories/web/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/system/</loc>
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/categories/algorithm/</loc>
+    <lastmod>2020-09-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
