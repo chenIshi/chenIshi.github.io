@@ -158,6 +158,336 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/10/07/the-josephus-problem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/07/the-josephus-problem/" class="post-title-link" itemprop="url">Dive into the Josephus problem</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-07 22:59:05" itemprop="dateCreated datePublished" datetime="2020-10-07T22:59:05+08:00">2020-10-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-11 17:52:11" itemprop="dateModified" datetime="2020-10-11T17:52:11+08:00">2020-10-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>The Josephus Problem 似乎是一個相當有名的問題，我則是在 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Concrete_Mathematics">Concrete Math</a> 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的</p>
+<p>以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考</p>
+<h2 id="約瑟夫問題"><a href="#約瑟夫問題" class="headerlink" title="約瑟夫問題"></a>約瑟夫問題</h2><p>由於是一個廣泛被討論的問題，我直接引用 <a target="_blank" rel="noopener" href="https://openhome.cc/Gossip/AlgorithmGossip/JosephusProblem.htm">OpenhomeCC 對問題的描述</a>：</p>
+<blockquote>
+<p>據說著名猶太歷史/數學家約瑟夫（Josephus）有過以下的故事：在羅馬人佔領喬塔帕特後，40個猶太士兵與約瑟夫躲到一個洞中，眼見脫逃無望，一群人決定集體自殺，然而私下約瑟夫與某個傢伙並不贊成，於是約瑟夫建議自殺方式，41個人排成圓圈，由第1個人 開始報數，每報數到3的人就必須自殺，然後由下一個重新報數，直到所有人都自殺身亡為止。約瑟夫與不想自殺的那個人分別排在第16個與第31個位置，於是逃過了這場死亡遊戲</p>
+</blockquote>
+<h2 id="簡單講解法"><a href="#簡單講解法" class="headerlink" title="簡單講解法"></a>簡單講解法</h2><p>一樣因為這個問題已經被廣泛討論了，相關解法應該是相當五花八門，所以我就簡單帶過，畢竟下面的討論<strong>完全基於你要先知道這個問題該怎麼解</strong>，如果你已經知道這個問題並且知道該怎麼解，請直接跳過</p>
+<blockquote>
+<p>然後以下的討論是上述問題的小變種，<strong>我們假設是數到 2 就要自殺</strong></p>
+</blockquote>
+<p>基本上這個問題要想出解法很大程度要靠觀察，就是那種靈感突發蘋果突然砸到你的那種，你基本上需要先觀察一下幾個結果，然後（很可惜的）靠猜</p>
+<blockquote>
+<p>我一個數學系的朋友說這個問題是也可以從根本上一點一點推，但是很難我可能聽不懂</p>
+</blockquote>
+<p>基本上透過觀察，我們可以知道至少偶數的一定會掛掉（畢竟是數到二），那當在場原本是二的倍數的人死掉之後，下一輪是哪些人會死呢？</p>
+<p>這邊有一個很好玩的偷換概念的方法，我們其實可以這樣想</p>
+<blockquote>
+<p>每次報數完一輪，所有人重新編號，編到偶數的人就可以直接說再見</p>
+</blockquote>
+<p>那要怎麼重新編號，這就是我們要討論的問題了</p>
+<p>透過觀察，如果總人數是偶數，則「所有人的新編號是舊編號的兩倍減一」，因為這個關係，我們也可以假設/推論最後活著人的編號也照個這個規律</p>
+<p>今天我們用 J(n) 這個函式表示「假設有總共有 n 個人，則第 J(n) 編號的人可以活到最後」，我們可以發現 J(10) = 5 並且 J(20) = 2 * J(10) - 1 = 9 符合我們的預期（你可能會想自己試試看 20 個人時到底是不是第九人活下來）</p>
+<p>相反的，如果人數是奇數，則 「所有人的新編號是舊編號的兩倍加一」，所以恭喜，我們得到一個遞迴解</p>
+<ul>
+<li>J(1) = 1</li>
+<li>J(2n) = 2J(n) - 1</li>
+<li>J(2n +1) = 2J(n) + 1</li>
+</ul>
+<p>然後因為我們實在需要一個 closed-form 解，所以我們<del>又需要</del>透過觀察得到這個很不友善的解</p>
+<p>令 n = 2<sup>m</sup> + l ，則 J(n) = J(2<sup>m</sup> + l)  = 2l + 1</p>
+<p> (for m &gt;= 0 and 0 &lt;= l &lt; 2<sup>m</sup>)</p>
+<blockquote>
+<p>Btw 你們應該也可以看得出來我很討厭透過觀察獲得解，這感覺就很像直接給你答案不跟你講原因，「阿就是這樣阿沒有原因阿」</p>
+</blockquote>
+<p>雖然這個解看起來不是很友善，但是它其實還挺好理解的：</p>
+<p>你想辦法找到離 n 最近但比它小的 2 的次方數，然後跟那個數字的距離就是他的 l，因為是最近的所以 l 一定會小於 2<sub>m</sub></p>
+<p>舉例來說 J(15)，離 15 最近的 2 次方是 8 ，15 - 8 = 7，所以 J(15) = 2 * 7 + 1 = 15</p>
+<h2 id="二進位表示"><a href="#二進位表示" class="headerlink" title="二進位表示"></a>二進位表示</h2><p>如果我們今天用二進位表示數字的話，上面那個 Closed-form 的詭異寫法會瞬間變成一個位元運算就能作到的事（這能極大優化計算效率！）</p>
+<p>用剛剛我們<del>用魔法</del>得到的 close form solution，我們先讓 n 用二進位表示，也就是 (b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub></p>
+<p>因為 n = 2<sup>m</sup> + l，我們可以做以下操作</p>
+<p> n = (1 b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>)<sub>2</sub></p>
+<blockquote>
+<p>l = n - 2<sup>m</sup>，也就是去掉最高位</p>
+</blockquote>
+<p>l = (0 b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>)<sub>2</sub></p>
+<blockquote>
+<p>乘二等價於左移</p>
+</blockquote>
+<p>2l = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>0)<sub>2</sub></p>
+<p>2l + 1 = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>1)<sub>2</sub></p>
+<blockquote>
+<p>J(n) = 2l + 1</p>
+</blockquote>
+<p>J(n) = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>1)<sub>2</sub></p>
+<blockquote>
+<p>b<sub>m</sub> 必為 1</p>
+</blockquote>
+<p>J(n) = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>b<sub>m</sub>)<sub>2</sub></p>
+<p>到這邊我們證明可以用左循環位移實做</p>
+<p>J((b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub>) = (b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>b<sub>m</sub>)<sub>2</sub></p>
+<h2 id="真的等價嗎？"><a href="#真的等價嗎？" class="headerlink" title="真的等價嗎？"></a>真的等價嗎？</h2><p>我們在上面驗證了 J(n) 就是對 (n)<sub>2</sub> 做循環左移一個位元，但是事情真的這麼簡單嗎？<br>我們來簡單考慮一下完備性：</p>
+<p>假設自然數 n 有 m-1 個位元（也就是前面提到的 2<sup>m</sup> + 1）</p>
+<ol>
+<li>那麼假設對 n 做 m+1 次操作，得到的東西有意義嗎？它等價於對 n 做 m+1 次 J() 操作嗎？</li>
+</ol>
+<blockquote>
+<p>這是個腦筋急轉彎，Concrete math 裡面有解答，但是不是很直白（因為我看到前人的筆記在上面畫一個問號，一個清華學子畫問號我覺得這應該某種程度代表問題有難度）<br>你可以花時間好好想一下</p>
+</blockquote>
+<p>… 答案是沒有意義</p>
+<p>原因是 J() 要等價成左循環位移有個前提，也就是一開始的 “0 &lt;= l &lt; 2<sup>m</sup>“ 這個條件，換到位元運算下這個條件就會變成 m =1 （或者說是 leading bit 必須要為 1 ）</p>
+<p>舉個書上的例子好了</p>
+<ul>
+<li><p>J((1101)<sub>2</sub>) = (1011)<sub>2</sub></p>
+</li>
+<li><p>J((1011)<sub>2</sub>) = (0111)<sub>2</sub></p>
+</li>
+</ul>
+<p>這個時候你可以注意到 leading bit 已經變成 0 了，以十進制表示的話這個值應該是 7，事實上下個迭代我們應該用 (111)<sub>2</sub> 去掉前面的零繼續</p>
+<p>如果我們不去掉這個零，啥都不做的話就違背一開始的假設，也就是「最近的且比 n 小的 2<sup>m</sup>」</p>
+<p>所以這邊對「J() 等價為左循環位移」的描述應該更正為，「J() 等價為左循環位移，然後<strong>移除 leading zero bit</strong>」</p>
+<p>可惜的是，就我所知除非你自己實現 rotate shift 不然原生指令是不可能幫你刪掉 leading zero bit 的，但是自己實做等於就失去底層指令加速的優勢了</p>
+<p>所以請不要使用一次以上的左循環位移，這可能導致你開頭位元變成零</p>
+<ol start="2">
+<li>承上，那如果我做了 m+1 次左循環位移操作，這樣不是會得到 n 自己嗎？（等於全部都循環過一次了）</li>
+</ol>
+<p>首先請你仔細上面對左循環位移操作的補充，「我們還需要刪掉開頭的零位元」<br>然後我們就會開始發現，回不去了</p>
+<img src="/2020/10/07/the-josephus-problem/cannotgoback.jpg" class="" title="We cannot go back anymore">
+
+<p>由於我們在循環過程中總是會把所有的 zero bit 刪掉，這導致我們就算一直跑 J() 也會讓它卡在 J(n) = n 之後就不動了（此時所有的位元都是 1，再怎麼左循環位移都沒用）</p>
+<p>從原始的 J(n) = 2l + 1 也可以得知 J() 一定會是一個遞減的函數，不過很有趣的是，它會收縮在那些所有位元都是 1 的數字上</p>
+<h2 id="為什麼會等價-？"><a href="#為什麼會等價-？" class="headerlink" title="為什麼會等價 ？"></a>為什麼會等價 ？</h2><p><code>Brace yourself for impact !</code></p>
+<p>你可能會跟我一樣開始懷疑 <strong>左循環位移</strong> 到底代表什麼，到底該怎麼去理解它<br>為了解釋這樣的關係，我們需要開始擴展原本的等式，讓它變成一個更廣泛的定義</p>
+<h3 id="等式擴充"><a href="#等式擴充" class="headerlink" title="等式擴充"></a>等式擴充</h3><p>我們一開始有的等式是這些關係：</p>
+<ul>
+<li>J(1) = 1</li>
+<li>J(2n) = 2J(n) - 1</li>
+<li>J(2n + 1) = 2J(n) + 1</li>
+</ul>
+<p>現在我們把後面的常數用符號代替，變成：</p>
+<ul>
+<li>F(1) = α</li>
+<li>F(2n) = 2J(n) + β</li>
+<li>F(2n + 1) = 2J(n) + γ</li>
+</ul>
+<p>或者說，我們可以乾脆寫成這樣：</p>
+<ul>
+<li><p>F(1) = α</p>
+</li>
+<li><p>F(2n + j) = 2F(n) + β<sub>j</sub></p>
+<p>並且令 j = 0, 1 （其實這邊 j 應該定義為小於 2 的數）</p>
+<p>要怎麼理解/想像這組函數呢？ 我們於是把這組函數拆開來 （relax）</p>
+<p>我們已知 n 可以用 (b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub> 的二進制方式表示，因此帶入上面那個推廣公式</p>
+</li>
+</ul>
+<blockquote>
+<p>右移本身就等於用整數除法除二，它現在又把 β<sub>b<sub>0</sub></sub> 這個餘數拿出來，就便成了等價的除法</p>
+</blockquote>
+<p> F((b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub>) = 2F((0b<sub>m</sub>b<sub>m-1</sub> … b<sub>2</sub>b<sub>1</sub>)<sub>2</sub>) + β<sub>b<sub>0</sub></sub></p>
+<p>… = 4F((00b<sub>m</sub>b<sub>m-1</sub> … b<sub>3</sub>b<sub>2</sub>)<sub>2</sub>) + 2β<sub>b<sub>1</sub></sub> + β<sub>b<sub>0</sub></sub></p>
+<p>… = 2<sup>m</sup> F((b<sub>m</sub>)<sub>2</sub>) + 2<sup>m-1</sup>β<sub>b<sub>m-1</sub></sub> + … + 2β<sub>b<sub>1</sub></sub> + β<sub>b<sub>0</sub></sub></p>
+<blockquote>
+<p>根據定義，起始位元一定要為 1 </p>
+</blockquote>
+<p>… = 2<sup>m</sup>α + 2<sup>m-1</sup>β<sub>b<sub>m-1</sub></sub> + … + 2β<sub>b<sub>1</sub></sub> + β<sub>b<sub>0</sub></sub></p>
+<blockquote>
+<p>你有沒有發現，這擺明就是二進位的轉換</p>
+</blockquote>
+<p>F((b<sub>m</sub>b<sub>m-1</sub> .. b<sub>1</sub>b<sub>0</sub>)) = (αβ<sub>b<sub>m-1</sub></sub>β<sub>b<sub>m-2</sub></sub> … β<sub>b<sub>1</sub></sub>β<sub>b<sub>0</sub></sub>)<sub>2</sub></p>
+<p>我們終於可以從原本的遞進關係推到它跟二進制的關聯了</p>
+<h3 id="所以到底為什麼會等價左循環位移？"><a href="#所以到底為什麼會等價左循環位移？" class="headerlink" title="所以到底為什麼會等價左循環位移？"></a>所以到底為什麼會等價左循環位移？</h3><p>我們假設想算 J((1 1 0 0 1 0 0)2) ，因為 F() 在 α = 1, β = -1, γ = 1 時會回到 J() 的函數，因此 β<sub>b<sub>0</sub></sub> = β = -1, 而 β<sub>b<sub>1</sub></sub> = γ = 1</p>
+<p>因此我們可以得到  J((1 1 0 0 1 0 0)<sub>2</sub>) = (1 1 -1 -1 1 -1 -1)<sub>2</sub></p>
+<blockquote>
+<p>也就是所有零 0 都變成了 -1</p>
+</blockquote>
+<p>轉成十進位就是 1 * 64 + 1 * 32 + (-1) * 16 + (-1) * 8 + 1 * 4 + (-1) * 2 + (-1) * 1 = 73</p>
+<blockquote>
+<p>簡單做點 sanity check，因為首位必為一，所以算出來一定是正數</p>
+</blockquote>
+<p>那這個運算跟 <strong>左循環位移</strong> 有什麼關聯阿？</p>
+<p>因為實際上， J((1 0 0 0 0 0 0)<sub>2</sub>) = (1 -1 -1 -1 -1 -1 -1)<sub>2</sub> = (0 0 0 0 0 0 1)<sub>2</sub></p>
+<blockquote>
+<p>透過把最高位的 1 左循環移到最低位，以上數例子來說就是把自己的 63 （最高位的 64 減掉最低位的 1）分給其他位元，讓其他位元的人都上升 1</p>
+</blockquote>
+<p>以我自己比較粗糙的理解，轉換過程就是這樣 J(1 1 0 0 1 0 0)<sub>2</sub> = (1 1 -1 -1 1 -1 -1)<sub>2</sub></p>
+<blockquote>
+<p>之後把最高位移到最低位，其他位全部加一</p>
+</blockquote>
+<p>(1 1 -1 -1 1 -1 -1)<sub>2</sub> = (0 2 0 0 2 0 1)<sub>2</sub></p>
+<blockquote>
+<p>之後把二進制裡面的 2 進位，就等於左循環位移的結果了</p>
+</blockquote>
+<p>(0 2 0 0 2 0 1)<sub>2</sub> = (1 0 0 1 0 0 1)<sub>2</sub></p>
+<img src="/2020/10/07/the-josephus-problem/mindBlown.jpg" class="" title="What did I just see?">
+
+<p>事實上，這個等式可以擴充成不同進制間的轉換，像是這樣：</p>
+<ul>
+<li><p>F(j) = α<sub>j</sub></p>
+</li>
+<li><p>F(dn + j) = cF(n) + β<sub>j</sub> ，其中 0 &lt;= j &lt; d</p>
+<p>不過這邊就沒那麼驚奇了，所以就不繼續提下去了</p>
+</li>
+</ul>
+<h2 id="後序"><a href="#後序" class="headerlink" title="後序"></a>後序</h2><p>做這類 brain teaser 真的很好玩，從知道問題到思考解法，到思考為什麼它會有用，什麼時候可以用什麼時候可以用，為什麼這個轉換是有效的，這是不是表示我可以把它背後的概念用在別的地方<br>不過真的挺費時間的，從一開始覺得怪怪的，到開始可以想像、類比描述你的問題，到後面開始思考原因</p>
+<p>其實只看數學式還挺無聊的，我還是挺推薦直接去看書，然後花上一點時間思考（我零零碎碎的時間加起來，第一章應該看了有兩三個下午）</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/10/05/bmv2-debug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/05/bmv2-debug/" class="post-title-link" itemprop="url">Debug p4lang/tutorial runtime misbehavior</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-05 22:01:35" itemprop="dateCreated datePublished" datetime="2020-10-05T22:01:35+08:00">2020-10-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-11 17:52:45" itemprop="dateModified" datetime="2020-10-11T17:52:45+08:00">2020-10-11</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/debug/" itemprop="url" rel="index"><span itemprop="name">debug</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>最近寫碩論要用到這東西，雖然說我們實驗室有一兩台可編程交換機（Programmable Switch）的硬體，但是由於想做的是資料中心的場景，所以數量上不去只能用軟體模擬了</p>
+<p>這篇文章的目的是幫助各位跟我一樣的新手了解要怎麼 debug BMv2 執行時的問題，也就是說下文並不會牽扯到編譯時期的問題（這部份 Bmv2 好像有類似 gdb 的東西），而是純粹「我今天可以編譯過了，但是交換機的行為怎麼不是我想像的那樣？」</p>
+<hr>
+<h2 id="什麼是-Bmv2"><a href="#什麼是-Bmv2" class="headerlink" title="什麼是 Bmv2"></a>什麼是 Bmv2</h2><p>我想會找到這篇文章的人應該都知道什麼是 Bmv2 才會點進來的吧… 不過還是就我所知道的講一下好了</p>
+<p>要講 Bmv2 就一定要提到<strong>可編程交換機</strong>，因為 Bmv2 就只是用軟體的方式模擬交換機硬體的行為</p>
+<p>可編程交換機呢，就是比較彈性的交換機，原本的交換機只能處理固定格式的封包，如果今天作為實驗想自己定義一個新的格式的封包，那麼很可惜交換機會完全不知道怎麼處理這邊的新格式，你可能就只能把新格式疊在現存的格式上，作為它的 payload，丟給兩邊的服務器處理</p>
+<p>可編程交換機的實現原理，就我所知道的類似用到 FPGA 的概念，我們可以用硬體描述語言去改變他的硬體行為</p>
+<p>這可能也是為啥 P4 長的非常像 verilog</p>
+<blockquote>
+<h3 id="Bmv2-的語法可能跟硬體有區別"><a href="#Bmv2-的語法可能跟硬體有區別" class="headerlink" title="Bmv2 的語法可能跟硬體有區別"></a>Bmv2 的語法可能跟硬體有區別</h3><p>首先要用 Bmv2 的話，直接照 P4 規格書來走應該是沒問題的<br>目前用起來還沒有該實現卻沒有的情形（可能跟我很菜也有關）<br>眾所周知的 P4 有兩個主流版本，P4_14 與 P4_16<br>像是 Bmv2 我用的支援就是 P4_16，不過我相信 P4_14 應該也會有<br>由於這兩個語法差很多，基本上不可能混用<br>但是就交換機硬體實現上，基本上就是一個混亂邪惡<br>像我們實驗是用的交換機是 Barefoot 的，它的語法是改自 P4_14 的<br>會說是「改」就是因為它<strong>沒有完全符合</strong>（比較委婉的講法）<br>像是某些單元運算它沒有實做（恭喜你要用對數表做 work-around 了）<br>然後也加加減減一些功能（另一篇文章有簡單提到，不過由於他們規格書好像是保密的，所以也不能講太多）<br>所以如果今天要把實驗從軟體環境移到硬體上，你的 P4 可能要動不少刀</p>
+</blockquote>
+<h2 id="BMv2-on-mininet"><a href="#BMv2-on-mininet" class="headerlink" title="BMv2 on mininet"></a>BMv2 on mininet</h2><p>基本上你因為要模擬可編程交換機，所以要用 Bmv2 這東西，基本上應該都一定會綁定要 Mininet 環境</p>
+<p>Mininet 簡單講一下它就是方便你做網路區隔的，你可以弄出很多不同子網的節點然後用你喜歡的方式接在一起（一個比較有趣的點就是它並不是靠硬體虛擬化的方式，應該說不是走虛擬機那套的，而是只是把不同 terminal 的網路劃開來，用虛擬網路加橋接網路之類的我猜，畢竟我沒研究所以不確定，所以你的目錄下的東西應該是共享的，然後對效能影響也不是很大）</p>
+<p>我比較推薦的還是從 <a target="_blank" rel="noopener" href="https://github.com/p4lang/tutorials/tree/p4d2-2018-spring">p4lang/tutorial p4d2-2018-2018 branch</a> 下手，你當然也可以去看它原生的編譯器然後嘗試自己把整個流程搞清楚（我好像有試過，但是牆內的環境搞的我很想死，牆內的朋友最近如果要裝的話可以參考我的 <a target="_blank" rel="noopener" href="https://github.com/chenIshi/tutorials">forked repo</a>，不過隨時間過去可能會不管用）</p>
+<p>tutorial 裡的範例都挺適合直接拿來改的，詳細的文件會讓你知道哪邊需要改哪邊不用，如果你想做的實驗跟範例類似，那麼絕對是推薦你直接拿範例來改，會少掉很多有的沒的痛苦</p>
+<p>以下的部份也會基於這個環境（p4lang/tutorial）講下去</p>
+<h2 id="Misbehavior-of-Bmv2"><a href="#Misbehavior-of-Bmv2" class="headerlink" title="Misbehavior of Bmv2"></a>Misbehavior of Bmv2</h2><p>這邊的 Misbehavior 我的定義是 「不符合預期的行為」，比如你想弄一個簡單的 <a target="_blank" rel="noopener" href="https://github.com/p4lang/tutorials/tree/p4d2-2018-spring/exercises/source_routing">source routing</a> 像是把拓樸改一下然後自己調整一下控制平面的指令，然後就發現現在 ping 不通了（或者是比較尷尬的 network unreachable）</p>
+<blockquote>
+<h3 id="「比較尷尬的-network-unreachable」"><a href="#「比較尷尬的-network-unreachable」" class="headerlink" title="「比較尷尬的 network unreachable」"></a>「比較尷尬的 network unreachable」</h3><p>之前調拓樸之後改了 IP 就發現出現這個錯誤訊息<br>需要注意的是 gateway 需要跟底下的 host 處在同一個子網<br>比如說你 host IP 10.0.1.1/32 然後 <code>route add default gw 10.0.1.10 dev eth0</code><br>由於 10.0.1.1/32 跟 10.0.1.10 不視同一個子網所以就會跳這個錯誤訊息<br>比較諷刺的是，就算根本沒有 10.0.1.10 這台機器，它還是會報錯<br>這根據我的猜測是因為 linux network stack 要求<br>但如果真的是這樣，那這個 <a target="_blank" rel="noopener" href="http://lists.p4.org/pipermail/p4-dev_lists.p4.org/2019-September/004056.html">Switch 不能設定 IP</a> 原因就有點自打嘴巴</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
     <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/09/28/matrix-state/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -579,18 +909,18 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
