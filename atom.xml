@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Metallurgy in Computer Science</title>
+  <icon>https://chenishi.github.io/icon.png</icon>
+  <subtitle>資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</subtitle>
+  <link href="https://chenishi.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://chenishi.github.io/"/>
+  <updated>2020-10-12T15:35:20.621Z</updated>
+  <id>https://chenishi.github.io/</id>
+  
+  <author>
+    <name>YiXi Chen</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Dive into the Josephus problem</title>
+    <link href="https://chenishi.github.io/2020/10/07/the-josephus-problem/"/>
+    <id>https://chenishi.github.io/2020/10/07/the-josephus-problem/</id>
+    <published>2020-10-07T14:59:05.000Z</published>
+    <updated>2020-10-12T15:35:20.621Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;The Josephus Problem 似乎是一個相當有名的問題，我則是在 &lt;a href=&quot;https://en.wikipedia.org/wiki/Concrete_Mathematics&quot;&gt;Concrete Math&lt;/a&gt; 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的&lt;/p&gt;
+&lt;p&gt;以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="math" scheme="https://chenishi.github.io/categories/math/"/>
+    
+    
+    <category term="recurrent" scheme="https://chenishi.github.io/tags/recurrent/"/>
+    
+    <category term="bitwise" scheme="https://chenishi.github.io/tags/bitwise/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Debug p4lang/tutorial runtime misbehavior</title>
+    <link href="https://chenishi.github.io/2020/10/05/bmv2-debug/"/>
+    <id>https://chenishi.github.io/2020/10/05/bmv2-debug/</id>
+    <published>2020-10-05T14:01:35.000Z</published>
+    <updated>2020-10-12T15:36:18.033Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近寫碩論要用到這東西，雖然說我們實驗室有一兩台可編程交換機（Programmable Switch）的硬體，但是由於想做的是資料中心的場景，所以數量上不去只能用軟體模擬了&lt;/p&gt;
+&lt;p&gt;這篇文章的目的是幫助各位跟我一樣的新手了解要怎麼 debug BMv2 執行時的問題，也就是說下文並不會牽扯到編譯時期的問題（這部份 Bmv2 好像有類似 gdb 的東西），而是純粹「我今天可以編譯過了，但是交換機的行為怎麼不是我想像的那樣？」&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="debug" scheme="https://chenishi.github.io/categories/debug/"/>
+    
+    
+    <category term="BMv2" scheme="https://chenishi.github.io/tags/BMv2/"/>
+    
+    <category term="Programmable Switch" scheme="https://chenishi.github.io/tags/Programmable-Switch/"/>
+    
+    <category term="Mininet" scheme="https://chenishi.github.io/tags/Mininet/"/>
+    
+    <category term="P4" scheme="https://chenishi.github.io/tags/P4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Reaching consensus on Matrix room state</title>
+    <link href="https://chenishi.github.io/2020/09/28/matrix-state/"/>
+    <id>https://chenishi.github.io/2020/09/28/matrix-state/</id>
+    <published>2020-09-28T06:26:43.000Z</published>
+    <updated>2020-10-12T15:36:29.685Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以下資料主要是出自於 &lt;a href=&quot;https://matrix.org/docs/guides/implementing-stateres&quot;&gt;State Resolution v2 for the Hopelessly Unmathematical&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;算法目標&quot;&gt;&lt;a href=&quot;#算法目標&quot; class=&quot;headerlink&quot; title=&quot;算法目標&quot;&gt;&lt;/a&gt;算法目標&lt;/h2&gt;&lt;p&gt;由於所有 Homeserver 都獨自保有一份控制事件樹（有向無環），各自採用一固定算法得到控制狀態，這個算法是為了解決控制狀態不同（通常是因為控制事件亂序）時，協調出一個控制狀態的共識（對控制事件數進行排列）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="algorithm" scheme="https://chenishi.github.io/categories/algorithm/"/>
+    
+    
+    <category term="network" scheme="https://chenishi.github.io/tags/network/"/>
+    
+    <category term="network system" scheme="https://chenishi.github.io/tags/network-system/"/>
+    
+    <category term="consensus" scheme="https://chenishi.github.io/tags/consensus/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>How Matrix Works ?</title>
+    <link href="https://chenishi.github.io/2020/09/26/matrix-brief/"/>
+    <id>https://chenishi.github.io/2020/09/26/matrix-brief/</id>
+    <published>2020-09-26T06:46:00.000Z</published>
+    <updated>2020-10-12T15:36:05.157Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;接續之前在 Medium 寫了一點的 &lt;a href=&quot;https://medium.com/@chen.ishi/what-is-matrix-af0af94c2d86&quot;&gt;Matrix 介紹&lt;/a&gt;，簡單來說 &lt;a href=&quot;https://matrix.org/&quot;&gt;Matrix&lt;/a&gt; 這個東西可以理解成類似 Slack / telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="system" scheme="https://chenishi.github.io/categories/system/"/>
+    
+    
+    <category term="network" scheme="https://chenishi.github.io/tags/network/"/>
+    
+    <category term="software system" scheme="https://chenishi.github.io/tags/software-system/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Move to Hexo from Medium</title>
+    <link href="https://chenishi.github.io/2020/09/25/hexo/"/>
+    <id>https://chenishi.github.io/2020/09/25/hexo/</id>
+    <published>2020-09-25T13:08:10.000Z</published>
+    <updated>2020-10-12T15:36:12.321Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近我感覺 Medium 的語法越來越不習慣了，可能是因為我現在極少用 MS Word 等等所見即所得的軟體寫文件，寫進度共筆也偏向用 markdown 的方式寫，或者說寫比較認真的作業報告也是用 Latex 所以像 Medium 這類一定要照它遊戲規則，還要記一些有的沒的快捷鍵，實在有點反人類 / counter-productive&lt;/p&gt;
+&lt;p&gt;因此感謝 &lt;a href=&quot;https://tigercosmos.xyz/&quot;&gt;tigercosmos&lt;/a&gt; 的推薦，下面簡單講一下我目前總體的使用心得&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="web" scheme="https://chenishi.github.io/categories/web/"/>
+    
+    
+    <category term="Hexo" scheme="https://chenishi.github.io/tags/Hexo/"/>
+    
+    <category term="FrontEnd" scheme="https://chenishi.github.io/tags/FrontEnd/"/>
+    
+  </entry>
+  
+</feed>

@@ -12,12 +12,12 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
@@ -84,6 +84,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -126,6 +127,11 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
@@ -145,6 +151,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -189,7 +196,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-11 17:52:11" itemprop="dateModified" datetime="2020-10-11T17:52:11+08:00">2020-10-11</time>
+                <time title="Modified: 2020-10-12 23:35:20" itemprop="dateModified" datetime="2020-10-12T23:35:20+08:00">2020-10-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -202,6 +209,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/10/07/the-josephus-problem/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/07/the-josephus-problem/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -214,169 +235,14 @@
       
           <p>The Josephus Problem 似乎是一個相當有名的問題，我則是在 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Concrete_Mathematics">Concrete Math</a> 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的</p>
 <p>以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考</p>
-<h2 id="約瑟夫問題"><a href="#約瑟夫問題" class="headerlink" title="約瑟夫問題"></a>約瑟夫問題</h2><p>由於是一個廣泛被討論的問題，我直接引用 <a target="_blank" rel="noopener" href="https://openhome.cc/Gossip/AlgorithmGossip/JosephusProblem.htm">OpenhomeCC 對問題的描述</a>：</p>
-<blockquote>
-<p>據說著名猶太歷史/數學家約瑟夫（Josephus）有過以下的故事：在羅馬人佔領喬塔帕特後，40個猶太士兵與約瑟夫躲到一個洞中，眼見脫逃無望，一群人決定集體自殺，然而私下約瑟夫與某個傢伙並不贊成，於是約瑟夫建議自殺方式，41個人排成圓圈，由第1個人 開始報數，每報數到3的人就必須自殺，然後由下一個重新報數，直到所有人都自殺身亡為止。約瑟夫與不想自殺的那個人分別排在第16個與第31個位置，於是逃過了這場死亡遊戲</p>
-</blockquote>
-<h2 id="簡單講解法"><a href="#簡單講解法" class="headerlink" title="簡單講解法"></a>簡單講解法</h2><p>一樣因為這個問題已經被廣泛討論了，相關解法應該是相當五花八門，所以我就簡單帶過，畢竟下面的討論<strong>完全基於你要先知道這個問題該怎麼解</strong>，如果你已經知道這個問題並且知道該怎麼解，請直接跳過</p>
-<blockquote>
-<p>然後以下的討論是上述問題的小變種，<strong>我們假設是數到 2 就要自殺</strong></p>
-</blockquote>
-<p>基本上這個問題要想出解法很大程度要靠觀察，就是那種靈感突發蘋果突然砸到你的那種，你基本上需要先觀察一下幾個結果，然後（很可惜的）靠猜</p>
-<blockquote>
-<p>我一個數學系的朋友說這個問題是也可以從根本上一點一點推，但是很難我可能聽不懂</p>
-</blockquote>
-<p>基本上透過觀察，我們可以知道至少偶數的一定會掛掉（畢竟是數到二），那當在場原本是二的倍數的人死掉之後，下一輪是哪些人會死呢？</p>
-<p>這邊有一個很好玩的偷換概念的方法，我們其實可以這樣想</p>
-<blockquote>
-<p>每次報數完一輪，所有人重新編號，編到偶數的人就可以直接說再見</p>
-</blockquote>
-<p>那要怎麼重新編號，這就是我們要討論的問題了</p>
-<p>透過觀察，如果總人數是偶數，則「所有人的新編號是舊編號的兩倍減一」，因為這個關係，我們也可以假設/推論最後活著人的編號也照個這個規律</p>
-<p>今天我們用 J(n) 這個函式表示「假設有總共有 n 個人，則第 J(n) 編號的人可以活到最後」，我們可以發現 J(10) = 5 並且 J(20) = 2 * J(10) - 1 = 9 符合我們的預期（你可能會想自己試試看 20 個人時到底是不是第九人活下來）</p>
-<p>相反的，如果人數是奇數，則 「所有人的新編號是舊編號的兩倍加一」，所以恭喜，我們得到一個遞迴解</p>
-<ul>
-<li>J(1) = 1</li>
-<li>J(2n) = 2J(n) - 1</li>
-<li>J(2n +1) = 2J(n) + 1</li>
-</ul>
-<p>然後因為我們實在需要一個 closed-form 解，所以我們<del>又需要</del>透過觀察得到這個很不友善的解</p>
-<p>令 n = 2<sup>m</sup> + l ，則 J(n) = J(2<sup>m</sup> + l)  = 2l + 1</p>
-<p> (for m &gt;= 0 and 0 &lt;= l &lt; 2<sup>m</sup>)</p>
-<blockquote>
-<p>Btw 你們應該也可以看得出來我很討厭透過觀察獲得解，這感覺就很像直接給你答案不跟你講原因，「阿就是這樣阿沒有原因阿」</p>
-</blockquote>
-<p>雖然這個解看起來不是很友善，但是它其實還挺好理解的：</p>
-<p>你想辦法找到離 n 最近但比它小的 2 的次方數，然後跟那個數字的距離就是他的 l，因為是最近的所以 l 一定會小於 2<sub>m</sub></p>
-<p>舉例來說 J(15)，離 15 最近的 2 次方是 8 ，15 - 8 = 7，所以 J(15) = 2 * 7 + 1 = 15</p>
-<h2 id="二進位表示"><a href="#二進位表示" class="headerlink" title="二進位表示"></a>二進位表示</h2><p>如果我們今天用二進位表示數字的話，上面那個 Closed-form 的詭異寫法會瞬間變成一個位元運算就能作到的事（這能極大優化計算效率！）</p>
-<p>用剛剛我們<del>用魔法</del>得到的 close form solution，我們先讓 n 用二進位表示，也就是 (b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub></p>
-<p>因為 n = 2<sup>m</sup> + l，我們可以做以下操作</p>
-<p> n = (1 b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>)<sub>2</sub></p>
-<blockquote>
-<p>l = n - 2<sup>m</sup>，也就是去掉最高位</p>
-</blockquote>
-<p>l = (0 b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>)<sub>2</sub></p>
-<blockquote>
-<p>乘二等價於左移</p>
-</blockquote>
-<p>2l = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>0)<sub>2</sub></p>
-<p>2l + 1 = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>1)<sub>2</sub></p>
-<blockquote>
-<p>J(n) = 2l + 1</p>
-</blockquote>
-<p>J(n) = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>1)<sub>2</sub></p>
-<blockquote>
-<p>b<sub>m</sub> 必為 1</p>
-</blockquote>
-<p>J(n) = (b<sub>m-1</sub> b<sub>m-2</sub> … b<sub>1</sub> b<sub>0</sub>b<sub>m</sub>)<sub>2</sub></p>
-<p>到這邊我們證明可以用左循環位移實做</p>
-<p>J((b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub>) = (b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>b<sub>m</sub>)<sub>2</sub></p>
-<h2 id="真的等價嗎？"><a href="#真的等價嗎？" class="headerlink" title="真的等價嗎？"></a>真的等價嗎？</h2><p>我們在上面驗證了 J(n) 就是對 (n)<sub>2</sub> 做循環左移一個位元，但是事情真的這麼簡單嗎？<br>我們來簡單考慮一下完備性：</p>
-<p>假設自然數 n 有 m-1 個位元（也就是前面提到的 2<sup>m</sup> + 1）</p>
-<ol>
-<li>那麼假設對 n 做 m+1 次操作，得到的東西有意義嗎？它等價於對 n 做 m+1 次 J() 操作嗎？</li>
-</ol>
-<blockquote>
-<p>這是個腦筋急轉彎，Concrete math 裡面有解答，但是不是很直白（因為我看到前人的筆記在上面畫一個問號，一個清華學子畫問號我覺得這應該某種程度代表問題有難度）<br>你可以花時間好好想一下</p>
-</blockquote>
-<p>… 答案是沒有意義</p>
-<p>原因是 J() 要等價成左循環位移有個前提，也就是一開始的 “0 &lt;= l &lt; 2<sup>m</sup>“ 這個條件，換到位元運算下這個條件就會變成 m =1 （或者說是 leading bit 必須要為 1 ）</p>
-<p>舉個書上的例子好了</p>
-<ul>
-<li><p>J((1101)<sub>2</sub>) = (1011)<sub>2</sub></p>
-</li>
-<li><p>J((1011)<sub>2</sub>) = (0111)<sub>2</sub></p>
-</li>
-</ul>
-<p>這個時候你可以注意到 leading bit 已經變成 0 了，以十進制表示的話這個值應該是 7，事實上下個迭代我們應該用 (111)<sub>2</sub> 去掉前面的零繼續</p>
-<p>如果我們不去掉這個零，啥都不做的話就違背一開始的假設，也就是「最近的且比 n 小的 2<sup>m</sup>」</p>
-<p>所以這邊對「J() 等價為左循環位移」的描述應該更正為，「J() 等價為左循環位移，然後<strong>移除 leading zero bit</strong>」</p>
-<p>可惜的是，就我所知除非你自己實現 rotate shift 不然原生指令是不可能幫你刪掉 leading zero bit 的，但是自己實做等於就失去底層指令加速的優勢了</p>
-<p>所以請不要使用一次以上的左循環位移，這可能導致你開頭位元變成零</p>
-<ol start="2">
-<li>承上，那如果我做了 m+1 次左循環位移操作，這樣不是會得到 n 自己嗎？（等於全部都循環過一次了）</li>
-</ol>
-<p>首先請你仔細上面對左循環位移操作的補充，「我們還需要刪掉開頭的零位元」<br>然後我們就會開始發現，回不去了</p>
-<img src="/2020/10/07/the-josephus-problem/cannotgoback.jpg" class="" title="We cannot go back anymore">
-
-<p>由於我們在循環過程中總是會把所有的 zero bit 刪掉，這導致我們就算一直跑 J() 也會讓它卡在 J(n) = n 之後就不動了（此時所有的位元都是 1，再怎麼左循環位移都沒用）</p>
-<p>從原始的 J(n) = 2l + 1 也可以得知 J() 一定會是一個遞減的函數，不過很有趣的是，它會收縮在那些所有位元都是 1 的數字上</p>
-<h2 id="為什麼會等價-？"><a href="#為什麼會等價-？" class="headerlink" title="為什麼會等價 ？"></a>為什麼會等價 ？</h2><p><code>Brace yourself for impact !</code></p>
-<p>你可能會跟我一樣開始懷疑 <strong>左循環位移</strong> 到底代表什麼，到底該怎麼去理解它<br>為了解釋這樣的關係，我們需要開始擴展原本的等式，讓它變成一個更廣泛的定義</p>
-<h3 id="等式擴充"><a href="#等式擴充" class="headerlink" title="等式擴充"></a>等式擴充</h3><p>我們一開始有的等式是這些關係：</p>
-<ul>
-<li>J(1) = 1</li>
-<li>J(2n) = 2J(n) - 1</li>
-<li>J(2n + 1) = 2J(n) + 1</li>
-</ul>
-<p>現在我們把後面的常數用符號代替，變成：</p>
-<ul>
-<li>F(1) = α</li>
-<li>F(2n) = 2J(n) + β</li>
-<li>F(2n + 1) = 2J(n) + γ</li>
-</ul>
-<p>或者說，我們可以乾脆寫成這樣：</p>
-<ul>
-<li><p>F(1) = α</p>
-</li>
-<li><p>F(2n + j) = 2F(n) + β<sub>j</sub></p>
-<p>並且令 j = 0, 1 （其實這邊 j 應該定義為小於 2 的數）</p>
-<p>要怎麼理解/想像這組函數呢？ 我們於是把這組函數拆開來 （relax）</p>
-<p>我們已知 n 可以用 (b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub> 的二進制方式表示，因此帶入上面那個推廣公式</p>
-</li>
-</ul>
-<blockquote>
-<p>右移本身就等於用整數除法除二，它現在又把 β<sub>b<sub>0</sub></sub> 這個餘數拿出來，就便成了等價的除法</p>
-</blockquote>
-<p> F((b<sub>m</sub>b<sub>m-1</sub> … b<sub>1</sub>b<sub>0</sub>)<sub>2</sub>) = 2F((0b<sub>m</sub>b<sub>m-1</sub> … b<sub>2</sub>b<sub>1</sub>)<sub>2</sub>) + β<sub>b<sub>0</sub></sub></p>
-<p>… = 4F((00b<sub>m</sub>b<sub>m-1</sub> … b<sub>3</sub>b<sub>2</sub>)<sub>2</sub>) + 2β<sub>b<sub>1</sub></sub> + β<sub>b<sub>0</sub></sub></p>
-<p>… = 2<sup>m</sup> F((b<sub>m</sub>)<sub>2</sub>) + 2<sup>m-1</sup>β<sub>b<sub>m-1</sub></sub> + … + 2β<sub>b<sub>1</sub></sub> + β<sub>b<sub>0</sub></sub></p>
-<blockquote>
-<p>根據定義，起始位元一定要為 1 </p>
-</blockquote>
-<p>… = 2<sup>m</sup>α + 2<sup>m-1</sup>β<sub>b<sub>m-1</sub></sub> + … + 2β<sub>b<sub>1</sub></sub> + β<sub>b<sub>0</sub></sub></p>
-<blockquote>
-<p>你有沒有發現，這擺明就是二進位的轉換</p>
-</blockquote>
-<p>F((b<sub>m</sub>b<sub>m-1</sub> .. b<sub>1</sub>b<sub>0</sub>)) = (αβ<sub>b<sub>m-1</sub></sub>β<sub>b<sub>m-2</sub></sub> … β<sub>b<sub>1</sub></sub>β<sub>b<sub>0</sub></sub>)<sub>2</sub></p>
-<p>我們終於可以從原本的遞進關係推到它跟二進制的關聯了</p>
-<h3 id="所以到底為什麼會等價左循環位移？"><a href="#所以到底為什麼會等價左循環位移？" class="headerlink" title="所以到底為什麼會等價左循環位移？"></a>所以到底為什麼會等價左循環位移？</h3><p>我們假設想算 J((1 1 0 0 1 0 0)2) ，因為 F() 在 α = 1, β = -1, γ = 1 時會回到 J() 的函數，因此 β<sub>b<sub>0</sub></sub> = β = -1, 而 β<sub>b<sub>1</sub></sub> = γ = 1</p>
-<p>因此我們可以得到  J((1 1 0 0 1 0 0)<sub>2</sub>) = (1 1 -1 -1 1 -1 -1)<sub>2</sub></p>
-<blockquote>
-<p>也就是所有零 0 都變成了 -1</p>
-</blockquote>
-<p>轉成十進位就是 1 * 64 + 1 * 32 + (-1) * 16 + (-1) * 8 + 1 * 4 + (-1) * 2 + (-1) * 1 = 73</p>
-<blockquote>
-<p>簡單做點 sanity check，因為首位必為一，所以算出來一定是正數</p>
-</blockquote>
-<p>那這個運算跟 <strong>左循環位移</strong> 有什麼關聯阿？</p>
-<p>因為實際上， J((1 0 0 0 0 0 0)<sub>2</sub>) = (1 -1 -1 -1 -1 -1 -1)<sub>2</sub> = (0 0 0 0 0 0 1)<sub>2</sub></p>
-<blockquote>
-<p>透過把最高位的 1 左循環移到最低位，以上數例子來說就是把自己的 63 （最高位的 64 減掉最低位的 1）分給其他位元，讓其他位元的人都上升 1</p>
-</blockquote>
-<p>以我自己比較粗糙的理解，轉換過程就是這樣 J(1 1 0 0 1 0 0)<sub>2</sub> = (1 1 -1 -1 1 -1 -1)<sub>2</sub></p>
-<blockquote>
-<p>之後把最高位移到最低位，其他位全部加一</p>
-</blockquote>
-<p>(1 1 -1 -1 1 -1 -1)<sub>2</sub> = (0 2 0 0 2 0 1)<sub>2</sub></p>
-<blockquote>
-<p>之後把二進制裡面的 2 進位，就等於左循環位移的結果了</p>
-</blockquote>
-<p>(0 2 0 0 2 0 1)<sub>2</sub> = (1 0 0 1 0 0 1)<sub>2</sub></p>
-<img src="/2020/10/07/the-josephus-problem/mindBlown.jpg" class="" title="What did I just see?">
-
-<p>事實上，這個等式可以擴充成不同進制間的轉換，像是這樣：</p>
-<ul>
-<li><p>F(j) = α<sub>j</sub></p>
-</li>
-<li><p>F(dn + j) = cF(n) + β<sub>j</sub> ，其中 0 &lt;= j &lt; d</p>
-<p>不過這邊就沒那麼驚奇了，所以就不繼續提下去了</p>
-</li>
-</ul>
-<h2 id="後序"><a href="#後序" class="headerlink" title="後序"></a>後序</h2><p>做這類 brain teaser 真的很好玩，從知道問題到思考解法，到思考為什麼它會有用，什麼時候可以用什麼時候可以用，為什麼這個轉換是有效的，這是不是表示我可以把它背後的概念用在別的地方<br>不過真的挺費時間的，從一開始覺得怪怪的，到開始可以想像、類比描述你的問題，到後面開始思考原因</p>
-<p>其實只看數學式還挺無聊的，我還是挺推薦直接去看書，然後花上一點時間思考（我零零碎碎的時間加起來，第一章應該看了有兩三個下午）</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/10/07/the-josephus-problem/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -426,7 +292,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-11 17:52:45" itemprop="dateModified" datetime="2020-10-11T17:52:45+08:00">2020-10-11</time>
+                <time title="Modified: 2020-10-12 23:36:18" itemprop="dateModified" datetime="2020-10-12T23:36:18+08:00">2020-10-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -439,6 +305,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/10/05/bmv2-debug/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/05/bmv2-debug/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -451,25 +331,14 @@
       
           <p>最近寫碩論要用到這東西，雖然說我們實驗室有一兩台可編程交換機（Programmable Switch）的硬體，但是由於想做的是資料中心的場景，所以數量上不去只能用軟體模擬了</p>
 <p>這篇文章的目的是幫助各位跟我一樣的新手了解要怎麼 debug BMv2 執行時的問題，也就是說下文並不會牽扯到編譯時期的問題（這部份 Bmv2 好像有類似 gdb 的東西），而是純粹「我今天可以編譯過了，但是交換機的行為怎麼不是我想像的那樣？」</p>
-<hr>
-<h2 id="什麼是-Bmv2"><a href="#什麼是-Bmv2" class="headerlink" title="什麼是 Bmv2"></a>什麼是 Bmv2</h2><p>我想會找到這篇文章的人應該都知道什麼是 Bmv2 才會點進來的吧… 不過還是就我所知道的講一下好了</p>
-<p>要講 Bmv2 就一定要提到<strong>可編程交換機</strong>，因為 Bmv2 就只是用軟體的方式模擬交換機硬體的行為</p>
-<p>可編程交換機呢，就是比較彈性的交換機，原本的交換機只能處理固定格式的封包，如果今天作為實驗想自己定義一個新的格式的封包，那麼很可惜交換機會完全不知道怎麼處理這邊的新格式，你可能就只能把新格式疊在現存的格式上，作為它的 payload，丟給兩邊的服務器處理</p>
-<p>可編程交換機的實現原理，就我所知道的類似用到 FPGA 的概念，我們可以用硬體描述語言去改變他的硬體行為</p>
-<p>這可能也是為啥 P4 長的非常像 verilog</p>
-<blockquote>
-<h3 id="Bmv2-的語法可能跟硬體有區別"><a href="#Bmv2-的語法可能跟硬體有區別" class="headerlink" title="Bmv2 的語法可能跟硬體有區別"></a>Bmv2 的語法可能跟硬體有區別</h3><p>首先要用 Bmv2 的話，直接照 P4 規格書來走應該是沒問題的<br>目前用起來還沒有該實現卻沒有的情形（可能跟我很菜也有關）<br>眾所周知的 P4 有兩個主流版本，P4_14 與 P4_16<br>像是 Bmv2 我用的支援就是 P4_16，不過我相信 P4_14 應該也會有<br>由於這兩個語法差很多，基本上不可能混用<br>但是就交換機硬體實現上，基本上就是一個混亂邪惡<br>像我們實驗是用的交換機是 Barefoot 的，它的語法是改自 P4_14 的<br>會說是「改」就是因為它<strong>沒有完全符合</strong>（比較委婉的講法）<br>像是某些單元運算它沒有實做（恭喜你要用對數表做 work-around 了）<br>然後也加加減減一些功能（另一篇文章有簡單提到，不過由於他們規格書好像是保密的，所以也不能講太多）<br>所以如果今天要把實驗從軟體環境移到硬體上，你的 P4 可能要動不少刀</p>
-</blockquote>
-<h2 id="BMv2-on-mininet"><a href="#BMv2-on-mininet" class="headerlink" title="BMv2 on mininet"></a>BMv2 on mininet</h2><p>基本上你因為要模擬可編程交換機，所以要用 Bmv2 這東西，基本上應該都一定會綁定要 Mininet 環境</p>
-<p>Mininet 簡單講一下它就是方便你做網路區隔的，你可以弄出很多不同子網的節點然後用你喜歡的方式接在一起（一個比較有趣的點就是它並不是靠硬體虛擬化的方式，應該說不是走虛擬機那套的，而是只是把不同 terminal 的網路劃開來，用虛擬網路加橋接網路之類的我猜，畢竟我沒研究所以不確定，所以你的目錄下的東西應該是共享的，然後對效能影響也不是很大）</p>
-<p>我比較推薦的還是從 <a target="_blank" rel="noopener" href="https://github.com/p4lang/tutorials/tree/p4d2-2018-spring">p4lang/tutorial p4d2-2018-2018 branch</a> 下手，你當然也可以去看它原生的編譯器然後嘗試自己把整個流程搞清楚（我好像有試過，但是牆內的環境搞的我很想死，牆內的朋友最近如果要裝的話可以參考我的 <a target="_blank" rel="noopener" href="https://github.com/chenIshi/tutorials">forked repo</a>，不過隨時間過去可能會不管用）</p>
-<p>tutorial 裡的範例都挺適合直接拿來改的，詳細的文件會讓你知道哪邊需要改哪邊不用，如果你想做的實驗跟範例類似，那麼絕對是推薦你直接拿範例來改，會少掉很多有的沒的痛苦</p>
-<p>以下的部份也會基於這個環境（p4lang/tutorial）講下去</p>
-<h2 id="Misbehavior-of-Bmv2"><a href="#Misbehavior-of-Bmv2" class="headerlink" title="Misbehavior of Bmv2"></a>Misbehavior of Bmv2</h2><p>這邊的 Misbehavior 我的定義是 「不符合預期的行為」，比如你想弄一個簡單的 <a target="_blank" rel="noopener" href="https://github.com/p4lang/tutorials/tree/p4d2-2018-spring/exercises/source_routing">source routing</a> 像是把拓樸改一下然後自己調整一下控制平面的指令，然後就發現現在 ping 不通了（或者是比較尷尬的 network unreachable）</p>
-<blockquote>
-<h3 id="「比較尷尬的-network-unreachable」"><a href="#「比較尷尬的-network-unreachable」" class="headerlink" title="「比較尷尬的 network unreachable」"></a>「比較尷尬的 network unreachable」</h3><p>之前調拓樸之後改了 IP 就發現出現這個錯誤訊息<br>需要注意的是 gateway 需要跟底下的 host 處在同一個子網<br>比如說你 host IP 10.0.1.1/32 然後 <code>route add default gw 10.0.1.10 dev eth0</code><br>由於 10.0.1.1/32 跟 10.0.1.10 不視同一個子網所以就會跳這個錯誤訊息<br>比較諷刺的是，就算根本沒有 10.0.1.10 這台機器，它還是會報錯<br>這根據我的猜測是因為 linux network stack 要求<br>但如果真的是這樣，那這個 <a target="_blank" rel="noopener" href="http://lists.p4.org/pipermail/p4-dev_lists.p4.org/2019-September/004056.html">Switch 不能設定 IP</a> 原因就有點自打嘴巴</p>
-</blockquote>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/10/05/bmv2-debug/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -519,7 +388,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-30 23:43:10" itemprop="dateModified" datetime="2020-09-30T23:43:10+08:00">2020-09-30</time>
+                <time title="Modified: 2020-10-12 23:36:29" itemprop="dateModified" datetime="2020-10-12T23:36:29+08:00">2020-10-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -532,6 +401,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/09/28/matrix-state/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/28/matrix-state/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -544,72 +427,14 @@
       
           <p>以下資料主要是出自於 <a target="_blank" rel="noopener" href="https://matrix.org/docs/guides/implementing-stateres">State Resolution v2 for the Hopelessly Unmathematical</a></p>
 <h2 id="算法目標"><a href="#算法目標" class="headerlink" title="算法目標"></a>算法目標</h2><p>由於所有 Homeserver 都獨自保有一份控制事件樹（有向無環），各自採用一固定算法得到控制狀態，這個算法是為了解決控制狀態不同（通常是因為控制事件亂序）時，協調出一個控制狀態的共識（對控制事件數進行排列）</p>
-<h2 id="名詞定義"><a href="#名詞定義" class="headerlink" title="名詞定義"></a>名詞定義</h2><p>等下講到的算法會需要對目標做一些定義，由於原文區分的部份有些模糊（尤其是 Auth Event 的定義），所以有加了些我個人的理解</p>
-<h4 id="State-Event"><a href="#State-Event" class="headerlink" title="State Event"></a>State Event</h4><p>State Event 泛指那些會更改聊天室設定的事件，小到設定聊天室的圖標，大到用戶間的權限更改/踢人/拉人等等操作<br>之後提到的 State Event 如果沒有特別表明，通常指的是 <strong>Normal</strong> State Event，也就是比較無關痛癢的事件，像是更改圖標、用戶登入/離開等等</p>
-<p>在這類狀態事件中，有另一類是相對更為重要的，也就是控制事件</p>
-<h4 id="Control-Event"><a href="#Control-Event" class="headerlink" title="Control Event"></a>Control Event</h4><p>控制事件，像是權限的給予/收回，這類操作會直接影響後續對應的操作是否合法，因此事件順序影響非常大</p>
-<p>這邊的「控制事件」我個人認為更接近「踢人、Ban 人」等等「受權限影響的操作」</p>
-<h4 id="Auth-Event"><a href="#Auth-Event" class="headerlink" title="Auth Event"></a>Auth Event</h4><p>而另外一邊「調整權限的操作」則應該分類為認證事件，這些事件的順序會影響控制事件的執行與否</p>
-<h2 id="State-Resolve-Algorithm"><a href="#State-Resolve-Algorithm" class="headerlink" title="State Resolve Algorithm"></a>State Resolve Algorithm</h2><p>所有的（聊天室）狀態又簡單分成兩種： <em>unconflicted</em> 與 <em>conflicted</em><br>現在假設狀態出現了分支（fork），以下狀態屬於 conflicted state set （狀態集合）：</p>
-<ol>
-<li>在所有分支中，同一個事件類別（event_type）有超過一種的對應值 （state_key）</li>
-<li>在所有分支中，一事件類別存在僅一分支保有 state_key 而其他分支沒有</li>
-</ol>
-<p>而 unconflicted state set 基本上就是 vice versa</p>
-<h4 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h4><p>整個過程就是把 <em>conflicted</em> state 消化掉後加到 <em>unconflicted</em> state<br>直到所有狀態都變成 <em>unconflicted</em> state</p>
-<ol>
-<li>從 unconflicted state 開始，作為出發點（base layer）</li>
-<li>用 Reverse Topological Ordering 算出控制事件的順序，並把結果疊到 unconflicted stated 上</li>
-<li>用 Mainline Ordering 算出（一般）狀態事件的順序，並把結果疊到 unconflicted stated 上</li>
-<li>檢查有沒有 unconflicted state_key 在前面步驟被更改</li>
-</ol>
-<h3 id="Reverse-Topological-Ordering"><a href="#Reverse-Topological-Ordering" class="headerlink" title="Reverse Topological Ordering"></a>Reverse Topological Ordering</h3><p>這個排序算法的目的在於「保證被使用到的 Auth Events 總是會排在需要他的事件前」<br>為此會使用到 Kahn’s Algorithm 的變種，因此來簡介下 Kahn’s algorithm</p>
-<h4 id="Kahn’s-Algorithm"><a href="#Kahn’s-Algorithm" class="headerlink" title="Kahn’s Algorithm"></a>Kahn’s Algorithm</h4><p>Kahn’s Algorithm 是一個圖排序算法，用這個算法排出來的順序不唯一，因此需要做一點調整才能符合 Matrix 的需求<br>這是一個相對直覺的算法，網路上也有蠻多教學，我簡單用圖例說明</p>
-<img src="/2020/09/28/matrix-state/auth-node.png" class="" title="Convert events into nodes">
-
-<p>如上圖，我們把事件間的依賴關係抽象成 DAG，edge 連線則代表依賴關係<br>文言一點來說，incoming edge 的數量代表「多少事件依賴你」，outgoing edge 的數量代表「你依賴多少事件」<br>因此我們可以很直覺的得到「沒有 incoming edge 的人是最晚發生的」的觀察結果 （因為沒有其他事件依賴它）</p>
-<p>利用這個觀察結果，我們開始 Kahn’s Algorithm</p>
-<img src="/2020/09/28/matrix-state/auth-dag1.png" class="" title="Start by those without any incoming edge">
-
-<p>這個算法主軸就是「遞歸的移除節點，以及其的 outging edge」，而這邊我們需要選擇的就是「沒有 incoming edge 」的節點（也就是每次迭代中，最晚的節點）</p>
-<p>根據上圖，我們可以選擇的節點包含 1 與 5，假設這邊選擇了刪掉節點 1</p>
-<img src="/2020/09/28/matrix-state/auth-dag2.png" class="" title="After removing Node 1">
-
-<p>在下次迭代中，我們可以看到節點 2, 3, 5 現在都算是最晚的節點了，於是再在這三個面選一個，假設選節點 5</p>
-<img src="/2020/09/28/matrix-state/auth-dag3.png" class="" title="After removing Node 5">
-
-<p>以此類推，我們最後可以得到一組不唯一的解，像是（1, 5, 2, 3, 4, 6）或是（5, 1, 2, 3, 4, 6）都是合法的，並且需要注意到這邊的順序是反過來的，是「由最晚發生到最早發生」，因此才會稱為 Reverse topology ordering</p>
-<p>但是這個方法的得到的順序是不唯一的 non-deterministic result，Matrix 加上了一些限制讓結果變成唯一，像是：</p>
-<ul>
-<li>高權限的優先</li>
-<li>有較早時間戳的優先（要拿到 consistent timestamp 可能也要去 Google <a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/zh-TW//archive/spanner-osdi2012.pdf">Spanner</a> Truetime）</li>
-<li>ID 比較小的先（這個是作為預防措施，以防上面都不管用）</li>
-</ul>
-<p>因此在真正跑 Kahn’s Algorithm 之前，需要先用上述三個規則排序得到唯一的順序</p>
-<h4 id="Mainline-ordering"><a href="#Mainline-ordering" class="headerlink" title="Mainline ordering"></a>Mainline ordering</h4><p>現在我們已經將影響權限的事件排序了，現在只剩下其他的狀態事件了，我們可以把這些 auth event 串起來作為一個 partial graph 稱之為 「Power level mainline」，基本上這個 mainline 的長度會從「創建聊天室」到「最後一個取得共識的 auth event」，其他的狀態事件會座落在這個像是一個座標軸的線上，mainline 上的 auth event 這邊又稱為 「power level event」，可以想像成 x=1, 2, 3 … 那種感覺，而狀態事件就是落在 x 軸上的點，任兩個 power level event 中間間隔又被稱之為 epoch，可以理解成 2 &lt; x &lt; 5 的感覺</p>
-<img src="/2020/09/28/matrix-state/mainline.png" class="" title="Normal state ordering with mainline">
-
-<p>上圖中我們可以看到 <del>（我所理解的）</del> mainline 示意圖，由於我們上一部已經將所有的 Power Level Event 排好序了，我們接下來要處理的就剩下 Power Level Event 之間的一般狀態事件（Normal state events）了，由於一些狀態事件操作依然需要權限（像是更改聊天室圖像至少要 Power 50）因此我們需要為每個狀態事件找他們對應的、最接近的 Power Level Event</p>
-<p>以上圖為例，Bob 與 Alice 皆嘗試在 Power Level Event 2（之後簡稱 PLE 好了）與 3 之間發送事件，然而對於 Bob 發送的事件來說，其需要追朔到 PLE 1 才能找到他的權限，而對於 Alice 發送的事件，因為 PLE 2 就設定其相關權限，因此只需要追朔到 PLE 2</p>
-<p>以上「對應的 PLE」事實上就是主要判斷一般狀態事件先後順序的依據，其排序規則如下：</p>
-<ul>
-<li>較晚的 PLE 優先</li>
-<li>較早時間戳的優先（同 Reverse Topo）</li>
-<li>ID 小的優先（同 Reverse Topo）</li>
-</ul>
-<h4 id="Re-apply-unconflicted-state"><a href="#Re-apply-unconflicted-state" class="headerlink" title="Re-apply unconflicted state"></a>Re-apply unconflicted state</h4><p>這塊就是最後的檢查，以防止以上的操作更改到原本的 unconflicted states （由於 unconflicted states 在這個流程中視為 ground truth 不能被更改），所以就是把原始的 unconflicted states 覆寫一次</p>
-<h2 id="結論"><a href="#結論" class="headerlink" title="結論"></a>結論</h2><p>雖然說為了寫文章所以重複讀了幾次，但是感覺還是有點雲裡霧裡，大概知道他在幹什麼，但是感覺細節上還是接不太上，像是 Auth Event 真正的定義是啥？還有從 Reverse topo 到 Mainline 具體要怎麼轉？我下一步打算直接去看它們 Homeserver 的原始碼（<a target="_blank" rel="noopener" href="https://github.com/matrix-org/synapse">synapse</a> 是目前比較穩定的，但是他是用我很討厭的 python 寫的；他們好像打算用 Go 重新寫，也就是 <a target="_blank" rel="noopener" href="https://github.com/matrix-org/dendrite">dendrite</a>，我打算先去 Synapse 看一下到底麼運作的，然後再去 dendrite 看有沒有啥可以貢獻的）</p>
-<p>Btw Synapse 那邊提到 <a target="_blank" rel="noopener" href="https://github.com/matrix-org/synapse#id17">Homeserver 的負擔很大</a>，我到是挺好奇為啥的（e.g. 為啥 Matrix 有這個問題別的通訊軟體沒有），感覺可以研究看看，寫一篇分析啥的</p>
-<hr>
-<h2 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h2><p>最近這幾天終於回到實驗室了，想說正好可以用實驗室的網路看能不能直接連到 matrix.org 上</p>
-<p>會這麼說是因為我前一陣子心血來潮想試試看 matrix.org 有沒有上 gfw list XDD → 結果好像一點都不意外的上了</p>
-<p>如果嘗試在牆內連到 matrix.org 上呢，你會收到 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/TCP_reset_attack">RST 的回覆</a>，詳情可以自己去 Google 下，簡單來說就是有一個在中間幫忙傳的<del>機掰</del>節點不做它該它該做的事，反而在那邊亂，對你跟接收者說「阿東西掉囉」</p>
-<p>（這種攻擊實務面來說其實蠻難擋的，應該說之前修完段老師的資安之後，對網路上的這些有的沒的越來越覺得沒有希望了）</p>
-<p>結果跑到實驗室網路，發現也看不到 matrix.org （也被 RST 了），不僅如此我用其他無線網路加上台灣學術網的 VPN 也同樣被 RST …</p>
-<p>這代表很有可能在進到 VPN 之前就被看到並且 RST 了，有趣的是像是臉書 / Google 都可以正常看，但是 matrix.org 這種小網站卻被封了，這有可能代表內部網路的審查機制是用白名單</p>
-<p>害我現在只能趁還能看得到的時候（某個無線網 ＋ VPN 可以）趕快把網頁印成 PDF 之後看，莫名其妙的克難</p>
-<p>這同時也面向證明去中心化的加密通訊是必要的阿 =)</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/28/matrix-state/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -651,10 +476,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-09-26 14:46:00 / Modified: 22:42:40" itemprop="dateCreated datePublished" datetime="2020-09-26T14:46:00+08:00">2020-09-26</time>
+              <time title="Created: 2020-09-26 14:46:00" itemprop="dateCreated datePublished" datetime="2020-09-26T14:46:00+08:00">2020-09-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-12 23:36:05" itemprop="dateModified" datetime="2020-10-12T23:36:05+08:00">2020-10-12</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -666,6 +497,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/09/26/matrix-brief/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/26/matrix-brief/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -677,46 +522,14 @@
 
       
           <p>接續之前在 Medium 寫了一點的 <a target="_blank" rel="noopener" href="https://medium.com/@chen.ishi/what-is-matrix-af0af94c2d86">Matrix 介紹</a>，簡單來說 <a target="_blank" rel="noopener" href="https://matrix.org/">Matrix</a> 這個東西可以理解成類似 Slack / telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情）</p>
-<h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><img src="/2020/09/26/matrix-brief/matrix-data-flow.png" class="" title="Data flow diagram in Matrix">
-
-<p>簡單帶過 Matrix 的架構，對於一個用戶 A （上圖中的 Matrix client A）來說，每當他想要對用戶 B 傳送一則訊息，它會把這則訊息包裝成 event 之後透過 API 函式調用 A 的 Homeserver（後面簡稱為伺服器），底層的 Homeserver  是實際的訊息交換主體，一旦 A’s homeserver 收到這則事件後，它會直接更新本地端的聊天紀錄副本（與 Raft 不同，他在更新本地副本前不需要取得共識），隨後 A’s homeserver 嘗試向所有同一個聊天室的用戶伺服器廣播這個更新過的副本（在這個例子裡，這個聊天室只有 A 與 B 兩個用戶），B 的伺服器一旦收到 A 伺服器傳過來的更新副本之後也會更新 B 伺服器自己的副本，最後用戶 B 會透過一個背景 <em>GET</em>  拿到新的訊息</p>
-<p>這邊提到的「聊天紀錄副本」事實上不是用 Raft 那類簡單的 log 線性紀錄，而是採用樹狀圖做紀錄</p>
-<h2 id="Event-Graph"><a href="#Event-Graph" class="headerlink" title="Event Graph"></a>Event Graph</h2><p>Matrix 把所有的事件（包含傳送訊息，改變設定這類都視為事件）作為有向無環圖（DAG）的節點儲存起來，並且所有的 Homeserver 便在這基礎上維護 DAG 的共識</p>
-<p>在正常的樹狀圖裡，一個節點通常只會有一個父節點，在 Matrix 父節點的語意則代表「上一則最接近的事件」<br>然而在 Matrix 的樹狀圖裡，由於先前提到的可能會有多個 Homeserver 在同一個時間段試圖更新同一個 Room 的狀態，我們無法區分哪個節點是「最接近的」，因此<strong>在 Matrix 中一個子節點可能會有多個父節點</strong></p>
-<p>Matrix 節點透過 depth 這個屬性決定事件的發生先後順序，也就是「對於節點 A, B，其深度表示為 Dep<sub>A</sub> 與 Dep<sub>B</sub>，則如果事件 A 較 B 早發生 ，則 Dep<sub>A</sub> &lt; Dep<sub>B</sub>」</p>
-<p>（目前由於還沒看源始碼，因此逆敘述成不成立還不知道，目前先假設它跟 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Logical_clock">logic clock</a> 類似，也就是逆敘述不成立）</p>
-<img src="/2020/09/26/matrix-brief/in-conflict.png" class="" title="Message race between Bob and Charlie">
-
-<p>但是我們這樣不就會有衝突嗎？如上圖，Bob 與 Charlie 分別針對 message 1 做出了自己的回應（節點 2, 3），他們自己的伺服器也把這個新增訊息加上去了，這樣要怎麼解決圖的衝突呢？</p>
-<img src="/2020/09/26/matrix-brief/post-conflict.png" class="" title="Race kept in DAG">
-
-<p>如上圖，Matrix 採用了一個很<del>機賊</del>聰明的方法，它把衝突留在 DAG 裡，反正每個 homeserver 看到的東西都一樣，上面的 client 要怎麼解釋是 client 的事情 （這樣做等於是把衝突處理轉接給 client，底層伺服器只負責紀錄）</p>
-<img src="/2020/09/26/matrix-brief/new-event.png" class="" title="Alice then send a new event">
-
-<p>最後如果 Alice 之後又送了一則訊息（節點 4），則這則新訊息會接在上面這兩個衝突事件的下面，導致這個新節點有兩個父節點</p>
-<h2 id="Merge-Conflict"><a href="#Merge-Conflict" class="headerlink" title="Merge Conflict"></a>Merge Conflict</h2><p>每次訊息要被傳送時，該訊息會先被傳到該聊天室 （Room），聊天室有它特有的共享資源，描述目前聊天室的狀態，包含當前成員、伺服器、以及最近的訊息（recent unlinked event）<br>每當有複數個新事件要改變同一個狀態時（筆如有新成員加入），這時候就不能用前面那個<del>機賊</del>聰明的方法了（我們不會想要有些人知道 Charlie 進來了但是也有人不知道）</p>
-<p>為了達成共識，這就需要我們的衝突算法（Merge Conflict Algorithm）介入了</p>
-<p>有趣的是，它強調這個算法「必須與伺服器狀態完全獨立，也跟收到事件的順序無關下，必然的選擇某個事件（也就是不能靠隨機機率，而是要有一套判斷邏輯）」，簡單理解就是要是一個類 (non-probabilistic) pure function，這可能是因為每個伺服器都需要自行獨立判斷得出最後的共識狀態，因此需要在給定輸入的前提下，總是得到相同的結果（後面 State resolution Algorithm 會提到）</p>
-<p>簡單的總結下，一旦發生衝突是 Room 需要去解決，Homeserver 只要去拿處理完的結果就好了，同時 Room 要怎麼處理衝突也跟它的版本相關（比較瑣碎的一點是， Matrix 的版本號不一定用新越好，主要看你的需求，所以 upgrade from version 2 to 1 是有可能的）</p>
-<hr>
-<p>儘管看完他的（類）規格書之後，我感覺我的問題只有越變越多的趨勢（這可能也是它需要別人幫它補完規格書的原因）<br>以下是我看完之後一些腦中跳出來的問題</p>
-<h2 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h2><h3 id="Number-of-DAG-s"><a href="#Number-of-DAG-s" class="headerlink" title="Number of DAG(s) ?"></a>Number of DAG(s) ?</h3><p>儘管我們知道 Matrix 透過 DAG 釐清事件的先後順序，但是 DAG 是每個 room 維護一個，還是整個 Matrix 維護一個 global DAG 而 room 只是這個 DAG 的 partial order 呢？</p>
-<h3 id="Where-do-the-“room”-locates"><a href="#Where-do-the-“room”-locates" class="headerlink" title="Where do the “room” locates ?"></a>Where do the “room” locates ?</h3><p>文章中反覆強調 Room 是一個抽象概念性的結構，並且它也有自己的屬性，那麼這些 Room 實際上是放在哪呢？我目前猜是放在 homeserver 上</p>
-<h3 id="Further-message-conflict"><a href="#Further-message-conflict" class="headerlink" title="Further message conflict ?"></a>Further message conflict ?</h3><p>在前面的例子裡，衝突只有發生一次（Bob 和 Charlie），如果隨後 Alice 與 Bob 又同時發訊息而衝突了，那麼這兩個衝突節點應該用什麼方式接上去呢？另外，這樣是否會導致樹越來越胖？</p>
-<hr>
-<p>如果你也跟我一樣對這些細節，包含實做細節與狀態共識怎麼實現的，那我推薦你也來看看這篇教學 <a target="_blank" rel="noopener" href="https://matrix.org/docs/guides/implementing-stateres">State Resolution v2 for the Hopelessly Unmathematical</a> （這個名字聽起來就很和善 – 給那些不是數學專家的人看的 – 也就是我們 =) ）</p>
-<h2 id="State-resolution-Algorithm"><a href="#State-resolution-Algorithm" class="headerlink" title="State resolution Algorithm"></a>State resolution Algorithm</h2><p>文章開頭就講到「Room 並非只屬於單一個伺服器，而是所有的伺服器共同維護自己的副本，並且獨立的到達一個共識的狀態」（這聽起來的確挺 eventual consistent 的，這代表一旦發生衝突就要開始 rollback）</p>
-<p>這邊提到的 State resolution 算法（以下就簡稱為 SR 算法好了）就是用在「想辦法在兩個以上不同的狀態集合（每一個伺服器有屬於自己的狀態集合，可以看成 DAG）中，找到最終一致的狀態」（聽起來就是 eventual consistency 的 rollback 算法 ）</p>
-<p>SR 算法有兩個大方向，第一個是  <strong>高優先序的優先</strong>，像是管理員下的事件應該優先一般用戶處理；另外一個是 <strong>先來的優先</strong>，這邊就是比較 tricky 的部份了，就算在分佈式系統裡也可以花上巨量時間討論誰先誰後該怎麼定義（e.g. <a target="_blank" rel="noopener" href="https://research.google.com/archive/spanner-osdi2012.pdf">Google spanner</a>），所以 Matrix 也花了大把時間定義順序的問題</p>
-<p>由於這邊算法其實挺多的，我決定之後再專門寫一篇 SR 算法的</p>
-<hr>
-<p>照例來寫點心得好了，修完分佈式系統真的對看這種系統文章有幫助，不僅可以比較好用類比的方式理解它的運作原理/考量，也可以重新思考為什麼 Raft 要這麼做 / 不這麼做，並且想問題也可以想的比較細一點</p>
-<p>再一次推薦大家去學 <a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.824/">MIT 6.824</a> 的課，反正課程資源都放網路上開源了，真的寫過一次會很<del>痛苦</del>舒服的 =)</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
-<li>Matrix Specification, <a target="_blank" rel="noopener" href="https://matrix.org/docs/spec/">https://matrix.org/docs/spec/</a></li>
-<li>Room Version 1, <a target="_blank" rel="noopener" href="https://matrix.org/docs/spec/rooms/v1">https://matrix.org/docs/spec/rooms/v1</a></li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/26/matrix-brief/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -766,7 +579,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-26 00:01:25" itemprop="dateModified" datetime="2020-09-26T00:01:25+08:00">2020-09-26</time>
+                <time title="Modified: 2020-10-12 23:36:12" itemprop="dateModified" datetime="2020-10-12T23:36:12+08:00">2020-10-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -779,6 +592,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/09/25/hexo/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/25/hexo/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -791,42 +618,14 @@
       
           <p>最近我感覺 Medium 的語法越來越不習慣了，可能是因為我現在極少用 MS Word 等等所見即所得的軟體寫文件，寫進度共筆也偏向用 markdown 的方式寫，或者說寫比較認真的作業報告也是用 Latex 所以像 Medium 這類一定要照它遊戲規則，還要記一些有的沒的快捷鍵，實在有點反人類 / counter-productive</p>
 <p>因此感謝 <a target="_blank" rel="noopener" href="https://tigercosmos.xyz/">tigercosmos</a> 的推薦，下面簡單講一下我目前總體的使用心得</p>
-<h2 id="Hackmd"><a href="#Hackmd" class="headerlink" title="Hackmd"></a>Hackmd</h2><p><a target="_blank" rel="noopener" href="https://hackmd.io/">Hackmd</a> 事實上跟 Blog 應該說一點關係都沒有，它比較接近一個共筆系統，雖然要動手寫 markdown 但是好處是它可以同時看輸出的結果，作為初學 markdown 的人 / 剛打算從 MS 系統跳過來的人真的挺友善的</p>
-<p>功能也挺強大的，畫流程圖拉，還有那個<a target="_blank" rel="noopener" href="https://hackmd.io/s/how-to-create-slide-deck">簡報模式</a>真的很贊，更新頻率也挺頻繁的（我記得之前還沒有範本，直到前一陣子回去用了下發現又蹦出了一些新東西）</p>
-<p>不過這個挺吃身邊有沒有人用的，之前用得很頻繁是因為上課大家要記共筆，但是後來去清華讀研我老闆都用飛書 / 騰訊文件那些，也不太好意思叫老闆改用這個</p>
-<p>另外儘管某些領域 Google 搜尋引擎的確會給你 Hackmd 的共筆資料，但那是特定領域（像是 SSE SIMD 指令那類的估計是因為每學期都要寫共筆搞的每次找的都是 Hackmd 的），要寫文章還是放在其他地方會好一點</p>
-<h2 id="自己架網站"><a href="#自己架網站" class="headerlink" title="自己架網站"></a>自己架網站</h2><p>這個可以說是最靈活的選項了，但是非常非常麻煩，會被一堆瑣事把自己搞的累爆</p>
-<p>我大二修完寫網頁的課之後想說搞一個自己的網站，過程中會遇到一堆有的沒的，有點類似你因為喜歡煮咖啡所以開了一間咖啡店，但是發現大多數時間都在忙泡咖啡以外的事，像是算帳拉進貨拉有的沒的</p>
-<ul>
-<li><p>網頁本身<br>  這部份的選擇非常多，但是基本上都會用到框架（你也可以不用拉，但是要不是會超級醜，不然就是你會因為要搞 RWD（響應式設計） 那些搞到天怒人怨）<br>  就算用了框架，你還是免不掉需要面對我們偉大的 Javascript 程式語言，祝你好運 </p>
-  <img src="/2020/09/25/hexo/float.jpg" class="" title="Praise to the great JS">
-<p>  我原本寫網頁就是想說可以順便弄平面設計的東西，但是算了吧，我大概花了 90% 的時間在調 margin</p>
-</li>
-<li><p>伺服器與網路<br>  正常來說你會需要（一台電腦 ＋ 一個公網 IP ＋ 一個域名）去放這個網頁，如果想要取巧可以走 github <em>gh-pages</em>  那套，但是想要認真搞一個網頁前三者還是免不了，這個就有電腦的維護費用（電費、網路費、機器折舊那些），然後後面兩個也要靠大人的魔法解決</p>
-</li>
-<li><p>不成熟的技術<br>  如果你跟我一樣，都是菜鳥想要練練手，那麼恭喜你，第一步的網頁你可能當初寫的時候少考慮非常多東西，導致你之後開始想認真寫內容時坑一堆，更別提現在網頁要懂的東西也不少</p>
-</li>
-</ul>
-<p>結論就是，你有非常大的可能跟我一樣，寫出一個網頁的初胚之後，覺得「乾這好醜」然後沒有再用過它一次</p>
-<h2 id="Medium"><a href="#Medium" class="headerlink" title="Medium"></a>Medium</h2><p>那個時候 Medium 剛起來名聲不錯，上面的文章也還不錯，另外許多朋友也有在上面寫東西，於是<a target="_blank" rel="noopener" href="https://medium.com/@chen.ishi">我就跑到這邊開始寫</a>了</p>
-<p>的確真的認真的文字工作者（靠這個吃飯的）可以用 Medium 的那套遊戲規則排出不錯看的排版，但是我很討厭學這種有點虛無飄渺的東西（講白一點就是寫框架/系統的人突然改操作界面，你就要重新學的東西），有時候這些改動是有邏輯的，是必需要的，但是也有時候是為了一些其他有的沒的詭異的考量，總而言之，我討厭它的操作</p>
-<p>字大小選擇少，排版詭異（某些字重下間距會很怪），然後用很難看的明體（這可能是因為我自己沒有調好，因為其他人好像可以用好看的字體？）</p>
-<p>不過如果你只是想簡單寫點東西，Medium 還是不錯的，會通知你有誰追蹤拉，還會定期寄信跟你講這個月的瀏覽量分析啥的</p>
-<h2 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h2><p>Hexo 其實有點接近自己架網站，不過相關生態系開發的相當完善，從一開始 Helloworld 要怎麼讓它跑起來，到後面想優化裝點有的沒的都有不少的 API，或甚至說教學文件</p>
-<p>就安裝部份我是參考這篇<a target="_blank" rel="noopener" href="https://medium.com/@bebebobohaha/%E4%BD%BF%E7%94%A8-hexo-gitpage-%E6%90%AD%E5%BB%BA%E5%80%8B%E4%BA%BA-blog-5c6ed52f23db">如何搭建個人 Blog 使用 Hexo + Gitpage</a>，基本上流程沒問題，過程中只有遇到一個非常無言的問題</p>
-<p>我部屬之後，firefox 一直沒有切過去 next 的排版（喔對了，儘管很多人都用 next 這個模板，但是這個模板式真的好看），一直卡在 landscape 那個原本預設的模板；我就花了一兩小時去看到底有沒有啥問題，結果後來我換 Chromium 開一次 next 就正常跑出來了，因此我合理猜測這大概是因為 firefox 拿快取的東西搪塞我</p>
-<p>以下這兩個東西都不是必要的，但是都是挺推薦的擴充</p>
-<ul>
-<li><p>Google Analysis<br>  這個是鼎鼎大名的 GA 會幫你分析瀏覽者的資料，如果有裝這個可能會比較大增加你寫文章的動力（看著瀏覽人數往上跑是一件很有成就感的事）</p>
-<p>  我是看<a target="_blank" rel="noopener" href="https://jimmywei01.github.io/2019/05/09/%E4%BD%BF%E7%94%A8GA%E6%9B%BF%E7%B6%B2%E7%AB%99%E4%BD%9C%E5%88%86%E6%9E%90/">這份教學</a>裝的，但是需要注意的是，我用的當前版本已經沒有文中的問題了，除了需要手動把 GA ID 放上去之外，不用再改 <em>.swig</em> 的內容了</p>
-</li>
-<li><p>SEO<br>  這個可能不是那麼需要，它的用處就是讓搜尋引擎更容易找到你，進而提昇你的點擊率</p>
-<p>  我是參考<a target="_blank" rel="noopener" href="https://jimmywei01.github.io/2019/05/09/%E4%BD%BF%E7%94%A8Google-Search-Console%E5%92%8Csitemap%E9%80%B2%E8%A1%8CSEO%E5%84%AA%E5%8C%96/">使用Google_Search_Console和sitemap進行SEO優化</a> 和 <a target="_blank" rel="noopener" href="http://larrynung.github.io/2016/07/18/Hexo-Setup-robots-txt/">Hexo - Setup robots.txt</a> 主要是想知道 robots.txt 要放在哪裡，經過實測證明放 /source 裡面它會自己複製到 /public 裡面</p>
-</li>
-</ul>
-<hr>
-<p>一開始我想說弄一個網站會不會很麻煩（之前寫網頁慘痛的回憶），結果意外用 Hexo 大概裝十幾分鐘加上摸索不會超過半小時（扣掉沒有意義的 debug 那部份），結論就是如果你也跟我一樣不太爽 Medium 那種反人類的設計，投身 Hexo 的成本是很小的 =)</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/09/25/hexo/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -992,29 +791,41 @@
 
 <script src="/js/next-boot.js"></script>
 
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/bookmark.js"></script>
 
 
 
 
   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
 
 </body>
 </html>

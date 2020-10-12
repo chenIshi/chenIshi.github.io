@@ -12,25 +12,25 @@
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="The Josephus Problem 似乎是一個相當有名的問題，我則是在 Concrete Math 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的 以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考 約瑟夫問題由於是一個廣泛被討論的問題，我直">
+  <meta name="description" content="The Josephus Problem 似乎是一個相當有名的問題，我則是在 Concrete Math 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的 以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dive into the Josephus problem">
 <meta property="og:url" content="https://chenishi.github.io/2020/10/07/the-josephus-problem/index.html">
 <meta property="og:site_name" content="Metallurgy in Computer Science">
-<meta property="og:description" content="The Josephus Problem 似乎是一個相當有名的問題，我則是在 Concrete Math 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的 以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考 約瑟夫問題由於是一個廣泛被討論的問題，我直">
+<meta property="og:description" content="The Josephus Problem 似乎是一個相當有名的問題，我則是在 Concrete Math 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的 以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://chenishi.github.io/2020/10/07/the-josephus-problem/cannotgoback.jpg">
 <meta property="og:image" content="https://chenishi.github.io/2020/10/07/the-josephus-problem/mindBlown.jpg">
 <meta property="article:published_time" content="2020-10-07T14:59:05.000Z">
-<meta property="article:modified_time" content="2020-10-11T09:52:11.736Z">
+<meta property="article:modified_time" content="2020-10-12T15:35:20.621Z">
 <meta property="article:author" content="YiXi Chen">
 <meta property="article:tag" content="recurrent">
 <meta property="article:tag" content="bitwise">
@@ -90,6 +90,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -132,6 +133,11 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
@@ -151,6 +157,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
 
 
     <main class="main">
@@ -195,7 +202,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-10-11 17:52:11" itemprop="dateModified" datetime="2020-10-11T17:52:11+08:00">2020-10-11</time>
+                <time title="Modified: 2020-10-12 23:35:20" itemprop="dateModified" datetime="2020-10-12T23:35:20+08:00">2020-10-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -208,6 +215,20 @@
             </span>
 
           
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/10/07/the-josephus-problem/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/07/the-josephus-problem/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
 
         </div>
       </header>
@@ -220,6 +241,8 @@
       
         <p>The Josephus Problem 似乎是一個相當有名的問題，我則是在 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Concrete_Mathematics">Concrete Math</a> 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的</p>
 <p>以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考</p>
+<a id="more"></a>
+
 <h2 id="約瑟夫問題"><a href="#約瑟夫問題" class="headerlink" title="約瑟夫問題"></a>約瑟夫問題</h2><p>由於是一個廣泛被討論的問題，我直接引用 <a target="_blank" rel="noopener" href="https://openhome.cc/Gossip/AlgorithmGossip/JosephusProblem.htm">OpenhomeCC 對問題的描述</a>：</p>
 <blockquote>
 <p>據說著名猶太歷史/數學家約瑟夫（Josephus）有過以下的故事：在羅馬人佔領喬塔帕特後，40個猶太士兵與約瑟夫躲到一個洞中，眼見脫逃無望，一群人決定集體自殺，然而私下約瑟夫與某個傢伙並不贊成，於是約瑟夫建議自殺方式，41個人排成圓圈，由第1個人 開始報數，每報數到3的人就必須自殺，然後由下一個重新報數，直到所有人都自殺身亡為止。約瑟夫與不想自殺的那個人分別排在第16個與第31個位置，於是逃過了這場死亡遊戲</p>
@@ -388,6 +411,25 @@
     
     
     
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
 
       <footer class="post-footer">
           <div class="post-tags">
@@ -569,29 +611,41 @@
 
 <script src="/js/next-boot.js"></script>
 
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
+<script src="/js/bookmark.js"></script>
 
 
 
 
   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
 <script>
   var disqus_config = function() {
     this.page.url = "https://chenishi.github.io/2020/10/07/the-josephus-problem/";

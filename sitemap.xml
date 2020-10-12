@@ -2,37 +2,37 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://chenishi.github.io/2020/10/05/bmv2-debug/</loc>
-    
-    <lastmod>2020-10-11</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/2020/10/07/the-josephus-problem/</loc>
-    
-    <lastmod>2020-10-11</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://chenishi.github.io/2020/09/28/matrix-state/</loc>
     
-    <lastmod>2020-09-30</lastmod>
+    <lastmod>2020-10-12</lastmod>
     
   </url>
   
   <url>
-    <loc>https://chenishi.github.io/2020/09/26/matrix-brief/</loc>
+    <loc>https://chenishi.github.io/2020/10/05/bmv2-debug/</loc>
     
-    <lastmod>2020-09-26</lastmod>
+    <lastmod>2020-10-12</lastmod>
     
   </url>
   
   <url>
     <loc>https://chenishi.github.io/2020/09/25/hexo/</loc>
     
-    <lastmod>2020-09-25</lastmod>
+    <lastmod>2020-10-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/2020/09/26/matrix-brief/</loc>
+    
+    <lastmod>2020-10-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/2020/10/07/the-josephus-problem/</loc>
+    
+    <lastmod>2020-10-12</lastmod>
     
   </url>
   
@@ -53,92 +53,92 @@
 
   <url>
     <loc>https://chenishi.github.io/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>https://chenishi.github.io/tags/Hexo/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/FrontEnd/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/network/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/software-system/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/network-system/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/consensus/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/recurrent/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/bitwise/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://chenishi.github.io/tags/BMv2/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/Programmable-Switch/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/Mininet/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/P4/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/Hexo/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/FrontEnd/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/network/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/software-system/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/network-system/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/consensus/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/recurrent/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/bitwise/</loc>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -146,36 +146,36 @@
 
   
   <url>
+    <loc>https://chenishi.github.io/categories/debug/</loc>
+    <lastmod>2020-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://chenishi.github.io/categories/web/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/system/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/algorithm/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/math/</loc>
-    <lastmod>2020-10-11</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/categories/debug/</loc>
-    <lastmod>2020-10-11</lastmod>
+    <lastmod>2020-10-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
