@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2020-10-12T15:35:20.621Z</updated>
+  <updated>2020-10-20T15:37:57.554Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -17,11 +17,34 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Dive into floating point expressions</title>
+    <link href="https://chenishi.github.io/2020/10/17/floating-point/"/>
+    <id>https://chenishi.github.io/2020/10/17/floating-point/</id>
+    <published>2020-10-17T14:40:21.000Z</published>
+    <updated>2020-10-20T15:37:57.554Z</updated>
+    
+    
+    <summary type="html">&lt;img src=&quot;/2020/10/17/floating-point/php-float.png&quot; class=&quot;&quot; title=&quot;Numerical Misbehavior in php&quot;&gt;
+
+&lt;p&gt;最近在靠北工程師上面看到這張梗圖，其實我也沒寫過 PHP，不知道那邊狀況怎樣，但是其實浮點數運算這個議題挺廣泛的，也並不侷限於只有 PHP 有這個「問題」，正好之前在 Jserv 老師課堂上有稍微研究一下這個議題也寫了些筆記（我們自己寫的是&lt;a href=&quot;https://hackmd.io/Z-6yRXzrSp6z6TtH8QH-rw&quot;&gt;浮點數運算和定點數操作&lt;/a&gt;，老師的講義是&lt;a href=&quot;https://hackmd.io/tbHqxe19SdafIq0XdBnJzQ&quot;&gt;你所不知道的 C 語言: 浮點數運算&lt;/a&gt;），現在重新整理一下筆記，並且看能不能順便更新一點內容&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="numerical" scheme="https://chenishi.github.io/categories/numerical/"/>
+    
+    
+    <category term="bitwise" scheme="https://chenishi.github.io/tags/bitwise/"/>
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Dive into the Josephus problem</title>
     <link href="https://chenishi.github.io/2020/10/07/the-josephus-problem/"/>
     <id>https://chenishi.github.io/2020/10/07/the-josephus-problem/</id>
     <published>2020-10-07T14:59:05.000Z</published>
-    <updated>2020-10-12T15:35:20.621Z</updated>
+    <updated>2020-10-20T15:37:08.473Z</updated>
     
     
     <summary type="html">&lt;p&gt;The Josephus Problem 似乎是一個相當有名的問題，我則是在 &lt;a href=&quot;https://en.wikipedia.org/wiki/Concrete_Mathematics&quot;&gt;Concrete Math&lt;/a&gt; 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的&lt;/p&gt;
@@ -29,7 +52,7 @@
     
     
     
-    <category term="math" scheme="https://chenishi.github.io/categories/math/"/>
+    <category term="numerical" scheme="https://chenishi.github.io/categories/numerical/"/>
     
     
     <category term="recurrent" scheme="https://chenishi.github.io/tags/recurrent/"/>

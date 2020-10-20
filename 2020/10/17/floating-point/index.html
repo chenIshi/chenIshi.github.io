@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在靠北工程師上面看到這張梗圖，其實我也沒寫過 PHP，不知道那邊狀況怎樣，但是其實浮點數運算這個議題挺廣泛的，也並不侷限於只有 PHP 有這個「問題」，正好之前在 Jserv 老師課堂上有稍微研究一下這個議題也寫了些筆記（我們自己寫的是浮點數運算和定點數操作，老師的講義是你所不知道的 C 語言: 浮點數運算），現在重新整理一下筆記，並且看能不能順便更新一點內容">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dive into floating point expressions">
+<meta property="og:url" content="https://chenishi.github.io/2020/10/17/floating-point/index.html">
+<meta property="og:site_name" content="Metallurgy in Computer Science">
+<meta property="og:description" content="最近在靠北工程師上面看到這張梗圖，其實我也沒寫過 PHP，不知道那邊狀況怎樣，但是其實浮點數運算這個議題挺廣泛的，也並不侷限於只有 PHP 有這個「問題」，正好之前在 Jserv 老師課堂上有稍微研究一下這個議題也寫了些筆記（我們自己寫的是浮點數運算和定點數操作，老師的講義是你所不知道的 C 語言: 浮點數運算），現在重新整理一下筆記，並且看能不能順便更新一點內容">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/17/floating-point/php-float.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/17/floating-point/workaround.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/17/floating-point/float-format.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/17/floating-point/encoding.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/17/floating-point/accurate.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/17/floating-point/cong.png">
+<meta property="article:published_time" content="2020-10-17T14:40:21.000Z">
+<meta property="article:modified_time" content="2020-10-20T15:37:57.554Z">
+<meta property="article:author" content="YiXi Chen">
+<meta property="article:tag" content="bitwise">
+<meta property="article:tag" content="beginners">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chenishi.github.io/2020/10/17/floating-point/php-float.png">
+
+<link rel="canonical" href="https://chenishi.github.io/2020/10/17/floating-point/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Dive into floating point expressions | Metallurgy in Computer Science</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-179024993-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Metallurgy in Computer Science</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/10/17/floating-point/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dive into floating point expressions
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-17 22:40:21" itemprop="dateCreated datePublished" datetime="2020-10-17T22:40:21+08:00">2020-10-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-20 23:37:57" itemprop="dateModified" datetime="2020-10-20T23:37:57+08:00">2020-10-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/numerical/" itemprop="url" rel="index"><span itemprop="name">numerical</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/10/17/floating-point/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/17/floating-point/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="/2020/10/17/floating-point/php-float.png" class="" title="Numerical Misbehavior in php">
+
+<p>最近在靠北工程師上面看到這張梗圖，其實我也沒寫過 PHP，不知道那邊狀況怎樣，但是其實浮點數運算這個議題挺廣泛的，也並不侷限於只有 PHP 有這個「問題」，正好之前在 Jserv 老師課堂上有稍微研究一下這個議題也寫了些筆記（我們自己寫的是<a target="_blank" rel="noopener" href="https://hackmd.io/Z-6yRXzrSp6z6TtH8QH-rw">浮點數運算和定點數操作</a>，老師的講義是<a target="_blank" rel="noopener" href="https://hackmd.io/tbHqxe19SdafIq0XdBnJzQ">你所不知道的 C 語言: 浮點數運算</a>），現在重新整理一下筆記，並且看能不能順便更新一點內容</p>
+<a id="more"></a>
+
+<h2 id="什麼是浮點數"><a href="#什麼是浮點數" class="headerlink" title="什麼是浮點數"></a>什麼是浮點數</h2><p>浮點數（Floating Point Number），就是定點數（Fixed Point Number）的另外一個方向，我們常用的整數 （Integer）就是定點數的一種</p>
+<p>定點數，顧名思義，就是小數點固定（或者說小數點後位數固定）；而浮點數自然就是「浮動的小數點位置」，你也可以把浮點數看成用科學記號表示的數字，我們可以透過改變 10<sup>n</sup> 的 n 大小來移動小數點</p>
+<p>但是如果只是這樣，並不能解釋為什麼浮點數運算會產生誤差（尤其是我們可以用科學記號正常表示且運算，不會出現誤差）</p>
+<h2 id="從理論到工程"><a href="#從理論到工程" class="headerlink" title="從理論到工程"></a>從理論到工程</h2><p>從數學的角度來看，我們假設我們是在十進制的世界裡，並且很完美的我們可以有無限的資源表達一個數字，這可能也是為什麼 0.999… 九循環會等於一</p>
+<p>但是實際上，在電腦科學的角度，我們無法正確表示「0.9 九循環」的這個概念（至少據我目前所知，不過應該還是可以想辦法弄出一個對應的抽象數值表示法，但是至少我沒看過）</p>
+<p>原因也很簡單，資源是有限的︰我們必須用有限的（且適當的）位元數表示一個數字</p>
+<p>以 C 語言為例，表達一個數字通常可以用 2 ~ 12 bytes（當然你可以自定義一些有的沒的，但那不在我們這次的討論範圍內），這代表如果今天不考慮負數的整數（也就是 Unsigned Integer），那我們大約可以表示 2<sup>16</sup> ~ 2<sup>96</sup>，也就是 10<sup>4</sup> 到 10<sup>28</sup> 數量級之間</p>
+<p>聽起來不錯，這範圍挺大的，就算要表示負數也大概只要把範圍縮小一半（誤差取決於設計有沒有正負零），但是那要怎麼表示小數呢？</p>
+<h2 id="定點數的優劣"><a href="#定點數的優劣" class="headerlink" title="定點數的優劣"></a>定點數的優劣</h2><p>一個最簡單的方法，我們也不用更改數值的表示方法，我們只需要改變我們讀它的方式</p>
+<img src="/2020/10/17/floating-point/workaround.png" class="" title="Just change the way we interpret numbers">
+
+<p>舉例來說，以往看到「1024」這個數字我們會假設它的小數點在 4 之後，也就是沒有小數的部份；但是現在我們統一改變我們讀它的方式，我們現在規定「小數點統一在末二三位之間」，於是一瞬間這個數字就變成 10.24 了</p>
+<p>聽起來真是一個完美的辦法，簡單而優雅，我們用<strong>極致的效率表示數值的完全精度</strong>，完全沒有浪費！還會有什麼問題嗎？</p>
+<p>很可惜的是：</p>
+<h3 id="我要怎麼讀它"><a href="#我要怎麼讀它" class="headerlink" title="我要怎麼讀它"></a>我要怎麼讀它</h3><p>假設你今天是這套系統的設計者，你可能可以對整個運作流程瞭若指掌，你知道整體數值系統如何運作，你也很清楚應該怎麼解讀它們；但是假設你是這個新系統的新手，你完全沒有想過原來小數點放在末二位，系統的文件要不是雜亂難懂不然就是根本不存在，會發生這樣的原因就是它本身不是 self-explanatory，這不是一個規格化的數值表示</p>
+<h3 id="我想要表示更小-大-精確的數"><a href="#我想要表示更小-大-精確的數" class="headerlink" title="我想要表示更小 /大 / 精確的數"></a>我想要表示更小 /大 / 精確的數</h3><p>假設今天我們用的是 C 語言一般的 signed int ，長度是 4 byte，同時也定義小數點是末二三位之間，這代表我們只能表示 21474836.47 ~ -21474836.48 間的數</p>
+<p>所以我們不但無法表示這個區間外的數，我們也無法表示 1.024 更高精度的數字（需要捨棄或進位）</p>
+<p>好了我們現在知道定點數的缺點了，儘管它能夠很高效的表示數值，但是它的靈活度很低，那我們應該怎麼獲取一個通用的泛用表示法？</p>
+<blockquote>
+<p>別被搞混了，定點數也有它的優勢，儘管在後面會提到浮點數各種缺點，但是這邊簡單講一下定點數的優點<br>事實上，最近不少研究都把針對浮點數轉換為定點數表示，像是 <a target="_blank" rel="noopener" href="https://engineering.fb.com/ai-research/floating-point-math/">Making floating point math highly efficient for AI hardware</a>，<a target="_blank" rel="noopener" href="https://research.fb.com/wp-content/uploads/2017/12/hpca-2018-facebook.pdf">Applied Machine Learning at Facebook:A Datacenter Infrastructure Perspective</a>, <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1806.08342.pdf">Quantizing deep convolutional networks forefficient inference: A whitepaper</a><br>機器學習的優化是一個好場景，由於我們實在不需要表示那些極小趨近零的數（事實上，一個機器學習優化方法就是直接把這些極小數消成零）<br>同時也不需要表示極大數，這時候用上定點數效率更高，同時也可以減少硬體需求</p>
+</blockquote>
+<h2 id="犧牲位元來表示浮點數"><a href="#犧牲位元來表示浮點數" class="headerlink" title="犧牲位元來表示浮點數"></a>犧牲位元來表示浮點數</h2><p>所以浮點數出現了，它有點像是科學記號表示，但是是二進位的 (10…11)<sub>2</sub> * 2<sup>n</sup>，然後無論是前面的常數項 (10…11)<sub>2</sub> 或是後面的指數 n 都有位數表示限制</p>
+<img src="/2020/10/17/floating-point/float-format.png" class="">
+
+<p>上圖是 IEEE 754 規格書提到的浮點數格式，我們可以看到總共有三個部份：</p>
+<ul>
+<li>正負號（Sign bit）：共一個位元</li>
+<li>指數 （Exponent）: 其實就是代表你要把底數左/右移幾位</li>
+<li>底數 （Mantissa）：這邊比較麻煩的是，它除了是二進位的小數之外（舉例來說，（10.01）<sub>2</sub> = （2.25）<sub>10</sub>），同時 mantissa 的小數點預設在最高位左邊，同時會偷偷在小數點左邊加上一個 1，變成 1.[mantissa] 的型態（這樣做是完全可行的，因為小數中總有一個位元是 1，你只需要透過 Exponent 去位移就好了）</li>
+</ul>
+<p>就工程上來說，浮點數必然會出現誤差，舉例來說 (1.1010)<sub>2</sub> * 2 <sup>2</sup> 的浮點數，其等於將(1.1010)<sub>2</sub> 小數點右移兩位，變成 (110.10)<sub>2</sub> ，化成十進位就是 2 <sup>2</sup> * 1 + 2 <sup>1</sup> * 1 + 2 <sup>0</sup> * 0 + 2 <sup>-1</sup> * 1 + 2 <sup>-2</sup> * 0 = 6.5</p>
+<p>我們可以看到，浮點數只能表示用 2 <sup>-n</sup> 組合出來，這自然會導致有些數轉換後將喪失正確性</p>
+<p>浮點數除了表達這些「正常」的數值外，同時也有一些很神奇的數值表達模式</p>
+<blockquote>
+<p>Denormalize mode 與 Normalize mode 間的轉換，像是因為乘法導致 Denormalize 到 Normalize 的這個 <a target="_blank" rel="noopener" href="https://hackmd.io/Z-6yRXzrSp6z6TtH8QH-rw#%E6%A1%88%E4%BE%8B-%E6%B5%AE%E9%BB%9E%E6%95%B8%E4%B9%98%E4%BB%A5%E4%BA%8C">實做</a> 挺有趣的，但是因為有點 trivial 就跳過了</p>
+</blockquote>
+<h2 id="Infinity-amp-NaN"><a href="#Infinity-amp-NaN" class="headerlink" title="Infinity &amp; NaN"></a>Infinity &amp; NaN</h2><p>浮點數表示法本身就有提供表示「無限 Infinity」與 「NaN（Not a Number）」的表示方法</p>
+<img src="/2020/10/17/floating-point/encoding.png" class="">
+
+<p>除了無限有分正無限與負無限之外，我想最有趣的部份應該是 NaN 了，NaN 有很多神奇你應該不會想到過得行為</p>
+<p>NaN 出現時機最常見的就是除數為零，還有一些等下會提到的案例，但是你知道：</p>
+<blockquote>
+<p>其實 NaN 有兩種嗎？</p>
+</blockquote>
+<h3 id="Quiet-NaN-amp-Signal-NaN"><a href="#Quiet-NaN-amp-Signal-NaN" class="headerlink" title="Quiet NaN &amp; Signal NaN"></a>Quiet NaN &amp; Signal NaN</h3><p>根據浮點數規格書 IEEE 754 第 6.2 章提到，對於 NaN 來說</p>
+<ul>
+<li>mantissa 起始位元為 1 的話就是 quiet NaN</li>
+<li>反之 mantissa 起始位元為 0 ，但其餘位置非零的話就是 signal NaN (全部都零會變成無限的表達式)</li>
+</ul>
+<blockquote>
+<p>你可能會想問，這兩個差在哪？</p>
+</blockquote>
+<p>一旦運算產生 Signal NaN，通常 FPU （浮點數處理單元，Floating point Process Unit）會報錯然後你會在執行時期得知；但是對於 Quiet NaN 來說，系統不會主動報錯，你必須自己去檢查運算結果</p>
+<p>你可能不太懂這意味著什麼，Signal NaN 是一個討厭鬼，它會在你一出錯的時候跟你講，有可能導致你的程式中斷啥的（這有可能導致部屬中斷的損失），但是 Quiet NaN 更像是一個會傳染的未爆彈，你通常不會意識到它的發生，debug 也並不是那麼容易（畢竟你需要檢查所有有嫌疑的數值），更不友善的是，它會傳播開來（我更喜歡叫它<em>感染</em>）</p>
+<h3 id="出現-NaN-的時機們"><a href="#出現-NaN-的時機們" class="headerlink" title="出現 NaN 的時機們"></a>出現 NaN 的時機們</h3><p>如果你真的很需要清楚知道這些行為，請翻閱 IEEE 754 7.2 節，那裡有完整的規範說明</p>
+<p>因為全部列出來會有點冗，我決定挑幾個比較有趣的：</p>
+<h4 id="會產生-Quiet-NaN-的"><a href="#會產生-Quiet-NaN-的" class="headerlink" title="會產生 Quiet NaN 的"></a>會產生 Quiet NaN 的</h4><ul>
+<li>涉及到 Quiet NaN 的大部分運算（除了某些 casting）產出都會直接變成 Quiet NaN</li>
+<li>0 乘 ∞ 或是 ∞ ± ∞（這邊的無限也有自己的正負號）</li>
+<li>0 除∞ 或是 ∞ / ∞</li>
+<li>對負數開根號</li>
+</ul>
+<h4 id="會產生-Signal-NaN-的"><a href="#會產生-Signal-NaN-的" class="headerlink" title="會產生 Signal NaN 的"></a>會產生 Signal NaN 的</h4><ul>
+<li>嘗試對 NaN, infinity, 或是整數表示範圍外的浮點數轉換（casting）成整數</li>
+</ul>
+<h2 id="從工程又回到理論"><a href="#從工程又回到理論" class="headerlink" title="從工程又回到理論"></a>從工程又回到理論</h2><h3 id="為什麼二進制無法很好的表示小數？"><a href="#為什麼二進制無法很好的表示小數？" class="headerlink" title="為什麼二進制無法很好的表示小數？"></a>為什麼二進制無法很好的表示小數？</h3><p>問題在於，為什麼在表達十進制整數的時候，我們明明可以完整的表示；但是一旦到了小數的範圍，就開始產生精度誤差了呢？（有同學表明如果我們可以用無限位元表示小數，則誤差部份就可以展開成一無限項的表示式，也就沒有誤差了）</p>
+<blockquote>
+<p>不過這樣問題就會變成「對於一個有限的十位數整數，我們可以只用有限的位元表示並且不喪失任何精度，但是對於小數來說，無論是否有限，我們都沒辦法用有限的二進制位元表示」</p>
+</blockquote>
+<img src="/2020/10/17/floating-point/accurate.png" class="">
+
+<p>定點數能夠精確（以上圖來說，accurate 但可能不 precise）的原因，以我的理解來說，儘管定點數底層與浮點數一樣，都是二進制構成</p>
+<p>但是我們的小數點實際上可以有不同的加法</p>
+<ul>
+<li>一種是跟浮點數一樣，在二進制的時候加上去，這樣 accuracy 會跟浮點數一樣</li>
+<li>另外一種是在二進制轉成十進制之後，再加上去，這時候 accuracy 就會是十進制的</li>
+</ul>
+<p>一種可能比較好理解的說法是，說白了小數點就是做除法，在二進制裡面加就會變二進制的除法，在十進制裡面就變成十進制的除法</p>
+<blockquote>
+<p>但是這看起來非常不嚴謹阿，我們能用數學方法證明嗎？ </p>
+</blockquote>
+<p>這個問題花了我不少時間，不光是思考，問同學，或是補足相關的數學知識等等，我想我只能在這邊提出一個個人的推論（而且不甚嚴謹）</p>
+<hr>
+<h4 id="Cardinality-勢-？"><a href="#Cardinality-勢-？" class="headerlink" title="Cardinality 勢 ？"></a>Cardinality 勢 ？</h4><blockquote>
+<p>這應該是個錯誤的思考方向，如果急著想知道答案的可以先跳過<br>不過還是挺建議順著看釐清是哪邊有問題</p>
+</blockquote>
+<p>集合論中有一個很有名的 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cantor%27s_diagonal_argument">Cantor’s diagonal argument</a>（感謝數學系大佬莊同學熱心解惑）用來說明實數集與整數集之間「不同<strong>勢</strong>」，有沒有可能是這個原因呢？</p>
+<h5 id="什麼是勢"><a href="#什麼是勢" class="headerlink" title="什麼是勢"></a>什麼是勢</h5><p>對於有限大小的集（Set）來說，我們可以很簡單，直覺的比較兩個有限集的大小；但是對於那些無限集呢，像是整數（Integer）或是實數（Real Number）這類有無限大小的集呢？</p>
+<p>這時候我們就要用到集合論裡面的「<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cardinality">勢（Cardinality）</a>」這個概念了</p>
+<p>對於無限集（儘管有限集也具有勢，但是那不是我們主要討論的目標）來說，我們可以透過比較他們的勢來作到比大小的目的</p>
+<p>由於無限集不可類舉，所以我們這邊需要找的是這兩個無限集間的映對關係，假如存在 B → A 的單射，則定義集合 A 的勢大於集合 B；但是如果兩者完美一一對應，則我們稱之為<strong>等勢</strong></p>
+<blockquote>
+<p>有沒有可能找不到這個對應關係？</p>
+</blockquote>
+<p>有，但是那代表你需要證明這個關係不存在（通常都會存在這樣的對應關係，至少反正 CS 領域應該都是用現成的）</p>
+<blockquote>
+<p>那有沒有可能不只 A 有一些無法被對應到的元素，B 也有一些？這樣誰比較大？</p>
+</blockquote>
+<p>有，那代表你的對應關係找得很爛，請找一個比較好用，容易比較的</p>
+<p>簡單舉個例子好了，令 α<sub>i</sub> = {1, 2, 3, …..} 的一個無限正整數數列，我們可以構造另外一個數列 β<sub>i</sub> = {2, 4, 6, …..} 其中 β 內每一個元素都正好是 α 的兩倍，這樣的對應關係是一對一的，儘管我們大概可以感覺到 α 應該會大於 β （畢竟 β 有的元素 α 都有）</p>
+<p>但是因為根據勢的定義</p>
+<ul>
+<li>這兩個都是無限數列</li>
+<li>存在一對一的對應關係（或叫做滿射？）</li>
+</ul>
+<p>我們會因此定義這兩個集合<strong>等勢</strong></p>
+<p>好了，現在我們知道勢的基本觀念了（而且那也是我們目前只需要懂的），現在回到二進制表示的問題</p>
+<p>我們已知有限的二進制位元能夠完美的表示整數域的一部分數字，也就是說他們具有「等勢」，但是「整數」與「實數」有<strong>等勢</strong>嗎？</p>
+<h5 id="Cantor’s-diagonal-argument"><a href="#Cantor’s-diagonal-argument" class="headerlink" title="Cantor’s diagonal argument"></a>Cantor’s diagonal argument</h5><p>要證明某些集是不是跟整數集<strong>等勢</strong>，常見的作法是看那些集是不是「可數集」，因為一旦是可數的，這就代表我們可以把整數用索引（index）的方式對應到那些可數集上了</p>
+<p>相關的常見範例像是「自然數與有理數」可以直接看連結的影片（<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=WQWkG9cQ8NQ">Integers &amp; Rationals are both infinite but is it the SAME infinity?</a>）<br>其實關於 Cantor’s diagonal argument 也有相關的介紹<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=0HF39OWyl54">影片</a>，但是這邊還是簡單講一下</p>
+<p>Cantor’s diagonal argument 主要的想法就是要說明實數域實際上是不可數的，這會透過憑空生成一個完全不在列舉項但又完全合法的「不存在的實數」達成</p>
+<p>舉例來說，我們今天嘗試對所有的小數列舉：</p>
+<ul>
+<li>α<sub>1</sub> = 0.12345…</li>
+<li>α<sub>2</sub> = 0.24680…</li>
+<li>α<sub>3</sub> = 0.01010…</li>
+</ul>
+<p>順序是什麼並不重要，後續位元省略，重點是我們「假設我們可以窮舉出所有項，也就是所有實數都應該有自己的索引」</p>
+<p>但是在這些被「窮舉」的數字中，我們可以透過取出每項的一個位元（第一項取第一個，第二項第二個，以此類推）組合成一個新的數字，並且這個數字並不在我們窮舉的清單上，所以我們反證得實數集不可數</p>
+<img src="/2020/10/17/floating-point/cong.png" class="">
+
+<p>恭喜！因為實數域跟整數域不等勢，所以不能夠用二進制轉換！</p>
+<blockquote>
+<p>真的是這樣嗎？</p>
+</blockquote>
+<p>以上的證明主要針對無限數集，我們也可以很直覺的得知某些無限數集明顯大於其他「雖然等勢」的無限數集（像是 2N vs N）</p>
+<p>但是浮點數能夠表達無限小數嗎？浮點數到底想表示什麼？</p>
+<h5 id="浮點數只能表示有限小數"><a href="#浮點數只能表示有限小數" class="headerlink" title="浮點數只能表示有限小數"></a>浮點數只能表示有限小數</h5><p>沒有錯，因為我們只有有限位元，除非我們專門想出一個用於表示無限位元的運算系統，不然浮點數能夠處理的永遠都只有有限數集（所以表達無理數或者是一些循環小數本質上就不可能）</p>
+<blockquote>
+<p>扯一下關於無限小數的題外話，其實 [0, 1] 間的實數表達方式不唯一，舉例來說，0.1 其實也可以表示成 0.0999… 九循環，不過因為浮點數不能表示無限小數，所以這邊就可以忽略掉了</p>
+</blockquote>
+<p>不過這樣不就矛盾了嗎？前面已經證明有理數與正整數是<strong>等勢</strong>，所以這不就代表我們應該能夠用二進制完美表示小數嗎？</p>
+<h4 id="Divide-and-Conquer"><a href="#Divide-and-Conquer" class="headerlink" title="Divide and Conquer"></a>Divide and Conquer</h4><p>我們再次回到進制的根本上，對一個十進制整數轉換成二進制的過程，基本上可以看成不斷除以二的過程，也就是一個 2 次方展開的過程，也就是我們不斷嘗試用更小的 2 次方去組合成一個大的整數；在這個過程中，2 次方的最小組合單元是 2<sup>0</sup> = 1 是一個確定的數（也剛好十進制的基底跟二進制的基底都一樣），因此我們可以完整的在這兩種進制間轉換</p>
+<p>但是情況換到小數就是另外一回事了，我們找不到小數的表示基底（因為我們只有有限位元），這就有點像是限制你不用 2<sup>0</sup>，2<sup>1</sup> 等等去表示一個整數，這會自然產生精度誤差</p>
+<p>那整數跟小數到底有什麼本質上的差異，導致小數無法找到基底呢？以我個人粗淺的理解，應該是因為 2<sup>0</sup> 與 10<sup>0</sup> 交匯在 1 這個無法表示小數的數值上，導致大於 1 的整數可以收束在 1 這個最小整數基底上，但小數部份因為沒有共同基底導致開始分家</p>
+<h2 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h2><p>我本來寫這篇文章是想說順便複習 NaN ，Denormalized mode 那些有的沒的，但是沒想到中途蹦出那個「為什麼用二進制表達小數會有誤差」的問題之後就徹底歪了，算是徹徹底底繞了組合論那邊一圈才發現好像不是<strong>勢</strong>那邊的問題，問題的根本原因好像就是一開始提到的，「因為我們沒有無限位元表示小數」</p>
+<p>寫的其實心也挺累的，本來想在<strong>勢</strong>那邊就打住，裝死假裝沒有想到後續的問題，但是總還是覺得哪裡怪怪的，覺得不能說服自己的話不如不要寫</p>
+<p>不過就算是最後的這個小結論，感覺也沒有太多的 insight，不過我覺得這應該是我還太淺了；本來想說可以用什麼數學定理去證明的，或至少比較有說服力的說明，不過看起來是失敗了</p>
+<p>希望有大神可以解釋的更清楚一點，或者給出一個比較嚴謹的說明</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/bitwise/" rel="tag"># bitwise</a>
+              <a href="/tags/beginners/" rel="tag"># beginners</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/07/the-josephus-problem/" rel="prev" title="Dive into the Josephus problem">
+      <i class="fa fa-chevron-left"></i> Dive into the Josephus problem
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E6%B5%AE%E9%BB%9E%E6%95%B8"><span class="nav-number">1.</span> <span class="nav-text">什麼是浮點數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%9E%E7%90%86%E8%AB%96%E5%88%B0%E5%B7%A5%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">從理論到工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E9%BB%9E%E6%95%B8%E7%9A%84%E5%84%AA%E5%8A%A3"><span class="nav-number">3.</span> <span class="nav-text">定點數的優劣</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E8%A6%81%E6%80%8E%E9%BA%BC%E8%AE%80%E5%AE%83"><span class="nav-number">3.1.</span> <span class="nav-text">我要怎麼讀它</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%91%E6%83%B3%E8%A6%81%E8%A1%A8%E7%A4%BA%E6%9B%B4%E5%B0%8F-%E5%A4%A7-%E7%B2%BE%E7%A2%BA%E7%9A%84%E6%95%B8"><span class="nav-number">3.2.</span> <span class="nav-text">我想要表示更小 &#x2F;大 &#x2F; 精確的數</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%A7%E7%89%B2%E4%BD%8D%E5%85%83%E4%BE%86%E8%A1%A8%E7%A4%BA%E6%B5%AE%E9%BB%9E%E6%95%B8"><span class="nav-number">4.</span> <span class="nav-text">犧牲位元來表示浮點數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Infinity-amp-NaN"><span class="nav-number">5.</span> <span class="nav-text">Infinity &amp; NaN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Quiet-NaN-amp-Signal-NaN"><span class="nav-number">5.1.</span> <span class="nav-text">Quiet NaN &amp; Signal NaN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BA%E7%8F%BE-NaN-%E7%9A%84%E6%99%82%E6%A9%9F%E5%80%91"><span class="nav-number">5.2.</span> <span class="nav-text">出現 NaN 的時機們</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%83%E7%94%A2%E7%94%9F-Quiet-NaN-%E7%9A%84"><span class="nav-number">5.2.1.</span> <span class="nav-text">會產生 Quiet NaN 的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%83%E7%94%A2%E7%94%9F-Signal-NaN-%E7%9A%84"><span class="nav-number">5.2.2.</span> <span class="nav-text">會產生 Signal NaN 的</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%9E%E5%B7%A5%E7%A8%8B%E5%8F%88%E5%9B%9E%E5%88%B0%E7%90%86%E8%AB%96"><span class="nav-number">6.</span> <span class="nav-text">從工程又回到理論</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E4%BA%8C%E9%80%B2%E5%88%B6%E7%84%A1%E6%B3%95%E5%BE%88%E5%A5%BD%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%B0%8F%E6%95%B8%EF%BC%9F"><span class="nav-number">6.1.</span> <span class="nav-text">為什麼二進制無法很好的表示小數？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cardinality-%E5%8B%A2-%EF%BC%9F"><span class="nav-number">6.1.1.</span> <span class="nav-text">Cardinality 勢 ？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%8B%A2"><span class="nav-number">6.1.1.1.</span> <span class="nav-text">什麼是勢</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Cantor%E2%80%99s-diagonal-argument"><span class="nav-number">6.1.1.2.</span> <span class="nav-text">Cantor’s diagonal argument</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B5%AE%E9%BB%9E%E6%95%B8%E5%8F%AA%E8%83%BD%E8%A1%A8%E7%A4%BA%E6%9C%89%E9%99%90%E5%B0%8F%E6%95%B8"><span class="nav-number">6.1.1.3.</span> <span class="nav-text">浮點數只能表示有限小數</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Divide-and-Conquer"><span class="nav-number">6.1.2.</span> <span class="nav-text">Divide and Conquer</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">7.</span> <span class="nav-text">後記</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YiXi Chen"
+      src="/images/bh-cropped.jpg">
+  <p class="site-author-name" itemprop="name">YiXi Chen</p>
+  <div class="site-description" itemprop="description">目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chenIshi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chenIshi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:chen.ishi@gmail.com" title="E-Mail → mailto:chen.ishi@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXi Chen</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2020/10/17/floating-point/";
+    this.page.identifier = "2020/10/17/floating-point/";
+    this.page.title = "Dive into floating point expressions";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
