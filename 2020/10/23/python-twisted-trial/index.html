@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近在 trace Matrix 的原始碼，它（目前比較完整的是 Synapse）的底層用到了 python 的事件驅動框架 – Twisted，雖然說不懂底層大概還是可以模糊的理解整體流程，但是這樣對整個非同步的事件處理流程理解上可以說是完全沒有辦法，舉例來說： 1234567891011121314# We process PDUs and EDUs in parallel. This is">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Peek through python twisted -- an asynchronize event handling">
+<meta property="og:url" content="https://chenishi.github.io/2020/10/23/python-twisted-trial/index.html">
+<meta property="og:site_name" content="Metallurgy in Computer Science">
+<meta property="og:description" content="最近在 trace Matrix 的原始碼，它（目前比較完整的是 Synapse）的底層用到了 python 的事件驅動框架 – Twisted，雖然說不懂底層大概還是可以模糊的理解整體流程，但是這樣對整個非同步的事件處理流程理解上可以說是完全沒有辦法，舉例來說： 1234567891011121314# We process PDUs and EDUs in parallel. This is">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/23/python-twisted-trial/diff.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/10/23/python-twisted-trial/dog.jpg">
+<meta property="article:published_time" content="2020-10-22T16:24:20.000Z">
+<meta property="article:modified_time" content="2020-10-29T17:10:54.003Z">
+<meta property="article:author" content="YiXi Chen">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="asynchronous">
+<meta property="article:tag" content="syntax sugar">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chenishi.github.io/2020/10/23/python-twisted-trial/diff.png">
+
+<link rel="canonical" href="https://chenishi.github.io/2020/10/23/python-twisted-trial/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Peek through python twisted -- an asynchronize event handling | Metallurgy in Computer Science</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-179024993-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Metallurgy in Computer Science</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/10/23/python-twisted-trial/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Peek through python twisted -- an asynchronize event handling
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-10-23 00:24:20" itemprop="dateCreated datePublished" datetime="2020-10-23T00:24:20+08:00">2020-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-10-30 01:10:54" itemprop="dateModified" datetime="2020-10-30T01:10:54+08:00">2020-10-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index"><span itemprop="name">programming</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/10/23/python-twisted-trial/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/23/python-twisted-trial/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近在 trace Matrix 的原始碼，它（目前比較完整的是 Synapse）的底層用到了 python 的事件驅動框架 – Twisted，雖然說不懂底層大概還是可以模糊的理解整體流程，但是這樣對整個非同步的事件處理流程理解上可以說是完全沒有辦法，舉例來說：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># We process PDUs and EDUs in parallel. This is important as we don&#39;t</span><br><span class="line"># want to block things like to device messages from reaching clients</span><br><span class="line"># behind the potentially expensive handling of PDUs.</span><br><span class="line">pdu_results, _ &#x3D; await make_deferred_yieldable(</span><br><span class="line">      defer.gatherResults(</span><br><span class="line">           [</span><br><span class="line">               run_in_background(</span><br><span class="line">                   self._handle_pdus_in_txn, origin, transaction, request_time</span><br><span class="line">               ),</span><br><span class="line">               run_in_background(self._handle_edus_in_txn, origin, transaction),</span><br><span class="line">           ],</span><br><span class="line">           consumeErrors&#x3D;True,</span><br><span class="line">       ).addErrback(unwrapFirstError)</span><br><span class="line">   )</span><br></pre></td></tr></table></figure>
+
+<p>因此在這一篇文章我主要會著重在理解 python twisted 非同步函式呼叫的模型，還有討論一下 python async/await 這個語法糖</p>
+<a id="more"></a>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>網路上其實不少教學討論 python twisted （像是 <a target="_blank" rel="noopener" href="https://www.itread01.com/content/1545443123.html">Python Twisted介紹</a>，<a target="_blank" rel="noopener" href="https://blog.csdn.net/wenxuansoft/article/details/51718628">使用inlineCallbacks实现类同步语法</a>，<a target="_blank" rel="noopener" href="https://kknews.cc/zh-tw/code/jlb52ze.html">用inlineCallbacks來管理callbacks</a>）或是官方文件（像是<a target="_blank" rel="noopener" href="https://twistedmatrix.com/documents/current/core/howto/defer-intro.html">Introduction to Deferreds</a>，<a target="_blank" rel="noopener" href="https://twistedmatrix.com/documents/current/core/howto/defer.html">Deferred Reference</a>，<a target="_blank" rel="noopener" href="https://twistedmatrix.com/documents/current/core/howto/gendefer.html">Generating Deferreds</a>）</p>
+<p>不過儘管看完官方文件之後，我其實也還不理解 python twisted 的運作（最主要是 blocking 還是 non-blocking 的行為），其他教學要不是有點機器翻譯，不然就是比較教科書（喜歡用一些<del>魔法</del>來直接得到一些結論）</p>
+<p>總而言之，強烈建議讀者如果想了解 python twisted 執行流程，還是需要乖乖<strong>把環境裝好跑看看一些實驗</strong>（我下面也會放一些可以動的 code，官網範例儘管有範例，但是是 pseudo code，而且函式調用的接口並沒有明確定義）</p>
+<h2 id="什麼是-python-twisted"><a href="#什麼是-python-twisted" class="headerlink" title="什麼是 python twisted"></a>什麼是 python twisted</h2><p>Python Twisted 是主要處理異步回傳鍊（Callback Chain），用 reactor 模型（軟體工程裡面那個）來決定處理的順序，需要注意的是「並行（Concurrent）」與「異步（Asynchronized）」有著本質上的區別（至少在 python 裡面是這樣）</p>
+<img src="/2020/10/23/python-twisted-trial/diff.png" class="">
+
+<p>python 裡的異步主要都是指「單執行緒」，也就是上圖第三個  single-threaded 的版本<br>因此所有處理之間都是 blocking 的</p>
+<p>根據 stackoverflow 上這篇 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/27435284/multiprocessing-vs-multithreading-vs-asyncio-in-python-3">multiprocessing vs multithreading vs asyncio in Python 3</a> 中提到，async 異步主要拿來處理「多個且同時 IO-bound 來源」的處理，我的理解是同時處理這些不同來源需要大量且混雜的回傳處理，因此建立一個良好的回傳處理 / 控制權交接關係非常重要</p>
+<blockquote>
+<p>我一開始讀的時候以為是「單一 IO-bound 來源」的處理，所以我就很好奇為啥不直接開一個執行緒，專門把這些大資料放到一個 buffer 去，讓其他任務能 non-blocking 的執行下去</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> twisted.internet.defer <span class="keyword">import</span> inlineCallbacks, Deferred, returnValue</span><br><span class="line"><span class="keyword">from</span> twisted.python.failure <span class="keyword">import</span> Failure</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> twisted.internet <span class="keyword">import</span> threads, reactor, defer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loadRemoteData</span>():</span></span><br><span class="line">	<span class="keyword">import</span> time</span><br><span class="line">	time.sleep(<span class="number">1</span>)</span><br><span class="line">	print(<span class="string">&quot;Load Remote Data Done !&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># remove self here will cause an error</span></span><br><span class="line"><span class="comment"># builtins.TypeError: ProcessRemoteData() takes 0 positional arguments but 1 was given</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ProcessRemoteData</span>(<span class="params">self</span>):</span></span><br><span class="line">	<span class="keyword">import</span> time</span><br><span class="line">	time.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">&quot;Process Remote Data Done !&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">server</span>():</span></span><br><span class="line">	d = threads.deferToThread(loadRemoteData)</span><br><span class="line">	d.addCallback(ProcessRemoteData)</span><br><span class="line">	<span class="keyword">return</span> d</span><br><span class="line"></span><br><span class="line">a = server()</span><br><span class="line">print(<span class="string">&quot;Init server Done&quot;</span>)</span><br><span class="line"></span><br><span class="line">reactor.callLater(<span class="number">4</span>, reactor.stop)</span><br><span class="line">reactor.run()</span><br></pre></td></tr></table></figure>
+
+<p>在上面這個 pseudo server 範例中，server()在 <code>threads.deferToThread(loadRemoteData)</code> 會開啟一個獨立的獨立的執行緒，這個執行緒會負責先去取得資料後處理</p>
+<p>這個 <code>deferToThread</code>會馬上返回一個 <em>Deferred</em> ，這個名詞在之後會非常頻繁出現，這有點像是 JS 的 promise，或者說是 python 的 future</p>
+<p>簡單來說，這是一個預留的值（place holder），我們保證在某個時間點這個變數會返回值（也就是當這個異步執行結束後），而後面的 <code>addCallback(ProcessRemoteData)</code> 則是一個 callback 函式，表達當這個 <em>Deferred</em>  被正確執行後的處理行為</p>
+<p>最後的 <code>reactor.run()</code> 則是正式觸發這個異步執行（你可以試試看把這行註解掉，看看結果會變怎樣），<em>Deferred</em> 事件的執行依賴於 reactor 這個模型，這同時也是軟體工程中提到的 reactor 模式，透過一個 reactor 來分配到不同的 callback handler；而 <code>reactor.callLater(4, reactor.stop)</code>則是告訴這個 reactor 在四秒之後停止</p>
+<p>我們實際跑過後會得到以下行為</p>
+<blockquote>
+<p>Init server Done<br> <em>(… wait one second)</em><br>Load Remote Data Done !<br> <em>(… wait two second)</em><br>Process Remote Data Done !</p>
+</blockquote>
+<p>如果我們把上面的範例改一下順序</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line">a = server()</span><br><span class="line"></span><br><span class="line">reactor.callLater(<span class="number">4</span>, reactor.stop)</span><br><span class="line">reactor.run()</span><br><span class="line"></span><br><span class="line">print(<span class="string">&quot;Init server Done&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>透過把服務器初始化的順序與資料處理調換，我們來觀察 <em>Deferred</em> 本身是不是 non-blocking 的</p>
+<blockquote>
+<p> <em>(… wait one second)</em><br>Load Remote Data Done !<br> <em>(… wait two second)</em><br>Process Remote Data Done !<br>Init server Done</p>
+</blockquote>
+<p>實際執行之後會發現，<em>Deferred</em> 本身是 blocking 的，也就是指 <em>Deferred</em> 的實做事實上並不涉及並行執行，它 <strong>並沒有讓你的程式神奇般的變成 multi-threaded</strong>，正如前面提到的，<em>Deferred</em> 唯一幫你作的事是梳理函式呼叫的順序，「它並不在乎被調用的函式是同步還是異步」</p>
+<p>為了讓你的程式多出其他的功能（像是異步執行），你需要其他的關鍵字</p>
+<h2 id="Await-Async"><a href="#Await-Async" class="headerlink" title="Await / Async"></a>Await / Async</h2><p>因為 twisted 本身主要還是負責 <em>Deferred</em>  這塊的設計，也就是 callback 的順序，但是為了達到異步執行的目的，我們往往需要搭配其他的關鍵字像是 await / async（我們也可以在最一開始的範例中看到 Synapse 大量使用 await / async 來搭配 twisted 架構）</p>
+<p>Twisted <em>Deferred</em> 架構事實上與同步/異步執行是完全解耦合的，它唯一在意的是事件的執行順序，透過事件的觸發決定下一個執行的函式是誰，它並不在乎這個函式是同步還是異步的</p>
+<p>雖然現在才開始講 <code>yield</code> 有點晚，但是我假設大家可能知道 <code>yield</code> 是什麼，但是跟我一樣不知道它到底可以做什麼</p>
+<p>感謝 <a target="_blank" rel="noopener" href="https://www.itread01.com/articles/1475974835.html">Python協程：從yield/send到async/await</a>（原文連結失效所以放這篇） <a target="_blank" rel="noopener" href="https://zh-blog.logan.tw/2019/03/30/python3-intro-to-yield-from-expr/">Python3: 淺談 Python 3.3 的 Yield From 表達式</a>（主要是因為前面那篇文章講 <code>yield from</code> 的時候突然開始飆車，一時看不懂所以跟著後面那篇文章做了點實驗）</p>
+<p>根據 <a target="_blank" rel="noopener" href="https://www.itread01.com/articles/1475974835.html">Python協程：從yield/send到async/await</a> 這篇文章的說法，python 曾經對 mutli-thread programming 相當不友好，因此相較於其他語言動不動就開多線程然後 mutex lock 來 lock 去的，python 更喜歡把單線程發揮到極致（不過後來 multiprocess 這類函式庫就出來了）</p>
+<p>因此要搞懂 await/async 在幹什麼，我覺得應該還是要從始祖 <code>yield</code> 開始聊起</p>
+<h3 id="Yield-Yield-from"><a href="#Yield-Yield-from" class="headerlink" title="Yield / Yield from"></a>Yield / Yield from</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callee</span>():</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line">        print(<span class="string">&#x27;callee: &#x27;</span>, i)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;end&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">caller</span>():</span></span><br><span class="line">	x = <span class="keyword">yield</span> <span class="keyword">from</span> func()</span><br><span class="line">	print(<span class="string">&#x27;caller: &#x27;</span>, x)</span><br><span class="line"></span><br><span class="line"><span class="comment"># iterate through for</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> caller():</span><br><span class="line">    print(<span class="string">&quot;i: &quot;</span>, i)</span><br><span class="line"></span><br><span class="line"><span class="comment"># iterate through next</span></span><br><span class="line">a = caller()</span><br><span class="line">next(a)</span><br><span class="line">next(a)</span><br><span class="line">next(a)</span><br><span class="line">next(a)</span><br></pre></td></tr></table></figure>
+<p>單就 callee 來看，我們可以知道這是一個 generator function，如果單純呼叫 <code>b = callee()</code> 我們會獲得一個 generator instance，在每次迭代它的時候繼續執行 callee</p>
+<p>caller 的加入讓這一切變得有點不一樣，這個小東西的加入目的就在於讓我們能完成不同任務間控制權的交割（用 linux task 比喻的話，就是決定 foreground task 跟 background task 要怎麼切換）</p>
+<p><code>yield from</code> 這個東西，就我的理解它就是一個 wrapper for generator，正如 <a target="_blank" rel="noopener" href="https://zh-blog.logan.tw/2019/03/30/python3-intro-to-yield-from-expr/">Python3: 淺談 Python 3.3 的 Yield From 表達式</a> 所說，「<code>yield from</code>讓我們可以把「另一個生成器生成的值」當成「自己要生成的值」」</p>
+<p>如果你執行上面的程式會發現，caller 的 <code>print</code> 會最晚執行，所以我們可以得知，一旦使用 <code>yield from</code> 則在 main 裡無論對 generator instance 怎麼迭代，實際上迭代的都是 callee，直到 callee 無法迭代才會輪到 caller，這就表示 <code>yield from</code>是一個跨迭代的 blocking 行為</p>
+<p>好了那為什麼我們要拖褲子放屁 – 多這個 caller 去迭代 callee 呢？直接迭代 callee 不行嗎？</p>
+<h3 id="控制權交割"><a href="#控制權交割" class="headerlink" title="控制權交割"></a>控制權交割</h3><p>透過 「<code>yield from</code> 實際上就是把控制權讓給別的任務」這個認知，我們可以透過 <code>yield from </code> 建立起事件的回傳鍊</p>
+<p>詳細的例子在 <a target="_blank" rel="noopener" href="https://www.itread01.com/articles/1475974835.html">Python協程：從yield/send到async/await</a> 裡 「asyncio.coroutine 和 yield from 」有範例，我這邊就簡單用 pseudo code 講（原本例子可能考慮是拿現實生活的例子，搞的有點複雜）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task_a</span>():</span></span><br><span class="line">	<span class="comment"># some processing work on task a</span></span><br><span class="line">	<span class="keyword">yield</span> <span class="keyword">from</span> task_b()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task_b</span>():</span></span><br><span class="line">	<span class="comment"># some processing work on task b</span></span><br><span class="line">	<span class="keyword">yield</span> something</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">	a = task_a()</span><br></pre></td></tr></table></figure>
+
+<p>簡單來說，我們可以不斷透過 <code>yield from</code>轉移控制權到其他函式上，直到該函式執行到 <code>yield</code> 交還控制權</p>
+<blockquote>
+<p>那有沒有可能形成一個 <code>yield from</code> loop，以上面的例子來說就是 <code>yield from</code> main() 裡面的其他進入點？</p>
+</blockquote>
+<h3 id="Python-Future"><a href="#Python-Future" class="headerlink" title="Python Future"></a>Python <code>Future</code></h3><p>個人感覺 <a target="_blank" rel="noopener" href="https://www.itread01.com/articles/1475974835.html">Python協程：從yield/send到async/await</a> 把 <code>Future</code> 加進去混著講解把事情搞的有點複雜</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Future</span>:</span></span><br><span class="line">	<span class="comment">#blabla...</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.done():</span><br><span class="line">            self._blocking = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">yield</span> self  <span class="comment"># This tells Task to wait for completion.</span></span><br><span class="line">        <span class="keyword">assert</span> self.done(), <span class="string">&quot;yield from wasn&#x27;t used with future&quot;</span></span><br><span class="line">        <span class="keyword">return</span> self.result()  <span class="comment"># May raise too.</span></span><br></pre></td></tr></table></figure>
+
+<p>python future 的實做非常有趣，它本質上也是需要呼叫者（caller）用 <code>yield from</code> 轉換控制權等待的事件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">caller</span>():</span></span><br><span class="line">	<span class="comment"># do caller stuff</span></span><br><span class="line">	future = futures.Future(loop=loop)</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">yield</span> <span class="keyword">from</span> future)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        h.cancel()</span><br></pre></td></tr></table></figure>
+
+<p>透過上面的 caller 可以看到，我們會先等到 future <code>yield</code> 後才結束，但是這邊我們需要保證 future 裡的事件執行結束後才轉換控制權到 caller</p>
+<p>也就是說，我們要怎麼在 future 還沒成功的時候，就算 caller 想要讓我們回傳控制權（可能是透過主函式迭代），我們也可以繼續保有自己的控制權？</p>
+<p>這邊就是相當有趣的地方了，我們可以看到 Future 實做中，當事件尚未完成（<code>if not self.done()</code>）每次迭代都只會 <code>yield self</code> 也就是回給它根本一模一樣的 generator，只要 future 還沒完成，其他人迭代這個 generator 想要獲得控制權的結果，就是重新取得一個 generator 叫 caller 繼續等</p>
+<h2 id="混用異步與同步函式"><a href="#混用異步與同步函式" class="headerlink" title="混用異步與同步函式"></a>混用異步與同步函式</h2><p><em>Deferred</em>  的操作大都需要運作在全部都是<em>Deferred</em>  的環境下，因此它也提供讓不同物件轉換成 <em>Deferred</em>  的 API，像是 <code>ensureDeferred</code> 可以把 python coroutine 轉換成 <em>Deferred</em></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">authenticateUser</span>(<span class="params">isValidUser, user</span>):</span></span><br><span class="line">    <span class="keyword">if</span> isValidUser(user):</span><br><span class="line">        <span class="keyword">print</span> <span class="string">&quot;User is authenticated&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">&quot;User is not authenticated&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>今天假設有如上這個驗證用戶身份的程式，其中 <code>isValidUser()</code> 這個函式呼叫有可能是同步的，也可能是是異步的，對於這個範例，Twisted 有一個中心準則：「Everything is (can be) a Deferred」</p>
+<img src="/2020/10/23/python-twisted-trial/dog.jpg" class="">
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> twisted.internet <span class="keyword">import</span> defer</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">printResult</span>(<span class="params">result</span>):</span></span><br><span class="line">    <span class="keyword">if</span> result:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">&quot;User is authenticated&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">&quot;User is not authenticated&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">authenticateUser</span>(<span class="params">isValidUser, user</span>):</span></span><br><span class="line">    d = defer.maybeDeferred(isValidUser, user)</span><br><span class="line">    d.addCallback(printResult)</span><br></pre></td></tr></table></figure>
+
+<p>我們透過 <code>maybeDeferred()</code> 這個函式強制把回傳的值變成一個 <em>Deferred</em>，然後在後面加上處理（像這邊就是把它印出來）</p>
+<hr>
+<h2 id="後序"><a href="#後序" class="headerlink" title="後序"></a>後序</h2><p>每次都會發現邊寫文章時，原始寫的動機會開始被扭曲，然後開始歪樓討論別的東西，像這個我原本就是想知道為什麼 twisted 不是平行執行的（我一開始以為它會幫你開一個 thread），但是後來就發現自己錯的離譜，最後開始探討 python 語法的問題</p>
+<p>這可能還是因為我底子不足，不過 python 真的是一們易學難精的語言，表層各式各樣的行為對應到底下實做，不同層級的語言注重的點又差異很大（前一陣子白天去實驗室看 C RDMA，晚上看 python await，這兩個可以說是非常兩極化了，搞的我每次開始讀另外一邊的東西都要先適應一下），如果不能夠很好的掌握這些行為的話，我也不太敢用 python 寫一些比較大的東西，下一步我可能會看 twisted 有沒有用在 multi-thread 的（主要先還是繼續看 Synapse，畢竟目標是看懂 Synapse 然後開始去弄 golang 版本的）</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/asynchronous/" rel="tag"># asynchronous</a>
+              <a href="/tags/syntax-sugar/" rel="tag"># syntax sugar</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/17/floating-point/" rel="prev" title="Dive into floating point expressions">
+      <i class="fa fa-chevron-left"></i> Dive into floating point expressions
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF-python-twisted"><span class="nav-number">2.</span> <span class="nav-text">什麼是 python twisted</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Await-Async"><span class="nav-number">3.</span> <span class="nav-text">Await &#x2F; Async</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yield-Yield-from"><span class="nav-number">3.1.</span> <span class="nav-text">Yield &#x2F; Yield from</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E6%AC%8A%E4%BA%A4%E5%89%B2"><span class="nav-number">3.2.</span> <span class="nav-text">控制權交割</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python-Future"><span class="nav-number">3.3.</span> <span class="nav-text">Python Future</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B7%E7%94%A8%E7%95%B0%E6%AD%A5%E8%88%87%E5%90%8C%E6%AD%A5%E5%87%BD%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">混用異步與同步函式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%8C%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">後序</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YiXi Chen"
+      src="/images/bh-cropped.jpg">
+  <p class="site-author-name" itemprop="name">YiXi Chen</p>
+  <div class="site-description" itemprop="description">目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chenIshi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chenIshi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:chen.ishi@gmail.com" title="E-Mail → mailto:chen.ishi@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXi Chen</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2020/10/23/python-twisted-trial/";
+    this.page.identifier = "2020/10/23/python-twisted-trial/";
+    this.page.title = "Peek through python twisted -- an asynchronize event handling";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

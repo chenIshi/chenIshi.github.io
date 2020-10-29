@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2020-10-20T15:37:57.554Z</updated>
+  <updated>2020-10-29T17:10:54.003Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Peek through python twisted -- an asynchronize event handling</title>
+    <link href="https://chenishi.github.io/2020/10/23/python-twisted-trial/"/>
+    <id>https://chenishi.github.io/2020/10/23/python-twisted-trial/</id>
+    <published>2020-10-22T16:24:20.000Z</published>
+    <updated>2020-10-29T17:10:54.003Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近在 trace Matrix 的原始碼，它（目前比較完整的是 Synapse）的底層用到了 python 的事件驅動框架 – Twisted，雖然說不懂底層大概還是可以模糊的理解整體流程，但是這樣對整個非同步的事件處理流程理解上可以說是完全沒有辦法，舉例來說：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# We process PDUs and EDUs in parallel. This is important as we don&amp;#39;t&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# want to block things like to device messages from reaching clients&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# behind the potentially expensive handling of PDUs.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;pdu_results, _ &amp;#x3D; await make_deferred_yieldable(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      defer.gatherResults(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;           [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;               run_in_background(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                   self._handle_pdus_in_txn, origin, transaction, request_time&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;               ),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;               run_in_background(self._handle_edus_in_txn, origin, transaction),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;           ],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;           consumeErrors&amp;#x3D;True,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;       ).addErrback(unwrapFirstError)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   )&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;因此在這一篇文章我主要會著重在理解 python twisted 非同步函式呼叫的模型，還有討論一下 python async/await 這個語法糖&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="programming" scheme="https://chenishi.github.io/categories/programming/"/>
+    
+    
+    <category term="python" scheme="https://chenishi.github.io/tags/python/"/>
+    
+    <category term="asynchronous" scheme="https://chenishi.github.io/tags/asynchronous/"/>
+    
+    <category term="syntax sugar" scheme="https://chenishi.github.io/tags/syntax-sugar/"/>
+    
+  </entry>
   
   <entry>
     <title>Dive into floating point expressions</title>
