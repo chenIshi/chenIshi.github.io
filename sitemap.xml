@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://chenishi.github.io/2020/11/17/venture-capital-intro/</loc>
+    
+    <lastmod>2020-11-18</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/2020/10/05/bmv2-debug/</loc>
+    
+    <lastmod>2020-11-18</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/2020/09/25/hexo/</loc>
+    
+    <lastmod>2020-11-18</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://chenishi.github.io/2020/10/23/python-twisted-trial/</loc>
     
     <lastmod>2020-10-29</lastmod>
@@ -24,20 +45,6 @@
   
   <url>
     <loc>https://chenishi.github.io/2020/09/28/matrix-state/</loc>
-    
-    <lastmod>2020-10-12</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/2020/10/05/bmv2-debug/</loc>
-    
-    <lastmod>2020-10-12</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/2020/09/25/hexo/</loc>
     
     <lastmod>2020-10-12</lastmod>
     
@@ -67,120 +74,141 @@
 
   <url>
     <loc>https://chenishi.github.io/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>https://chenishi.github.io/tags/BMv2/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/Programmable-Switch/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/Mininet/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/P4/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/Hexo/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://chenishi.github.io/tags/FrontEnd/</loc>
-    <lastmod>2020-10-29</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://chenishi.github.io/tags/network/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/software-system/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/network-system/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/consensus/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/recurrent/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/bitwise/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/beginners/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/python/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/asynchronous/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/syntax-sugar/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/share/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/debt/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/venture-capital/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/bnv2/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/programmable-Switch/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/mininet/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/p4/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/hexo/</loc>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/frontEnd/</loc>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -189,42 +217,49 @@
   
   <url>
     <loc>https://chenishi.github.io/categories/debug/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/web/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/system/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/algorithm/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/numerical/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/programming/</loc>
-    <lastmod>2020-10-29</lastmod>
+    <lastmod>2020-11-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/categories/finance/</loc>
+    <lastmod>2020-11-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2020-10-29T17:10:54.003Z</updated>
+  <updated>2020-11-18T07:13:33.480Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Peek into venture capital (as a beginner)</title>
+    <link href="https://chenishi.github.io/2020/11/17/venture-capital-intro/"/>
+    <id>https://chenishi.github.io/2020/11/17/venture-capital-intro/</id>
+    <published>2020-11-17T15:31:53.000Z</published>
+    <updated>2020-11-18T07:13:33.480Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近兩天跟著同學去聽清華經管跟五道口金融學院的課，想說趁記憶還在的時候紀錄一下&lt;/p&gt;
+&lt;p&gt;先聲明我是完全的經濟/金融/投資菜鳥，literally 完全沒有碰過，我會覺得這個很好玩還是要感謝當初去香港城市大學交換的時候跟助教 / 當地學生的交流&lt;/p&gt;
+&lt;p&gt;以下我應該會總結一下我這兩天的認知，非常零散的寫點觀察與心得&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="finance" scheme="https://chenishi.github.io/categories/finance/"/>
+    
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+    <category term="share" scheme="https://chenishi.github.io/tags/share/"/>
+    
+    <category term="debt" scheme="https://chenishi.github.io/tags/debt/"/>
+    
+    <category term="venture capital" scheme="https://chenishi.github.io/tags/venture-capital/"/>
+    
+  </entry>
   
   <entry>
     <title>Peek through python twisted -- an asynchronize event handling</title>
@@ -92,7 +119,7 @@
     <link href="https://chenishi.github.io/2020/10/05/bmv2-debug/"/>
     <id>https://chenishi.github.io/2020/10/05/bmv2-debug/</id>
     <published>2020-10-05T14:01:35.000Z</published>
-    <updated>2020-10-12T15:36:18.033Z</updated>
+    <updated>2020-11-18T07:08:57.077Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近寫碩論要用到這東西，雖然說我們實驗室有一兩台可編程交換機（Programmable Switch）的硬體，但是由於想做的是資料中心的場景，所以數量上不去只能用軟體模擬了&lt;/p&gt;
@@ -103,13 +130,13 @@
     <category term="debug" scheme="https://chenishi.github.io/categories/debug/"/>
     
     
-    <category term="BMv2" scheme="https://chenishi.github.io/tags/BMv2/"/>
+    <category term="bnv2" scheme="https://chenishi.github.io/tags/bnv2/"/>
     
-    <category term="Programmable Switch" scheme="https://chenishi.github.io/tags/Programmable-Switch/"/>
+    <category term="programmable Switch" scheme="https://chenishi.github.io/tags/programmable-Switch/"/>
     
-    <category term="Mininet" scheme="https://chenishi.github.io/tags/Mininet/"/>
+    <category term="mininet" scheme="https://chenishi.github.io/tags/mininet/"/>
     
-    <category term="P4" scheme="https://chenishi.github.io/tags/P4/"/>
+    <category term="p4" scheme="https://chenishi.github.io/tags/p4/"/>
     
   </entry>
   
@@ -163,7 +190,7 @@
     <link href="https://chenishi.github.io/2020/09/25/hexo/"/>
     <id>https://chenishi.github.io/2020/09/25/hexo/</id>
     <published>2020-09-25T13:08:10.000Z</published>
-    <updated>2020-10-12T15:36:12.321Z</updated>
+    <updated>2020-11-18T07:08:32.896Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近我感覺 Medium 的語法越來越不習慣了，可能是因為我現在極少用 MS Word 等等所見即所得的軟體寫文件，寫進度共筆也偏向用 markdown 的方式寫，或者說寫比較認真的作業報告也是用 Latex 所以像 Medium 這類一定要照它遊戲規則，還要記一些有的沒的快捷鍵，實在有點反人類 / counter-productive&lt;/p&gt;
@@ -174,9 +201,9 @@
     <category term="web" scheme="https://chenishi.github.io/categories/web/"/>
     
     
-    <category term="Hexo" scheme="https://chenishi.github.io/tags/Hexo/"/>
+    <category term="hexo" scheme="https://chenishi.github.io/tags/hexo/"/>
     
-    <category term="FrontEnd" scheme="https://chenishi.github.io/tags/FrontEnd/"/>
+    <category term="frontEnd" scheme="https://chenishi.github.io/tags/frontEnd/"/>
     
   </entry>
   

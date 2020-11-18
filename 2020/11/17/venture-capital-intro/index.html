@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近兩天跟著同學去聽清華經管跟五道口金融學院的課，想說趁記憶還在的時候紀錄一下 先聲明我是完全的經濟&#x2F;金融&#x2F;投資菜鳥，literally 完全沒有碰過，我會覺得這個很好玩還是要感謝當初去香港城市大學交換的時候跟助教 &#x2F; 當地學生的交流 以下我應該會總結一下我這兩天的認知，非常零散的寫點觀察與心得">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Peek into venture capital (as a beginner)">
+<meta property="og:url" content="https://chenishi.github.io/2020/11/17/venture-capital-intro/index.html">
+<meta property="og:site_name" content="Metallurgy in Computer Science">
+<meta property="og:description" content="最近兩天跟著同學去聽清華經管跟五道口金融學院的課，想說趁記憶還在的時候紀錄一下 先聲明我是完全的經濟&#x2F;金融&#x2F;投資菜鳥，literally 完全沒有碰過，我會覺得這個很好玩還是要感謝當初去香港城市大學交換的時候跟助教 &#x2F; 當地學生的交流 以下我應該會總結一下我這兩天的認知，非常零散的寫點觀察與心得">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://chenishi.github.io/2020/11/17/venture-capital-intro/take-my-money.jpeg">
+<meta property="article:published_time" content="2020-11-17T15:31:53.000Z">
+<meta property="article:modified_time" content="2020-11-18T07:13:33.480Z">
+<meta property="article:author" content="YiXi Chen">
+<meta property="article:tag" content="beginners">
+<meta property="article:tag" content="share">
+<meta property="article:tag" content="debt">
+<meta property="article:tag" content="venture capital">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chenishi.github.io/2020/11/17/venture-capital-intro/take-my-money.jpeg">
+
+<link rel="canonical" href="https://chenishi.github.io/2020/11/17/venture-capital-intro/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Peek into venture capital (as a beginner) | Metallurgy in Computer Science</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-179024993-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Metallurgy in Computer Science</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/11/17/venture-capital-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Peek into venture capital (as a beginner)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-11-17 23:31:53" itemprop="dateCreated datePublished" datetime="2020-11-17T23:31:53+08:00">2020-11-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-18 15:13:33" itemprop="dateModified" datetime="2020-11-18T15:13:33+08:00">2020-11-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/finance/" itemprop="url" rel="index"><span itemprop="name">finance</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/11/17/venture-capital-intro/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/17/venture-capital-intro/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近兩天跟著同學去聽清華經管跟五道口金融學院的課，想說趁記憶還在的時候紀錄一下</p>
+<p>先聲明我是完全的經濟/金融/投資菜鳥，literally 完全沒有碰過，我會覺得這個很好玩還是要感謝當初去香港城市大學交換的時候跟助教 / 當地學生的交流</p>
+<p>以下我應該會總結一下我這兩天的認知，非常零散的寫點觀察與心得</p>
+<a id="more"></a>
+
+<h2 id="新創公司的融資"><a href="#新創公司的融資" class="headerlink" title="新創公司的融資"></a>新創公司的融資</h2><img src="/2020/11/17/venture-capital-intro/take-my-money.jpeg" class="">
+
+<h3 id="公司剛成立-第一輪融資（通常是天使種子輪）"><a href="#公司剛成立-第一輪融資（通常是天使種子輪）" class="headerlink" title="公司剛成立 ~ 第一輪融資（通常是天使種子輪）"></a>公司剛成立 ~ 第一輪融資（通常是天使種子輪）</h3><p>對於一個新創公司剛成立初期，公司人數大概可能是個位數或者可以到十位數的規模，這個時期的新創公司可能並沒有產品，有的只是一個 idea 跟一個簡單的團隊，這個階段主要需要燒自己的錢，並且也可以根據這個時期燒錢的速度預估未來第一輪融資需要的資金</p>
+<p>這個時候公司價值的估值相對主觀（畢竟沒有實際的銷售成績），通常會第一輪能夠募集到的資金會根據賀行業不同有個（相對）標定的價碼，在中國的話，這個價碼大概會落在 <strong>200 ~ 600</strong> 萬人民幣之間，新創公司必須利用這筆第一輪融資拿到的錢撐過六到九個月，並且發起另外一次融資（可能是 A 輪）</p>
+<p>而對於投資公司來說，他們通常可以從這個風險最高的前期投資獲得最高的投資報酬率（大概可以分到 5~10% 的股份），同時他們通常也必須積極幫助投資對象（像是媒合客戶，提供戰略方向指導等等），這個舉動可以減小它們投資的風險</p>
+<blockquote>
+<p>老實說，我一開始真以為投資公司就是負責給錢的甩手掌櫃，畢竟幫人家管理也需要成本</p>
+</blockquote>
+<h3 id="天使投資-A輪融資"><a href="#天使投資-A輪融資" class="headerlink" title="天使投資 ~ A輪融資"></a>天使投資 ~ A輪融資</h3><p>通常到了這個時候，新創公司就不能只靠 ppt 去跟投資人要錢了，這個時候一些 POC（Proof of Concept）要出來外，樣品也要有，然後也必須進行市場調查；這也代表我們更加容易得到比較客觀一點的公司估值</p>
+<p>到了 A 輪投資，由於上述提到的公司估值變得更準確（同時大多數時候都會變高，畢竟公司理論上市會營利的），可以預期的是未來股價會更高（同時投資這個行為本身也可以增加公司的估值，畢竟有人願意投資你代表你的信用好），因此這個時候後加入的投資者必須花費更高的資本才能拿到等價的股份，通常來說這個階段的融資額度在中國會落在<strong>千萬人民幣</strong>的級別，但是由於投入的資本較高，後面幾輪的投資通常可以獲得公司董事的席位（也就是有投票權），而通常天使投資者並不會拿到董事席位</p>
+<blockquote>
+<p>如果公司估值反而下降，那麼先前融資的投資者就會紛紛撤資了</p>
+</blockquote>
+<h3 id="上市前-amp-可能的戰略投資"><a href="#上市前-amp-可能的戰略投資" class="headerlink" title="上市前 &amp; 可能的戰略投資"></a>上市前 &amp; 可能的戰略投資</h3><p>越後輪次的投資額度會越大，可能會到達 <strong>億人民幣</strong> 的級別，儘管越靠後面輪次的投資者需要花費大筆資本，並且投資報酬率相對低許多，但是往往他們是參與新創公司治理最積極的一份子（畢竟都丟了那麼多錢）</p>
+<p>戰略投資，與一般投資者的目的可能會有點不同，比較會有一點功利性的合作味道，通常是該領域的大公司跟該新創公司可以達到合作（像是上下游關係），因此透過投資的形式加入新創公司運作，好處在於這些大公司往往資源豐富，壞處則是公司的主導權可能會偏轉等等</p>
+<h3 id="上市後"><a href="#上市後" class="headerlink" title="上市後"></a>上市後</h3><p>上市後各個投資者會拿到他們應得的股票份額，這邊有個小細節，就是「越晚輪次的投資者可以越早出售這些股票」，舉例來說，公司的創始人需要等三年才能出售自己公司的股票︰這一方面彌補了後期投資者投資報酬率較低的問題，一方面可能也是確保不會有公司擁有者上市後馬上拋售股票跑路的情形</p>
+<h2 id="一般銀行與投資銀行的差別"><a href="#一般銀行與投資銀行的差別" class="headerlink" title="一般銀行與投資銀行的差別"></a>一般銀行與投資銀行的差別</h2><p>這個問題挺有趣的，就結論來說 <strong>「一般銀行不得進行投資的業務」</strong></p>
+<p>一般銀行，通常獲得利益的方式都是透過存款利息，它透過大量廣泛的借貸，以及嚴格的檢查與財產抵押來盡量降低呆帳率，讓總利息收入可以大於呆帳部份，儘管老師叫這個「被動式風險」，但我覺得本質上就是它採取了一個極低風險極低報酬比的投資方式（但是因為一般銀行資本額大，所以利息也高）</p>
+<blockquote>
+<p>需要注意到的是，銀行借錢給公司錢這件事並不是投資行為，一般銀行無法因此拿到公司股份，後面會提到這是因為銀行借錢的行為是一種「非標債權」，債權是一種不參與公司運作的營利機制</p>
+</blockquote>
+<p>投資銀行，就是投資ㄧ，二級市場來獲得風險較高的收益，這邊的風險/報酬比相較於一般銀行的保守利息行為有更大的彈性，就一級市場來說，我們可以選擇風險最大的天使輪到風險相對最小的上市前的輪次等等，因此投資銀行就我的理解是屬於比較風險性質的收益</p>
+<p>同時投資銀行因為其投資風險報酬比本身就比較高的原因，通常不需要利用槓桿增加投資風險報酬比（另外這些新創公司相較於其他老牌公司，由於其市場估值還不穩定，不容易向銀行借到大筆資金，因此不太容易利用借貸達到槓桿的目的）</p>
+<blockquote>
+<p>根據我同學的說法，通常只會選擇一邊來投資（因為一二級市場的區隔挺大的），另外它也有提到投資銀行的人只能拿公司的錢去投，而不能也拿自己的錢下去玩（不然它就可以用客戶的錢去操弄股價，然後自行買入/賣出獲得利益）</p>
+</blockquote>
+<p>通常投資銀行與一般銀行所持有的資本比例是相當懸殊的，像是中國工商銀行可以一口氣借給企業億元等級的貸款，反觀一筆投資可能最多落在百萬千萬的級別，因此 <strong>「萬一一般銀行可以從事投資業務呢？」</strong></p>
+<p>首先，由於一般銀行手中握有大量的資本，我猜測它應該可以輕易成為投資銀行界的大佬，但是這樣將會為整體經濟運作帶來巨大的不穩定性。我們必須知道，當今許多的經濟活動都是依賴一般銀行提供的存款服務才得以在此之上開發出一堆金融商品，一般銀行有「保證存款有效性」的任務，因此如果一般銀行也開始將用戶的存款丟下去作為高風險投資的資金，這樣對於用戶存款將會產生巨大的波動，甚至有可能無法保持用戶原有的存款；這事實上也是當初為什麼大小摩會分家的原因（因為一般銀行無法進行投資的業務，只好分家讓新公司處理投資業務）</p>
+<h2 id="股權與債權"><a href="#股權與債權" class="headerlink" title="股權與債權"></a>股權與債權</h2><p>股與債本質上有著挺清楚的區別，不過這兩者都可以作為投資用途</p>
+<p>債的運作比較簡單，對於一個標準化債卷來說，它需要向大眾公開發售這些債卷（一般性），這些債卷可以自由轉移流通（流通性），債卷發售公司也必須公開其營運狀況（公開性），這些債卷也會有抵押物等等</p>
+<p>但是與股權差異最大的是：債權擁有者無法參與該公司的運作，債權擁有者，無論該公司未來營利與否，都只能拿到固定的份額，因此債卷（就我認知）唯一比較大的風險就在於抵押物的貶值造成呆帳</p>
+<p>股權就不一樣了，股權更像是你加入了這個公司（坐在同一條船上），該公司的盈虧都會導致收益的波動，就我的理解裡，債權更偏向義務（該公司固定向債權人支付一筆錢），而股權更偏向權利（你可以分得部份公司收益）</p>
+<p>舉例來說，當一間公司破產，剩餘資本首先會用來支付員工薪水，之後是債款，最後才會按照股額分配剩餘資本</p>
+<p>上面有提到「非標債權」（非標準債權）這個東西，基本上來說它就是不符合標準債權裡的一般性/公開性/流通性等等，舉例一般公司向銀行借款的這個行為，由於大眾無法買到這個行為裡的”債卷”（如果有的話），同時這個行為通常也並不是公開的，因此它稱作「非標債權」</p>
+<p>儘管對於「非標債權」來說依然需要抵押物保證債權能夠成功被支付（這又被稱為 secure capital），但是這將會相當考驗擔保平台的信任（舉例來說，擔保品本身可能就是不存在的）</p>
+<h2 id="並不是所有標的都可以用投資包裝"><a href="#並不是所有標的都可以用投資包裝" class="headerlink" title="並不是所有標的都可以用投資包裝"></a>並不是所有標的都可以用投資包裝</h2><p>今天對於一個需要籌措資金的公司來說，它可以透過發售債權/股權的方式達到這個目的；那我們是不是可以把所有需要資金的行為都包裝成投資行為？</p>
+<p>理論上是可以，但是風險與收益必須平衡</p>
+<p>舉例來說，在房地產建設裡，我們可以透過發售債權的方式融資，也可以透過合股的方式融資（這邊其實還有混合的作法，由於向銀行借錢通常需要一筆擔保金，因此這個合股的對象可以是這個擔保金），在其他國家大部分可能是前者用債權的方式（可能達到 95%），這是由於相較於一級市場的巨大收益比（上市後股票價值會翻很多倍），房地產市場的收益增幅相對小，因此許多高風險高收益的玩法在這種低收益的環境裡並不適用</p>
+<h2 id="一些國外新創公司的科技媒體"><a href="#一些國外新創公司的科技媒體" class="headerlink" title="一些國外新創公司的科技媒體"></a>一些國外新創公司的科技媒體</h2><p><a target="_blank" rel="noopener" href="https://www.crunchbase.com/">Crunchbase</a>，<a target="_blank" rel="noopener" href="https://pitchbook.com/">PitchBook</a> 都是新創企業的資料庫，方便在切入這個產業的時候分析市場規模，市場狀態<br><a target="_blank" rel="noopener" href="https://techcrunch.com/">TechCrunch</a> 則是偏向新創公司相關的新聞</p>
+<h2 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h2><p>本來想說也寫下夾層投資的，但是由於可轉換優先股/可轉換債那邊在做啥我也不是很懂（我目前的理解就是利用選擇權的概念減少收益/風險）</p>
+<p>剛上大學的時候我記得有去跑一些黑客松之類的東西，還有因此去修經管的課，但是感覺收穫不是很大（都在講 SWAP 五力分析啥相對空泛的理論），讓我當時對管理課的印象很差</p>
+<p>但是這兩天聽的感覺不錯，儘管很多名詞不懂但是還是可以自己上網查/問同學，簡單來講上手難度還是比較低一點的，這方面的教授也大多推薦學生大學科系可以先讀理工科，之後碩士再轉到金融，就我的理解來說應該還是因為投資業還是需要對象產業的背景知識，而目前新創公司大多還是著重在電腦科學方面，因此有理科背景還是挺重要的（不然到時候對產業的估價會非常不準）</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/beginners/" rel="tag"># beginners</a>
+              <a href="/tags/share/" rel="tag"># share</a>
+              <a href="/tags/debt/" rel="tag"># debt</a>
+              <a href="/tags/venture-capital/" rel="tag"># venture capital</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/23/python-twisted-trial/" rel="prev" title="Peek through python twisted -- an asynchronize event handling">
+      <i class="fa fa-chevron-left"></i> Peek through python twisted -- an asynchronize event handling
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E5%89%B5%E5%85%AC%E5%8F%B8%E7%9A%84%E8%9E%8D%E8%B3%87"><span class="nav-number">1.</span> <span class="nav-text">新創公司的融資</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%8F%B8%E5%89%9B%E6%88%90%E7%AB%8B-%E7%AC%AC%E4%B8%80%E8%BC%AA%E8%9E%8D%E8%B3%87%EF%BC%88%E9%80%9A%E5%B8%B8%E6%98%AF%E5%A4%A9%E4%BD%BF%E7%A8%AE%E5%AD%90%E8%BC%AA%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">公司剛成立 ~ 第一輪融資（通常是天使種子輪）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A9%E4%BD%BF%E6%8A%95%E8%B3%87-A%E8%BC%AA%E8%9E%8D%E8%B3%87"><span class="nav-number">1.2.</span> <span class="nav-text">天使投資 ~ A輪融資</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E5%B8%82%E5%89%8D-amp-%E5%8F%AF%E8%83%BD%E7%9A%84%E6%88%B0%E7%95%A5%E6%8A%95%E8%B3%87"><span class="nav-number">1.3.</span> <span class="nav-text">上市前 &amp; 可能的戰略投資</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E5%B8%82%E5%BE%8C"><span class="nav-number">1.4.</span> <span class="nav-text">上市後</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E9%8A%80%E8%A1%8C%E8%88%87%E6%8A%95%E8%B3%87%E9%8A%80%E8%A1%8C%E7%9A%84%E5%B7%AE%E5%88%A5"><span class="nav-number">2.</span> <span class="nav-text">一般銀行與投資銀行的差別</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%82%A1%E6%AC%8A%E8%88%87%E5%82%B5%E6%AC%8A"><span class="nav-number">3.</span> <span class="nav-text">股權與債權</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A6%E4%B8%8D%E6%98%AF%E6%89%80%E6%9C%89%E6%A8%99%E7%9A%84%E9%83%BD%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%8A%95%E8%B3%87%E5%8C%85%E8%A3%9D"><span class="nav-number">4.</span> <span class="nav-text">並不是所有標的都可以用投資包裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%9C%8B%E5%A4%96%E6%96%B0%E5%89%B5%E5%85%AC%E5%8F%B8%E7%9A%84%E7%A7%91%E6%8A%80%E5%AA%92%E9%AB%94"><span class="nav-number">5.</span> <span class="nav-text">一些國外新創公司的科技媒體</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">6.</span> <span class="nav-text">後記</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YiXi Chen"
+      src="/images/bh-cropped.jpg">
+  <p class="site-author-name" itemprop="name">YiXi Chen</p>
+  <div class="site-description" itemprop="description">目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chenIshi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chenIshi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:chen.ishi@gmail.com" title="E-Mail → mailto:chen.ishi@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXi Chen</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2020/11/17/venture-capital-intro/";
+    this.page.identifier = "2020/11/17/venture-capital-intro/";
+    this.page.title = "Peek into venture capital (as a beginner)";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
