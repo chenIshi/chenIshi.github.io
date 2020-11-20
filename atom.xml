@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2020-11-18T07:13:33.480Z</updated>
+  <updated>2020-11-20T16:18:46.717Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -15,6 +15,25 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Dive into Matrix&#39;s logging system</title>
+    <link href="https://chenishi.github.io/2020/11/21/matrix-logging/"/>
+    <id>https://chenishi.github.io/2020/11/21/matrix-logging/</id>
+    <published>2020-11-20T16:06:35.000Z</published>
+    <updated>2020-11-20T16:18:46.717Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近看到 Rain Wu 提到關於面試常見的問題 &lt;a href=&quot;https://medium.com/random-life-journal/2020-%E8%BB%9F%E9%AB%94%E5%B7%A5%E7%A8%8B%E5%AF%A6%E7%BF%92%E6%B1%82%E8%81%B7%E8%A6%8B%E8%81%9E%E9%8C%84-d0a9c8c91318?source=friends_link&amp;sk=b9b586adb7f2601e87fca6b49bf95c57&quot;&gt;軟體工程實習求職見聞錄&lt;/a&gt;，印象中有一個就是怎麼設計 logging 系統，正好最近看 Matrix federation（也就是服務器間的共識），其中大量與異步 logging 相關，我想這將會是個相當好的切入點&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="system" scheme="https://chenishi.github.io/categories/system/"/>
+    
+    
+    <category term="logging,software system,asynchronized" scheme="https://chenishi.github.io/tags/logging-software-system-asynchronized/"/>
+    
+  </entry>
   
   <entry>
     <title>Peek into venture capital (as a beginner)</title>
@@ -33,13 +52,13 @@
     <category term="finance" scheme="https://chenishi.github.io/categories/finance/"/>
     
     
-    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
-    
     <category term="share" scheme="https://chenishi.github.io/tags/share/"/>
     
     <category term="debt" scheme="https://chenishi.github.io/tags/debt/"/>
     
     <category term="venture capital" scheme="https://chenishi.github.io/tags/venture-capital/"/>
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
     
   </entry>
   
@@ -179,9 +198,9 @@
     <category term="system" scheme="https://chenishi.github.io/categories/system/"/>
     
     
-    <category term="network" scheme="https://chenishi.github.io/tags/network/"/>
-    
     <category term="software system" scheme="https://chenishi.github.io/tags/software-system/"/>
+    
+    <category term="network" scheme="https://chenishi.github.io/tags/network/"/>
     
   </entry>
   

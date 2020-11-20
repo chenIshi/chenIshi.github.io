@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最近看到 Rain Wu 提到關於面試常見的問題 軟體工程實習求職見聞錄，印象中有一個就是怎麼設計 logging 系統，正好最近看 Matrix federation（也就是服務器間的共識），其中大量與異步 logging 相關，我想這將會是個相當好的切入點">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dive into Matrix&#39;s logging system">
+<meta property="og:url" content="https://chenishi.github.io/2020/11/21/matrix-logging/index.html">
+<meta property="og:site_name" content="Metallurgy in Computer Science">
+<meta property="og:description" content="最近看到 Rain Wu 提到關於面試常見的問題 軟體工程實習求職見聞錄，印象中有一個就是怎麼設計 logging 系統，正好最近看 Matrix federation（也就是服務器間的共識），其中大量與異步 logging 相關，我想這將會是個相當好的切入點">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-11-20T16:06:35.000Z">
+<meta property="article:modified_time" content="2020-11-20T16:18:46.717Z">
+<meta property="article:author" content="YiXi Chen">
+<meta property="article:tag" content="logging,software system,asynchronized">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://chenishi.github.io/2020/11/21/matrix-logging/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Dive into Matrix's logging system | Metallurgy in Computer Science</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-179024993-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Metallurgy in Computer Science</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/11/21/matrix-logging/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Dive into Matrix's logging system
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-11-21 00:06:35 / Modified: 00:18:46" itemprop="dateCreated datePublished" datetime="2020-11-21T00:06:35+08:00">2020-11-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/system/" itemprop="url" rel="index"><span itemprop="name">system</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/11/21/matrix-logging/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/21/matrix-logging/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近看到 Rain Wu 提到關於面試常見的問題 <a target="_blank" rel="noopener" href="https://medium.com/random-life-journal/2020-%E8%BB%9F%E9%AB%94%E5%B7%A5%E7%A8%8B%E5%AF%A6%E7%BF%92%E6%B1%82%E8%81%B7%E8%A6%8B%E8%81%9E%E9%8C%84-d0a9c8c91318?source=friends_link&sk=b9b586adb7f2601e87fca6b49bf95c57">軟體工程實習求職見聞錄</a>，印象中有一個就是怎麼設計 logging 系統，正好最近看 Matrix federation（也就是服務器間的共識），其中大量與異步 logging 相關，我想這將會是個相當好的切入點</p>
+<a id="more"></a>
+
+<h2 id="context-py"><a href="#context-py" class="headerlink" title="context.py"></a>context.py</h2><p>在切入 federation 部份前，推薦先看過 context.py 裡面幾個很常用，用來確保呼叫順序與流程<br>這一節的內容主要來自 matrix logging 的文件 <a target="_blank" rel="noopener" href="https://github.com/matrix-org/synapse/blob/develop/docs/log_contexts.md">Log Contexts</a></p>
+<p>Context 這個函式庫主要是用來幫助追蹤程式的執行狀況（主要是透過一個叫做 log context 的 thread-local 變數），這同時也可以統計 CPU 使用量<br>或者資料庫使用情況，可以在 request 層級作到類似 <code>perf</code> 的效果</p>
+<h3 id="如果只有同步調用的-logging"><a href="#如果只有同步調用的-logging" class="headerlink" title="如果只有同步調用的 logging"></a>如果只有同步調用的 logging</h3><p>會需要讓這個上下文交互獨立出來的主要原因就是因為這個「異步執行」，對於一個普通的同步呼叫來說<br>Matrix 的實做可能會長的是這樣：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> synapse.logging <span class="keyword">import</span> context         <span class="comment"># omitted from future snippets</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_request</span>(<span class="params">request_id</span>):</span></span><br><span class="line">    request_context = context.LoggingContext()</span><br><span class="line"></span><br><span class="line">    calling_context = context.set_current_context(request_context)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        request_context.request = request_id</span><br><span class="line">        do_request_handling()</span><br><span class="line">        logger.debug(<span class="string">&quot;finished&quot;</span>)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        context.set_current_context(calling_context)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_request_handling</span>():</span></span><br><span class="line">    logger.debug(<span class="string">&quot;phew&quot;</span>)  <span class="comment"># this will be logged against request_id</span></span><br></pre></td></tr></table></figure>
+
+<p> log context 負責紀錄「當下的」函式狀況，在同步範例中，我們只有當 request 完成之後才會把 log context 設定成回 caller，也就是如果 <code>do_request_handling()</code> 不知道為什麼一直沒有回傳，那麼 log context 將不會執行到 <code>finally</code> 的區塊，導致 log context 維持在 callee 的狀態</p>
+<p>上個範例可以簡化成</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_request</span>(<span class="params">request_id</span>):</span></span><br><span class="line">    <span class="keyword">with</span> context.LoggingContext() <span class="keyword">as</span> request_context:</span><br><span class="line">        request_context.request = request_id</span><br><span class="line">        do_request_handling()</span><br><span class="line">        logger.debug(<span class="string">&quot;finished&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_request_handling</span>():</span></span><br><span class="line">    logger.debug(<span class="string">&quot;phew&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>主要是透過進入 <code>with ... as ...</code> 的時候設定 hook function （這好像是 C++ 用的名字，我不知道 python 的話叫啥）來幫你自動處理 log context 設定的部份</p>
+<h3 id="但是現實中還有異步調用"><a href="#但是現實中還有異步調用" class="headerlink" title="但是現實中還有異步調用"></a>但是現實中還有異步調用</h3><p>但是現實是，matrix 採用了 python twisted 異步執行的架構，這將會導致事情變得非常複雜</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@defer.inlineCallbacks</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_request</span>(<span class="params">request_id</span>):</span></span><br><span class="line">    <span class="keyword">with</span> context.LoggingContext() <span class="keyword">as</span> request_context:</span><br><span class="line">        request_context.request = request_id</span><br><span class="line">        <span class="keyword">yield</span> do_request_handling()</span><br><span class="line">        logger.debug(<span class="string">&quot;finished&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>由於涉及到 python twisted 的東西，建議可以去看我之前寫的東西 <a href="https://chenishi.github.io/2020/10/23/python-twisted-trial/">Peek through python twisted – an asynchronize event handling</a></p>
+<p>這邊遇到的問題就是，事實上 <code>do_request_handling()</code> 現在變成異步版本了，底下的 callback 不知道什麼時候才會觸發，舉例來說：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> twisted.internet.defer <span class="keyword">import</span> inlineCallbacks, Deferred, returnValue, ensureDeferred</span><br><span class="line"><span class="keyword">from</span> twisted.python.failure <span class="keyword">import</span> Failure</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> twisted.internet <span class="keyword">import</span> reactor, defer, threads</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callee</span>(<span class="params">result</span>):</span></span><br><span class="line">	<span class="keyword">import</span> time</span><br><span class="line">	time.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">&quot;Callee finished: &quot;</span>, result)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">caller</span>():</span></span><br><span class="line">	<span class="keyword">import</span> time</span><br><span class="line">	time.sleep(<span class="number">2</span>)</span><br><span class="line">	print(<span class="string">&quot;Caller finished&quot;</span>)</span><br><span class="line">	d = defer.Deferred()</span><br><span class="line">	d.addCallback(callee)</span><br><span class="line">	reactor.callLater(<span class="number">1</span>, d.callback, <span class="string">&quot;hello&quot;</span>) <span class="comment"># stimulate a callback by manually trigger it after 1 second</span></span><br><span class="line">	<span class="keyword">return</span> d</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"><span class="meta">@defer.inlineCallbacks</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handler</span>():</span></span><br><span class="line">	<span class="keyword">yield</span> caller()</span><br><span class="line">	print(<span class="string">&quot;Handler finished&quot;</span>)</span><br><span class="line"></span><br><span class="line">handler()</span><br><span class="line"></span><br><span class="line">reactor.callLater(<span class="number">4</span>, reactor.stop)</span><br><span class="line">reactor.run()</span><br><span class="line"></span><br><span class="line">print(<span class="string">&quot;Main finished&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>由於回傳的只是一個 <code>Deferred</code> ，一個「回傳 callback chain」，而這個 callback chain 啥時候被觸發誰也不知道（事實上，有可能完全不會被調用，可以試試看把 <code>reactor.callLater()</code> 那行註解掉），由於 <code>handler()</code> 中的 yield 必須等到 caller 裡面那個 callee 的 callback 整個都結束後，才會執行 <code>print(&quot;Handler finished&quot;)</code>，同理搬到原本的範例，<strong>這類的 logging 應該在 callback 事件整體結束後才印出來</strong></p>
+<p>這同時也導致就算 <code>do_request_handling()</code> 成功回傳一個 <code>Deferred</code> 也不代表 Request 有成功被處理，這自然也代表我們不能用原本的處理邏輯</p>
+<p>另外 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/56995661/why-is-it-wrong-to-use-deferred-result-to-get-the-result-of-a-twisted-deferred-o">Why is it wrong to use Deferred.result to get the result of a Twisted Deferred object?</a> 這篇 stack overflow 上的問題 / 回答也側面回應了這個 context.py 想要解決的問題</p>
+<ul>
+<li>我們根本不知道 <code>Deferred</code> 值什麼時候才會有效（真正被 callback chain 處理回傳之前，它的值 deferred.result 都會是 AttributeError）</li>
+<li>就算進入了 callback chain，由於 callback chain 可能會接到很長，中間都是用 <code>Deferred</code> 傳遞，因此我們也不會知道進行到 callback chain 的哪個階段</li>
+</ul>
+<p>為了處理這個問題，matrix 提出幾個原則（也可以說是 coding rule ?）</p>
+<h3 id="使用-log-context-的原則"><a href="#使用-log-context-的原則" class="headerlink" title="使用 log context 的原則"></a>使用 log context 的原則</h3><blockquote>
+<p>對任何一個調用（可能是同步或異步，反正 Twisted 架構下常常都要包裝成 <code>Deferred</code> 回傳）</p>
+<ul>
+<li>如果該 <code>Deferred</code> 回傳前就已經完成它的 callback，則該調用不需要更改當前 log context 就可回傳</li>
+<li>但是如果該 <code>Deferred</code> 再回傳前還沒完成，該調用必須再回傳之前 <strong>清除</strong> log context 回歸到呼叫前的狀態；直到該 <code>deferred</code> 結束並打算開始執行它的 callback 前，它需要再把 log context 設定回呼叫後的狀態</li>
+</ul>
+</blockquote>
+<p>第一個原則挺好理解的，把它當成同步調用就好了（ Python twisted 可以讓同步調用回傳 <code>Deferred.succeed()</code>）</p>
+<p>第二個原則是比較 tricky 的部份，為什麼我們要先把 log context 清掉呢？<strong>因為我們不想污染 log context 紀錄</strong>，首先 inlinecallback wrapper 這個東西實際上就是在 yield incomplete <code>Deferred</code> 的時候，幫你把後面的程式包起來變成 callback 加在 yield 回來的 incomplete <code>Deferred</code> 後面，然後我們就可以繼續處理其他的 request，反正剛剛那個 incomplete <code>Deferred</code> 在完成後會自己跑去呼叫 inlinecallback wrapper 幫我們包好的後面程式，這邊的話就是 <code>logger.debug(&quot;finished&quot;)</code> 的部份</p>
+<p>但是如果我們在 <code>Deferred</code> 還沒完成的時候啥也不做就繼續處理下一個，那麼就 log context 來說它會一直紀錄新的新的 log context（儘管某些並沒有被完成），這導致整體調用完成順序會變得相當混亂，同時我們也無法區分 log context 是否完成執行，<code>logger.debug(&quot;finished&quot;)</code> 也會在很奇怪的 log context 下出現</p>
+<h3 id="一般函式看到-Deferred-回傳的原則"><a href="#一般函式看到-Deferred-回傳的原則" class="headerlink" title="一般函式看到 Deferred 回傳的原則"></a>一般函式看到 Deferred 回傳的原則</h3><p>對所有的函式，只要它不是原始 Deferred 任務發起者，負責 log context 維護；那麼只要看到有調用函式回傳 <code>Deferred</code>，對於有用 inlineCallback 這個 decorator 的函式來說，你需要<strong>越早 yield 越好</strong>（如果你函式後面沒有其他事情要做，那麼就可以不用 inlineCallback 加上 yield，你可以直接 return 就好 ），也就是說，啥事情都不要做（包含 logging，其他有的沒的後續處理，或甚至調用其他函式）先把控制權交回去，反正下面的處理邏輯會被加到回傳 <code>Deferred</code> 的 callback 裡面</p>
+<p>如果大家都遵守這個規則，那麼最終這個 <code>Deferred</code> 會被轉交到 caller （任務發起者）上，並由它來先把 log context 環境改完，再接下去處理有的沒的<br>可想而知的是，如果有人忘記這個規則，那麼很有可能在錯誤發生時，由於有人沒有把 <code>Deferred</code> 傳回去修改 log context 導致輸出變得混亂</p>
+<h3 id="如果你需要自己產生-Deferred-的原則"><a href="#如果你需要自己產生-Deferred-的原則" class="headerlink" title="如果你需要自己產生 Deferred 的原則"></a>如果你需要自己產生 Deferred 的原則</h3><p>通常來說，你會因為調用 Synapse 的某些函式而拿到 <code>Deferred</code> （然後請遵守上面那個「總是 yield 拿到的 <code>Deferred</code>」規則），但是少數時候，你會想自己生成 <code>Deferred</code>，又或是從其他非 Synapse 的外部呼叫拿到 <code>Deferred</code></p>
+<p>假設我們今天有這樣一個需要回傳 <code>Deferred</code> 的函式（基本上就是等一段時間後觸發 callback）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># not a logcontext-rules-compliant function</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_sleep_deferred</span>(<span class="params">seconds</span>):</span></span><br><span class="line">    d = defer.Deferred()</span><br><span class="line">    reactor.callLater(seconds, d.callback, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">return</span> d</span><br></pre></td></tr></table></figure>
+
+<p>這個函式並沒有「登記在案」，也就是說當這個函式調用出錯時，log context 將無法追蹤到這部份，為了讓這個函式在 log context 中能夠被看見，我們可以選擇在外面加一層 inlineCallback wrapper</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@defer.inlineCallbacks</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sleep</span>(<span class="params">seconds</span>):</span></span><br><span class="line">    <span class="keyword">with</span> PreserveLoggingContext():</span><br><span class="line">        <span class="keyword">yield</span> get_sleep_deferred(seconds)</span><br></pre></td></tr></table></figure>
+
+<p>透過 inlineCallback wrapper，我們知道它會幫我們把後續處理包成回傳 <code>Deferred</code>的 callback，這邊的後續處理就是 with 離開的調用，這邊的話會把 log context 改成調用完的狀態；事實上在 Synapse 原始碼裡面的確非常多這類東西</p>
+<h3 id="背景執行的原則"><a href="#背景執行的原則" class="headerlink" title="背景執行的原則"></a>背景執行的原則</h3><p>與前面提到的「當回傳 incomplete <code>Deferred</code> 時記得要先清空 log context」的原則不同，前面會這麼說是因為 <code>Deferred</code> 在沒回傳之前都不算是在做 callback 處理，因此不得不把 callback 的 log context 先清空（等到 <code>Deferred</code> 回傳後輪到執行它的 callback 之後我們就可以幫它把 log context 設定回去了）</p>
+<p>但是在這邊，我們講究的是背景執行，我們可能會希望在這個背景執行之上的所有呼叫都能夠在這個 log context 裡，舉例來說，這會是一個失敗的寫法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@defer.inlineCallbacks</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_request_handling</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> foreground_operation()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># *don&#x27;t* do this</span></span><br><span class="line">    background_operation()</span><br><span class="line"></span><br><span class="line">    logger.debug(<span class="string">&quot;Request handling complete&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@defer.inlineCallbacks</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">background_operation</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> first_background_step()</span><br><span class="line">    logger.debug(<span class="string">&quot;Completed first step&quot;</span>)</span><br><span class="line">    <span class="keyword">yield</span> second_background_step()</span><br><span class="line">    logger.debug(<span class="string">&quot;Completed second step&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>首先在 <code>do_request_handling()</code> 裡，我們很乖一開始先把 <code>foreground_operation()</code> yield 出去，因為它回傳了一個 <code>Deferred</code> ，這符合我們前面的原則，「總是 yield 拿到的 <code>Deferred</code>」，這很棒， 但是下面這樣寫的架構就會有點問題了：</p>
+<ul>
+<li><p>萬一 <code>background_operation()</code> 回傳了 incomplete <code>Deferred</code> 了呢？<br>根據前面提到的原則，我們需要馬上 yield 這個 <code>Deferred</code>（因此在 do_request_handling() 那邊其實是要補上 yield 的），並且因為它是未完成的，log context 會在 do_request_handling 的呼叫者那回復原始的狀態，最後 <code>logger.debug(&quot;Request handling complete&quot;)</code> 會作為 callback 在完成時被呼叫，然而由於這邊並沒有對背景執行做任何特別的 log context，導致這邊的 logging 會沒有對應的 log context</p>
+</li>
+<li><p>那如果背景執行與一般執行一樣在成功回傳時設定 log context 呢？<br>這樣情況會更加尷尬，由於回傳的時間不固定，並且有沒有相對應的 callback 處理，因為回傳而被設定的 log context 很有可能被隨意接到其他環境裡</p>
+</li>
+</ul>
+<blockquote>
+<p>很抱歉我這邊理解的真的不好，我實在不太能夠理解它想表達的改動以及導致的影響，這類異步執行又牽扯到它本身框架的東西我也不太容易寫點測試</p>
+</blockquote>
+<blockquote>
+<p>希望有其他看得懂的大佬解釋一下</p>
+</blockquote>
+<p>會發生這一切的原因，就我理解，跟「背景」與「前景」任務性質不同有關，作為背景任務，我們希望所有跟背景執行任務「同時」進行的前景任務都能夠認知到背景任務的存在（這邊的「同時」是比較另類的定義，只要起始時間到結束時間重疊就算，但是要記得它還是單執行緒的），而前景任務我們更想知道明確的時間（舉例來說，如果收發封包是一個前景任務，那我們大多在意的是「發包」跟「收包」這兩個時間點的處理，但是如果他是作為一個背景任務，我們就會更關注中間的間隔）</p>
+<p>Matrix 因此讓背景任務採取跟前面「收到 incomplete <code>Deferred</code> 時需要清除 log context」相反的原則，背景任務就算回傳 incomplete（其實也挺正常，畢竟是背景執行），log context 也不會清除掉，反而是在完成時，會透過完成時呼叫的 callback 清除掉背景執行的 log context</p>
+<h2 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h2><p>原本其實是邊看原文邊寫的，但是後來發現不少東西是連貫的概念，索性想說直接看完，但是後面對背景執行 pseudo code 理解遇到了些問題，所以就跑去他們討論的群組問了下（不過很可惜的是沒有回應）</p>
+<p>寫到一半碩論實驗又很爆炸，軟體模擬的精度太差了，想來想去實在沒啥好辦法，只好看看能不能想辦法合理的講故事移到硬體上，硬體編譯又遇到各種五花八門的心累體驗，花了一堆時間搞一個我覺得意義不明的實驗，實驗做完還要想演算法，感覺真的很差，回宿舍之後都沒啥心力只想耍廢了</p>
+<p>只是因為最近終於比較熟硬體編譯的玩法，終於比較有心情了弄這些了，跟同學討論完的結果還是應該要先發點 PR 再混熟比較有用，但是一想到我只是想跑個 matrix 實驗就要用實驗室機器（它這個說是會消耗大量記憶體，我不太敢跑在筆電上），然後最讓人不爽的還是實驗室網路還不能用，我要自己手動翻牆（然後學校內部網站也限內網才能用，搞的我要換來換去），不得不說我是一個沒什麼耐心的人，感覺在牆內弄 matrix 真的就是在自討苦吃</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/logging-software-system-asynchronized/" rel="tag"># logging,software system,asynchronized</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/17/venture-capital-intro/" rel="prev" title="Peek into venture capital (as a beginner)">
+      <i class="fa fa-chevron-left"></i> Peek into venture capital (as a beginner)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#context-py"><span class="nav-number">1.</span> <span class="nav-text">context.py</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E5%8F%AA%E6%9C%89%E5%90%8C%E6%AD%A5%E8%AA%BF%E7%94%A8%E7%9A%84-logging"><span class="nav-number">1.1.</span> <span class="nav-text">如果只有同步調用的 logging</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%86%E6%98%AF%E7%8F%BE%E5%AF%A6%E4%B8%AD%E9%82%84%E6%9C%89%E7%95%B0%E6%AD%A5%E8%AA%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">但是現實中還有異步調用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-log-context-%E7%9A%84%E5%8E%9F%E5%89%87"><span class="nav-number">1.3.</span> <span class="nav-text">使用 log context 的原則</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E8%88%AC%E5%87%BD%E5%BC%8F%E7%9C%8B%E5%88%B0-Deferred-%E5%9B%9E%E5%82%B3%E7%9A%84%E5%8E%9F%E5%89%87"><span class="nav-number">1.4.</span> <span class="nav-text">一般函式看到 Deferred 回傳的原則</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E4%BD%A0%E9%9C%80%E8%A6%81%E8%87%AA%E5%B7%B1%E7%94%A2%E7%94%9F-Deferred-%E7%9A%84%E5%8E%9F%E5%89%87"><span class="nav-number">1.5.</span> <span class="nav-text">如果你需要自己產生 Deferred 的原則</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E5%9F%B7%E8%A1%8C%E7%9A%84%E5%8E%9F%E5%89%87"><span class="nav-number">1.6.</span> <span class="nav-text">背景執行的原則</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">2.</span> <span class="nav-text">後記</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YiXi Chen"
+      src="/images/bh-cropped.jpg">
+  <p class="site-author-name" itemprop="name">YiXi Chen</p>
+  <div class="site-description" itemprop="description">目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chenIshi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chenIshi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:chen.ishi@gmail.com" title="E-Mail → mailto:chen.ishi@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXi Chen</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2020/11/21/matrix-logging/";
+    this.page.identifier = "2020/11/21/matrix-logging/";
+    this.page.title = "Dive into Matrix's logging system";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
