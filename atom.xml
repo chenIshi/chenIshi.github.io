@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2020-11-20T16:18:46.717Z</updated>
+  <updated>2020-12-06T10:02:17.043Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -17,11 +17,33 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Peek throught Linux pseudo random generator design</title>
+    <link href="https://chenishi.github.io/2020/12/06/practical-crypto-in-kernel/"/>
+    <id>https://chenishi.github.io/2020/12/06/practical-crypto-in-kernel/</id>
+    <published>2020-12-06T09:56:31.000Z</published>
+    <updated>2020-12-06T10:02:17.043Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近在 LWN 看到 &lt;a href=&quot;https://lwn.net/Articles/828705/&quot;&gt;Theoretical vs. practical cryptography in the kernel&lt;/a&gt; 這篇關於 Linux 中隨機數生成機制的討論，原本是想說簡單寫個翻譯，但沒想到為了 trace 原文 patch 改動而跑去看原始碼，發現看不懂之後看到註解裡面提到這個很神奇的論文&lt;a href=&quot;https://eprint.iacr.org/2012/251.pdf&quot;&gt;The Linux Pseudorandom Number Generator Revisited&lt;/a&gt;，這是一篇兼具實做但是理論分析相當充實（充實到我都看不懂的那種）的「技術文件」（個人覺得，作為菜鳥看這個比直接去 trace code 學到的東西多一點）&lt;/p&gt;
+&lt;p&gt;因此以下會從 LWN 那篇文章作為切入點，希望能夠看懂 LWN 那篇文章是在 &lt;del&gt;吵&lt;/del&gt; 討論什麼，並且簡單討論一下 Linux 隨機數生成的機制（具體機制有效性證明的部份，儘管論文裡有不少都是在討論這個方向，然而由於個人才疏學淺目前還不會 cover 到那塊）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="security" scheme="https://chenishi.github.io/categories/security/"/>
+    
+    
+    <category term="lwn" scheme="https://chenishi.github.io/tags/lwn/"/>
+    
+    <category term="randomness" scheme="https://chenishi.github.io/tags/randomness/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Dive into Matrix&#39;s logging system</title>
     <link href="https://chenishi.github.io/2020/11/21/matrix-logging/"/>
     <id>https://chenishi.github.io/2020/11/21/matrix-logging/</id>
     <published>2020-11-20T16:06:35.000Z</published>
-    <updated>2020-11-20T16:18:46.717Z</updated>
+    <updated>2020-12-06T10:00:44.181Z</updated>
     
     
     <summary type="html">&lt;p&gt;最近看到 Rain Wu 提到關於面試常見的問題 &lt;a href=&quot;https://medium.com/random-life-journal/2020-%E8%BB%9F%E9%AB%94%E5%B7%A5%E7%A8%8B%E5%AF%A6%E7%BF%92%E6%B1%82%E8%81%B7%E8%A6%8B%E8%81%9E%E9%8C%84-d0a9c8c91318?source=friends_link&amp;sk=b9b586adb7f2601e87fca6b49bf95c57&quot;&gt;軟體工程實習求職見聞錄&lt;/a&gt;，印象中有一個就是怎麼設計 logging 系統，正好最近看 Matrix federation（也就是服務器間的共識），其中大量與異步 logging 相關，我想這將會是個相當好的切入點&lt;/p&gt;</summary>
@@ -31,7 +53,11 @@
     <category term="system" scheme="https://chenishi.github.io/categories/system/"/>
     
     
-    <category term="logging,software system,asynchronized" scheme="https://chenishi.github.io/tags/logging-software-system-asynchronized/"/>
+    <category term="logging" scheme="https://chenishi.github.io/tags/logging/"/>
+    
+    <category term="software system" scheme="https://chenishi.github.io/tags/software-system/"/>
+    
+    <category term="asynchronized" scheme="https://chenishi.github.io/tags/asynchronized/"/>
     
   </entry>
   
