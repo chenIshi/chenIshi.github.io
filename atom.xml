@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2020-12-06T10:02:17.043Z</updated>
+  <updated>2020-12-20T07:57:42.198Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Peek into modern art as a currency</title>
+    <link href="https://chenishi.github.io/2020/12/20/modern-art-as-currency/"/>
+    <id>https://chenishi.github.io/2020/12/20/modern-art-as-currency/</id>
+    <published>2020-12-20T07:38:49.000Z</published>
+    <updated>2020-12-20T07:57:42.198Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;今天跑去清華台生組的聖誕活動，遇到一個美術學院的博士生，由於他本身已經從事這個行業（辦展覽、賣畫等等）一定時間了，我意外的從他身上更新了我對「當代藝術」的看法，更精確的應該說是「深入思考這個行業的運作邏輯」&lt;/p&gt;
+&lt;p&gt;以下部份主要會講到當代藝術品的「用途」，正如大家所理解的，當代藝術品早就不是藝術為主體的存在，更多是一種投資標的，一種商品&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="finance" scheme="https://chenishi.github.io/categories/finance/"/>
+    
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+    <category term="art" scheme="https://chenishi.github.io/tags/art/"/>
+    
+    <category term="hype" scheme="https://chenishi.github.io/tags/hype/"/>
+    
+  </entry>
   
   <entry>
     <title>Peek throught Linux pseudo random generator design</title>
@@ -142,7 +166,7 @@
     <link href="https://chenishi.github.io/2020/10/07/the-josephus-problem/"/>
     <id>https://chenishi.github.io/2020/10/07/the-josephus-problem/</id>
     <published>2020-10-07T14:59:05.000Z</published>
-    <updated>2020-10-20T15:37:08.473Z</updated>
+    <updated>2020-12-20T07:32:43.327Z</updated>
     
     
     <summary type="html">&lt;p&gt;The Josephus Problem 似乎是一個相當有名的問題，我則是在 &lt;a href=&quot;https://en.wikipedia.org/wiki/Concrete_Mathematics&quot;&gt;Concrete Math&lt;/a&gt; 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的&lt;/p&gt;
