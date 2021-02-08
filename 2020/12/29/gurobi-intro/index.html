@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Gurobi 是一個數學規劃工具，用於解線性規劃 (Linear Programming) 或是二次規劃（Quadratic Programming） 使用者首先需要將應用場景以數學描述抽象化（成一次方程式或最多二次方程式），隨後 Gurobi 會根據給定的目標以及條件找出最符合需求的解（如果解存在的話） 值得注意的是，電腦科學中不少優化方法都是 non-deterministic 的，以機器學習">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Peek into Gurobi, a mathematical solver">
+<meta property="og:url" content="https://chenishi.github.io/2020/12/29/gurobi-intro/index.html">
+<meta property="og:site_name" content="Metallurgy in Computer Science">
+<meta property="og:description" content="Gurobi 是一個數學規劃工具，用於解線性規劃 (Linear Programming) 或是二次規劃（Quadratic Programming） 使用者首先需要將應用場景以數學描述抽象化（成一次方程式或最多二次方程式），隨後 Gurobi 會根據給定的目標以及條件找出最符合需求的解（如果解存在的話） 值得注意的是，電腦科學中不少優化方法都是 non-deterministic 的，以機器學習">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/example.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/primal.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/dual.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/example.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/upper-bound.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/parameter.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/primal-and-dual.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/remove-excess.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/edges.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/gurobi-output-mod.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/small-coeffic.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/invalid-workaround.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/right-workaround.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/epsilon-optimal-expr.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/epsilon-optimal-fig.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/thin-sol-expr.png">
+<meta property="og:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/thin-sol-fig.png">
+<meta property="article:published_time" content="2020-12-29T15:20:27.000Z">
+<meta property="article:modified_time" content="2021-02-08T10:31:42.115Z">
+<meta property="article:author" content="YiXi Chen">
+<meta property="article:tag" content="mathematical">
+<meta property="article:tag" content="implementation">
+<meta property="article:tag" content="optimization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chenishi.github.io/2020/12/29/gurobi-intro/example.png">
+
+<link rel="canonical" href="https://chenishi.github.io/2020/12/29/gurobi-intro/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Peek into Gurobi, a mathematical solver | Metallurgy in Computer Science</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-179024993-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Metallurgy in Computer Science</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2020/12/29/gurobi-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Peek into Gurobi, a mathematical solver
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-12-29 23:20:27" itemprop="dateCreated datePublished" datetime="2020-12-29T23:20:27+08:00">2020-12-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-02-08 18:31:42" itemprop="dateModified" datetime="2021-02-08T18:31:42+08:00">2021-02-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/numerical/" itemprop="url" rel="index"><span itemprop="name">numerical</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/12/29/gurobi-intro/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/12/29/gurobi-intro/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Gurobi 是一個數學規劃工具，用於解線性規劃 (Linear Programming) 或是二次規劃（Quadratic Programming）</p>
+<p>使用者首先需要將應用場景以數學描述抽象化（成一次方程式或最多二次方程式），隨後 Gurobi 會根據給定的目標以及條件找出最符合需求的解（如果解存在的話）</p>
+<p>值得注意的是，電腦科學中不少優化方法都是 non-deterministic 的，以機器學習來說就是 local minimum 與 global minimum 的差異，但是線性規劃是一種確定性的最佳解（再重申一次，前提是要有解）</p>
+<p>儘管線性規劃乍看之下非常相似國中小學習解方程式組的過程，但是就跟論文研究一樣，從廣到深能夠探討研究的東西還真的不少，並且也需要考慮到「理論與實做的差距」這個老問題</p>
+<p>以下我會從線性規劃（儘管 Gurobi 能夠支援二次規劃，但是本文不打算討論到那個部份）的背景簡單帶入，</p>
+<a id="more"></a>
+
+<h2 id="線性規劃背景"><a href="#線性規劃背景" class="headerlink" title="線性規劃背景"></a>線性規劃背景</h2><img src="/2020/12/29/gurobi-intro/example.png" class="">
+
+<p>我假設大家應該都學過國中小的解方程組，並且知道怎麼用數學式去表示給定問題，那麼大家應該就會對上圖不陌生</p>
+<p>第一行表示「目標函式（Object function）」，通常是最大/最小化某個數學多項式，假設這邊的 30 X<sub>1</sub> + 100 X<sub>2</sub> 代表一個售價 30 元的貨物 X<sub>1</sub>個與售價 100 元的貨物 X<sub>2</sub>個的總和收益最大化</p>
+<p>那麼第二式以後的就是這個數學規劃的「約束（Constraint）」，也就是必須符合的條件</p>
+<p>我們國中小的數學老師通常都會教我們用圖解，首先這些約束必須產生一個有限的收斂平面（Bounded），因為老師告訴我們解必然出現在約束的交點上，因此我們可以用目標函式去逼近找出會產出最大值的頂點</p>
+<p>那現實中的線性規劃是這麼做的嗎？</p>
+<h2 id="線性規劃實現"><a href="#線性規劃實現" class="headerlink" title="線性規劃實現"></a>線性規劃實現</h2><p>大多不是的（儘管 Simplex 算法概念上很接近，但是它至少在每次迭代有想辦法往正確的解方向前進，作為一種優化），因為擴展性太差了</p>
+<p>以 <a target="_blank" rel="noopener" href="https://web.stanford.edu/~ashishg/msande111/notes/chapter3.pdf">Linear Programs, sec 3.3.3</a> 裡面提到的，假設今天總共有 M 個約束條件，而一個頂點由兩個以上的約束交集形成，那麼我們實際上可能需要找 C<sup>M</sup><sub>N</sub> 個選項，也就是 M! / (N!(M-N)! ) 種，這樣的運算時間複雜度實在太大了，這也就代表我們不可能透過純粹暴力法的方式解決</p>
+<p>為了解決這個問題，我們可以引入對偶問題（Duality）的概念：</p>
+<h2 id="什麼是對偶問題？"><a href="#什麼是對偶問題？" class="headerlink" title="什麼是對偶問題？"></a>什麼是對偶問題？</h2><p>一個線性規劃的問題可以被形式化成：</p>
+<img src="/2020/12/29/gurobi-intro/primal.png" class="">
+
+<p>我們以 <a target="_blank" rel="noopener" href="https://web.stanford.edu/~ashishg/msande111/notes/intro.pdf">Linear Programs, sec 1.2</a> 裡的例子來說明，我們假設今天我們是原油提煉廠，眾所周知高中化學告訴我們石油原油是多種有機化合物組合的混合物，因此我們今天想透過從上游進貨，提煉原油並加工得到石化材料販售</p>
+<p>我們假設 X<sub>j</sub> 是第 j 個<strong>產品</strong>的產量，而 b<sub>i</sub> 代表第 i 個<strong>材料</strong>的存量，a<sub>ij</sub> 則代表把材料轉換成產品的比例，也就是一單位的產品需要多少材料，最後 c<sub>j</sub> 代表第 j 個<strong>產品的每單位售價</strong></p>
+<p>今天作為老闆，我們當然是希望收益盡可能高，在成本不變的前提下，當然是最大化產品販賣所得</p>
+<p>但是有沒有可能我今天把產品拿去賣的收益，反而比我直接把材料賣出去的獲利還要低呢？這個時候我們就可以換到對偶問題去看看了</p>
+<img src="/2020/12/29/gurobi-intro/dual.png" class="">
+
+<p>問題的變數從原本的 X<sub>j</sub>，也就是「第 j 個產品的產量」變成 Y<sub>i</sub>，「第 i 個材料的進價」，而其餘數值的意義與原本一樣</p>
+<blockquote>
+<p>需要非常注意的是下標 i 主要表示產品端的，而 j 主要用來代表原料端的</p>
+</blockquote>
+<blockquote>
+<p>另外「其他數值語意一樣」這件事是必然的，在後面我們會提到我們可以直接從原始問題（Primal problem）推出對偶問題（Dual problem）</p>
+</blockquote>
+<p>我們的問題從原本的「賣產品」變成「賣材料」，首先看到約束條件，因為我們想探討虧錢的狀況，也就是產品售價低於材料進價，因此 Y<sub>i</sub> a<sub>ij</sub> 表示把產品拿去當材料賣能得到的錢，而 c<sub>j</sub> &lt; Y<sub>i</sub> a<sub>ij</sub> 就代表售價定的不大於進價</p>
+<p>最後我們的目標語意跟原始問題一樣，不過在對偶問題裡我們不能控制產品產量，只能控制材料進價（我們想知道什麼樣的材料價格我們是虧的），因此目標是讓成本最小</p>
+<blockquote>
+<p>原文在這邊有點草草帶過的意思，我根據我的理解做了一點應該算不小的語意改動（像是目標函式為什麼從最大化變成最小化，儘管後續的講解會用另外一個角度講解這是必然的，但是這邊要怎麼具體應用在現實語意還是需要思考的）</p>
+</blockquote>
+<blockquote>
+<p>其實對偶問題在博奕論裡也有用到，之前跟同學討論到德州撲克的最佳策略時有位姚班的同學講到（不過我實在聽不懂），Stanford 的筆記似乎也有提到（不過我還沒看到，Stanford 筆記的數學特別多看起來特別累）</p>
+</blockquote>
+<p>我們把原本的賣產品的問題叫做 Primal Problem，並把後面買材料的部份稱為 Duel Problem；但是為什麼我們好好的 Primal Problem 問題不用，要故意轉換成 Duel Problem 自討苦吃？</p>
+<h3 id="Weak-Duality"><a href="#Weak-Duality" class="headerlink" title="Weak Duality"></a>Weak Duality</h3><blockquote>
+<p>感謝 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=bPLNyYFLLT4">Operations Research 05C: Weak Duality &amp; Strong Duality</a> 平易近人的講解，想要看影片的可以花不到十分鐘去看看，以下的討論也是基於這部影片的</p>
+</blockquote>
+<img src="/2020/12/29/gurobi-intro/example.png" class="">
+
+<p>現在我們回到原本比較具體的數學描述，我們定義上面這個線性規劃的目標 z 的最大值為 z<sup>*</sup>，然後我們來探討一下「z<sup>*</sup> 的可行範圍」</p>
+<ol>
+<li><p>對於所有符合約束的 x<sub>1</sub>, x<sub>2</sub> 帶入目標函式都會小於 z<sup>*</sup></p>
+<p> 這是因為根據定義，z<sup>*</sup> 就是目標 z 的最大值；因此我們可以在這邊找到 z<sup>*</sup> 的下界</p>
+<blockquote>
+<p>那上界呢？</p>
+</blockquote>
+</li>
+<li><p>對偶問題的所有可行解，都會是原始問題 z<sup>*</sup> 的上界</p>
+<p> 今天我們要找的是「z<sup>*</sup> 的上界」，也就是說這<em>些</em>（畢竟沒有說是最小上界）上界必然要大於所有 z 的可行解，也就是原始問題的目標<br> 好那我們今天來建構一個一定會大於原始問題目標的另外一個（對偶）問題</p>
+<blockquote>
+<p>這部份也可以參考 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=lSM_TQehx00&list=RDCMUCXEnJBeaJx3P87A_UfZpd0Q&index=23">Operations Research 05B: Primal &amp; Dual Problems</a></p>
+</blockquote>
+<ol>
+<li><p>把原始問題的條件整理一下，讓條件運算元全部都變成 LHS &lt;= RHS</p>
+<p> 把符號不一樣的變號互換位置就好了</p>
+</li>
+<li><p>調整各約束的係數，讓他們 <strong>係數和</strong> 對齊目標函數的係數</p>
+</li>
+<li><p>然後把所有約束加起來，RHS 就會是一種上界</p>
+</li>
+</ol>
+</li>
+</ol>
+<img src="/2020/12/29/gurobi-intro/upper-bound.png" class="">
+
+<p>但是實際上，第二個步驟「調整係數以對齊目標」有非常多可行的調整方式，因此這邊應該每個約束各用一個變數 u<sub>k</sub>, k = 1,2 ,3, 4, 5</p>
+<img src="/2020/12/29/gurobi-intro/parameter.png" class="">
+
+<p>首先，(u<sub>1</sub> + 4 u<sub>2</sub> - u<sub>3</sub>) x<sub>1</sub> 對齊 30 x<sub>1</sub>，然後 (u<sub>1</sub> + 10 u<sub>2</sub> - u<sub>5</sub>) x<sub>2</sub> 對齊 100 x<sub>2</sub></p>
+<p>因此原式 </p>
+<p>(u<sub>1</sub> + 4 u<sub>2</sub> - u<sub>3</sub>) x + (u<sub>1</sub> + 10 u<sub>2</sub> - u<sub>5</sub>) x<sub>2</sub> = 30 x<sub>1</sub> + 100 x<sub>2</sub> = z &lt;= 7 u<sub>1</sub> + 40 u<sub>2</sub> - 3 u<sub>3</sub></p>
+<p>我們原始的目標是「最大化 z」，但是從上式可以看到 z &lt;= 7 u<sub>1</sub> + 40 u<sub>2</sub> - 3 u<sub>3</sub>，我們因此知道 7 u<sub>1</sub> + 40 u<sub>2</sub> - 3 u<sub>3</sub> 這東西總是大於等於 z，因此要找「最大的 z」就等於找「最小的 7 u<sub>1</sub> + 40 u<sub>2</sub> - 3 u<sub>3</sub>」</p>
+<img src="/2020/12/29/gurobi-intro/primal-and-dual.png" class="">
+
+<p>我們於是可以透過上述一系列操作把一個 Primal problem 轉換成它的 Dual problem，並且 Dual problem 的解永遠不小於 Primal problem 的解</p>
+<img src="/2020/12/29/gurobi-intro/remove-excess.png" class="">
+
+<p>事實上，Dual problem 可以更精簡成上圖，由於原本的 u<sub>4</sub>, u<sub>5</sub> 都只有出現在一個約束中，這個時候可以把這些多餘的變數去掉並且把等號改成不大於</p>
+<h3 id="Strong-Duality"><a href="#Strong-Duality" class="headerlink" title="Strong Duality"></a>Strong Duality</h3><p>好了我們現在已經知道 z<sup>*</sup> 的下界會落在 Primal Problem 裡，而上界會落在 Dual Problem 裡，但是我們需要的是 z<sup>*</sup> 的確定值不是一個區間阿</p>
+<p>Strong Duality 告訴我們：「只要你能夠在 primal problem 與 dual problem 各找到一組解，使得其目標值相同，那麼這個這個目標值就是最佳解」</p>
+<img src="/2020/12/29/gurobi-intro/edges.png" class="">
+
+<p>也就是說，Primal Problem 與 Dual problem 共用一個最佳解（Primal Problem 的最大目標值，同時也是 Dual Problem 的最小目標值），因此可喜可賀的是，一旦我們在兩個問題中找到同樣的目標值，我們就可以宣告我們找到問題的答案了（而不需要迭代過所有的可行解）</p>
+<h3 id="實做演算法"><a href="#實做演算法" class="headerlink" title="實做演算法"></a>實做演算法</h3><blockquote>
+<p>這部份要入門推薦先從 <a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~15451-f17/lectures/lec18-lp2.pdf">LP Algorithms, and Seidel’s Algorithm</a> 開始看，它幾乎沒有太難懂的理論，但是並沒有提到對偶問題的部份；而 <a target="_blank" rel="noopener" href="https://jeffe.cs.illinois.edu/teaching/algorithms/notes/I-simplex.pdf">Algorithms, illinois</a> 則提到 Simplex 算法在 Primal &amp; Dual 上的 pseudo code</p>
+</blockquote>
+<ol>
+<li><p>Simplex<br><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=hiEcWZnkguU">Operations Research 05E: Dual Simplex Method</a></p>
+</li>
+<li><p>Ellipsoid</p>
+</li>
+</ol>
+<blockquote>
+<p>Again, CMU 有著相當棒的線上資源 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=5HWTpadNa_E">The Ellipsoid Algorithm || @ CMU || Lecture 19a of CS Theory Toolkit</a>，根據影片的上傳日期我猜是因為疫情所以也是用網路上課</p>
+</blockquote>
+<h3 id="參考資料"><a href="#參考資料" class="headerlink" title="參考資料"></a>參考資料</h3><ol>
+<li><p><a target="_blank" rel="noopener" href="https://jeffe.cs.illinois.edu/teaching/algorithms/notes/I-simplex.pdf">Algorithms, illinois</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cs.cmu.edu/~15451-f17/lectures/lec18-lp2.pdf">Algorithms, CMU</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://web.stanford.edu/~ashishg/msande111/">Introduction to Optimization, Stanford</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://web.mit.edu/15.053/www/AMP-Chapter-05.pdf">Mathematical Programmingin Practice</a></p>
+</li>
+</ol>
+<blockquote>
+<p>這些課程網站通常可以從 URL 的巢狀結構推斷出課程文件的部屬，像是可以往上找課程本體，或者在某些網站在某些節點不給存取時，順著文件名平行增減做一點人工爬蟲還是挺方便的</p>
+</blockquote>
+<hr>
+<p>好了，偏理論的背景前情提要結束了，以下才是關於 Gurobi 實做</p>
+<h2 id="Gurobi"><a href="#Gurobi" class="headerlink" title="Gurobi"></a>Gurobi</h2><p>Gurobi 直接提供一個算線性規劃的工具（一般來說要錢，但是學生可以用學術信箱免費註冊，這可能也是為什麼不少論文都是採用這個工具），而且用了 Gurobi 之後你就不需要考慮要怎麼計算你的線性規劃模型了，你可以直接丟給 Gurobi 來算</p>
+
+
+<h3 id="Gurobi-輸出"><a href="#Gurobi-輸出" class="headerlink" title="Gurobi 輸出"></a>Gurobi 輸出</h3><p>我們可以從 Gurobi 運算結束後最後的輸出結果，瞥見一些純理論不會討論到的實做細節</p>
+<img src="/2020/12/29/gurobi-intro/gurobi-output-mod.png" class="">
+
+<blockquote>
+<p>以下討論到的部份，讀者有興趣可以去看 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/guidelines_for_numerical_i.html#sec:Numerics">Guidelines for Numerical Issues</a>，但是我覺得它整體讀起來有點像是 FAQ，觀念有點跳，有一些前因後果隔的挺遠，中間還混了一些操作細節，讓人有點容易混淆</p>
+</blockquote>
+<p>簡單來講，線性規劃求解器在實做上有更多的侷限性，而這些侷限大多來自（浮點數）數值表現上有限的精度，正如前面 CMU 線上關於 Ellipsoid 解法講解中涉及到一個非常大的影響因素，也就是可用的表示位元，假設我們只用 8 bits 表示小數，舉例令 (0x1)<sub>2</sub> = 1 / 2<sup>8</sup> =  (0.00390625)<sub>10</sub>，(0x2)<sub>2</sub> = (0.0078125)<sub>10</sub>，則我們不僅無法精確表示 0.00390625 ~ 0.0078125 區間中的任何數值，同時對於任何小於 0.00390625 的浮點數我們就只能把它當作零了</p>
+<p>有鑑於現實世界中數值表示有它的精度限制，我們需要改變原本理論討論中問題的描述，給出一個更為「工程」的定義</p>
+<blockquote>
+<p>打個預防針一下：我用 Gurobi 也挺斷斷續續的，而且作為初學者的理解應該非常容易錯誤，因此儘管我盡量寫的保守一點，但是如果還是有寫錯的地方，希望大家能夠斧正</p>
+</blockquote>
+<p>上圖是我自己的模型跑出來的輸出結果，我的話會把過程分成三個部份，分別是： ① 模型分析與前處理 ，② 模型求解，以及 ③ 結果</p>
+<h3 id="模型性質以及前處理"><a href="#模型性質以及前處理" class="headerlink" title="模型性質以及前處理"></a>模型性質以及前處理</h3><p>從上圖第一部份我們可以看到 Gurobi 會把參數矩陣（主要是約束條件）做一個比較量化的分析，像是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"># 因為我採用 Jain&#39;s Fairness Index 作為 Obj function 因此目標函數的參數都是 Quadratic 的</span><br><span class="line">Model has 210 quadratic objective terms</span><br><span class="line"># 因為我主要是用 Bool（在 Gurobi 裡叫做 Binary）表示二分圖的 edges，所以絕大多數的變數都是 Bool 型別的</span><br><span class="line">Variable types: 0 continuous, 36020 integer (36000 binary)</span><br><span class="line"># 由於我用來表示二分圖的約束係數數值範圍可以保持差不多一個數量級內，因此沒有什麼問題</span><br><span class="line"># 但是實際上，這部份相當重要，係數範圍調整不好是有可能影響最終運算結果的</span><br><span class="line">Coefficient statistics:</span><br><span class="line">	Matrix range ...</span><br><span class="line">	Objective range ...</span><br><span class="line">	...</span><br><span class="line"># 因為我之前已經算過一次這個模型了，看起來它會把之前跑過的模型做個緩存</span><br><span class="line">Found heuristic solution: objective ...</span><br><span class="line"># 這邊的 Presolve 就我的理解來說，類似編譯器的優化 pass，會先嘗試把模型變成比較好算的形式，不過看起來它好像不能夠太好的優化我的模型（有可能是我的新手模型寫太爛了）</span><br><span class="line">Presolve time: ...</span><br><span class="line">Presolved: ...</span><br><span class="line">Presolved model has ...</span><br></pre></td></tr></table></figure>
+
+<p>我以下會主要放在 Coefficient statistics 相關的講解，而不會提到 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/presolve2.html">Presolve</a> 的部份，因此會忽略第二以及第三部份（第二部份是不可控的算法推進，如果可控的第一部份有做好，那麼後續的就不會有問題了）</p>
+<hr>
+<h4 id="Tolerances"><a href="#Tolerances" class="headerlink" title="Tolerances"></a>Tolerances</h4><p>在浮點數的世界裡，直接拿去比「等不等於」是一件很不明智的事</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; 0.1 + 0.2 == 0.3</span><br><span class="line">False</span><br></pre></td></tr></table></figure>
+<p>這個問題要牽扯到浮點數運算，有興趣的可以去看我的另外一篇文章<a href="https://chenishi.github.io/2020/10/17/floating-point/">Dive into floating point expressions</a></p>
+<p>比較常用的作法是弄一個 epsilon 做容忍值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; epsilon &#x3D; 0.05</span><br><span class="line">&gt;&gt;&gt; abs(0.1+0.2-0.3) &lt; epsilon</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<p>Gurobi 也是採用了一樣的作法在 Constraint, Dual Constraint, 還有「判斷結果的變數到底是不是一個整數」上（像是 <code>abs(x-math.floor(x)) &lt; epsilon</code>）</p>
+<p>但是比較尷尬的是，這些在 Gurobi 中預設的容忍值都是 <strong>定值</strong>，儘管使用者可以手動調整，不過 Gurobi 還是建議使用者把約束的參數調整到適合的範圍（約束的 RHS 在 10<sup>4</sup> 量級以內，係數 10<sup>-3</sup> ~ 10<sup>6</sup>，目標函式的可能解在 1~10<sup>4</sup> 之間）</p>
+<blockquote>
+<p>會針對目標函數的參數設上下限是因為 Gurobi 利用 Dual problem 去判斷這個解是不是最佳解</p>
+</blockquote>
+<p>另外容忍值的引入也可能導致一個理論上不可解的模型，在這些「容忍值產生的灰色區域」上有解</p>
+<h4 id="Coefficient-rescaling"><a href="#Coefficient-rescaling" class="headerlink" title="Coefficient rescaling"></a>Coefficient rescaling</h4><p>正如前面所說，為了達到合適的參數區間，我們可能會需要調整各項約束的參數區間讓他們盡可能落在類似的量級</p>
+<p>因此 Gurobi 提供一個實驗 <del>（怎麼透過亂調參數達到弄爆模型）</del> 以及其結果可以去 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/why_scaling_and_geometry_i.html">Why scaling and geometry is relevant</a> 看看，它透過「隨機縮放不同約束參數」（像是讓約束 A 的參數全部變一千倍，但是約束 B 的減小一千倍）來讓一個原本有解的模型變成無解</p>
+<p>另外 rescaling 可以從兩方面下手：row rescaling / column rescaling ，一個是把整個約束的參數同時縮放，另外一個就是針對所有同一個變數的參數縮放（例如 <code>3x+y&lt;6; 4x+3y&lt;18</code>可以縮放成 <code>0.3x+y&lt;6; 0.4x+3y&lt;18</code>，這樣做就等價成我們換了 x 的單位）</p>
+<h4 id="Inevitable-large-small-coefficients"><a href="#Inevitable-large-small-coefficients" class="headerlink" title="Inevitable large/small coefficients"></a>Inevitable large/small coefficients</h4><p>雖然前面提到我們希望盡可能透過 rescaling 把參數範圍調整到 Gurobi 喜歡的範圍，但是有可能最後事不可為，最後還是會有一些特別大 / 小導致無法表示的值</p>
+<p>以 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/avoid_hiding_large_coeffic.html">Avoid hiding large coefficients</a> 的例子為例</p>
+<img src="/2020/12/29/gurobi-intro/small-coeffic.png" class="">
+
+<p>以上圖這個例子而言，10<sup>6</sup> 是一個不能透過 row rescaling 減小參數範圍的數值，不過為了避開這個數值範圍過大的問題，一些人可能想到用以下的 work-around 替代原本的約束</p>
+<img src="/2020/12/29/gurobi-intro/invalid-workaround.png" class="">
+
+<p>但是這麼做並不會緩解容忍值帶來的灰色區域問題，舉例來說：y = -10<sup>-6</sup>, x = -1 可能還會是一個可行解（儘管我們要求 y&gt;0，但是我們事實上能夠接受在容忍度內的極小負值，而這個極小負值會在約束中被那個大參數 10<sup>6</sup>放大到可視的程度）</p>
+<p>因此這邊還是透過了 column rescaling 把 y 的單位調整了一下</p>
+<img src="/2020/12/29/gurobi-intro/right-workaround.png" class="">
+
+<p>透過調整單位讓整體參數範圍保持在可接受的範圍內</p>
+<hr>
+<h4 id="Instability"><a href="#Instability" class="headerlink" title="Instability"></a>Instability</h4><p>模型的穩定度也是相當重要的一環，我們希望最終的結果（也就是約束的交點）能夠不隨著約束參數的細小波動（還記得前面提到的容忍值嗎？）而有著劇烈的變化</p>
+<p>這也是當代研究線性規劃一個挺主流的課題，比較詳盡的數學解釋可以看 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/the_case_of_linear_systems.html">The case of linear systems:</a>，不過根據 Gurobi 的說法，通常來說透過 rescaling 把參數範圍減小到一個合適的大小就比較不容易有問題</p>
+<h4 id="Epsilon-optimal-solutions"><a href="#Epsilon-optimal-solutions" class="headerlink" title="Epsilon-optimal solutions"></a>Epsilon-optimal solutions</h4><p>如果目標函式的某項係數非常小，小到容忍值的偏差能夠產生足夠大的影響，那麼解的穩定性也會因此受到影響；以 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/dealing_with_epsilon_optim.html">Dealing with epsilon-optimal solutions</a> 的例子來說：</p>
+<img src="/2020/12/29/gurobi-intro/epsilon-optimal-expr.png" class="">
+
+<p>其中 ε 是一個非常小的參數</p>
+<img src="/2020/12/29/gurobi-intro/epsilon-optimal-fig.png" class="">
+
+<p>從上圖可以看到 ε ± tolerence 會導致代表目標函式的向量產生巨大的波動，因此在可行解域裡 x<sup>1</sup> 與 x<sup>2</sup> 都會變成潛在的最佳解</p>
+<p>放大一點來看，如果今天可行解域 x 的範圍延伸至更大，放大了 x<sup>1</sup> 與 x<sup>2</sup> 間的距離，那麼也意味著我們的解將更不穩定</p>
+<p>追根究底而言，有兩個因素導致 <code>Epsilon-optimal solutions</code>，一是比較難以避免的「目標函式的偏移方向與某約束近乎平行」，二則是「過大的可行解域」； Gurobi 提到由於前者情形往往難以規避，因此建議大家還是盡量透過 rescaling 取得一個比較小範圍的變數可行域</p>
+<h4 id="Thin-feasible-regions"><a href="#Thin-feasible-regions" class="headerlink" title="Thin feasible regions"></a>Thin feasible regions</h4><p>過窄的可行解域（可以理解成一個細長的矩形，或者正確來說「寬極小，但極高的梯形」）也會導致解的不穩定性，同樣也是舉了個 <a target="_blank" rel="noopener" href="https://www.gurobi.com/documentation/9.1/refman/thin_feasible_regions.html">Thin feasible regions</a> 的例子</p>
+<img src="/2020/12/29/gurobi-intro/thin-sol-expr.png" class="">
+
+<p>可以看到前面兩個約束去掉 ε 這個 y 項係數的影響後可以說是完全平行的，如果說容忍值的量級不小於 ε ，則容忍值帶來的誤差將會被嚴重放大</p>
+<img src="/2020/12/29/gurobi-intro/thin-sol-fig.png" class="">
+
+<h2 id="後記"><a href="#後記" class="headerlink" title="後記"></a>後記</h2><p>原本一開始寫的時候只想考慮 Gurobi 文件裡提到的那些數值問題，因此想說大概花個一兩週的閒暇時間應該是可以整理好；但是讀過第一次之後才發現其實線性規劃有不少背景知識（舉例來說對偶問題），同時線性規劃問題的求解在國外大學 CS 演算法課堂上似乎也是一個 must-do（一想到成大電機可悲的相關課程就實在滿紙辛酸淚）</p>
+<p>不過比較可惜的是，我並沒有繼續深入理解這些背景知識，我目前比較傾向於先留個紀錄，如果未來有需要繼續這方面的研究也可以從中間開始切入</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/mathematical/" rel="tag"># mathematical</a>
+              <a href="/tags/implementation/" rel="tag"># implementation</a>
+              <a href="/tags/optimization/" rel="tag"># optimization</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/20/modern-art-as-currency/" rel="prev" title="Peek into modern art as a currency">
+      <i class="fa fa-chevron-left"></i> Peek into modern art as a currency
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B7%9A%E6%80%A7%E8%A6%8F%E5%8A%83%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">線性規劃背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B7%9A%E6%80%A7%E8%A6%8F%E5%8A%83%E5%AF%A6%E7%8F%BE"><span class="nav-number">2.</span> <span class="nav-text">線性規劃實現</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%B0%8D%E5%81%B6%E5%95%8F%E9%A1%8C%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">什麼是對偶問題？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Weak-Duality"><span class="nav-number">3.1.</span> <span class="nav-text">Weak Duality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Strong-Duality"><span class="nav-number">3.2.</span> <span class="nav-text">Strong Duality</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%A6%E5%81%9A%E6%BC%94%E7%AE%97%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">實做演算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">3.4.</span> <span class="nav-text">參考資料</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gurobi"><span class="nav-number">4.</span> <span class="nav-text">Gurobi</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Gurobi-%E8%BC%B8%E5%87%BA"><span class="nav-number">4.1.</span> <span class="nav-text">Gurobi 輸出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%B3%AA%E4%BB%A5%E5%8F%8A%E5%89%8D%E8%99%95%E7%90%86"><span class="nav-number">4.2.</span> <span class="nav-text">模型性質以及前處理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Tolerances"><span class="nav-number">4.2.1.</span> <span class="nav-text">Tolerances</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Coefficient-rescaling"><span class="nav-number">4.2.2.</span> <span class="nav-text">Coefficient rescaling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inevitable-large-small-coefficients"><span class="nav-number">4.2.3.</span> <span class="nav-text">Inevitable large&#x2F;small coefficients</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Instability"><span class="nav-number">4.2.4.</span> <span class="nav-text">Instability</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Epsilon-optimal-solutions"><span class="nav-number">4.2.5.</span> <span class="nav-text">Epsilon-optimal solutions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thin-feasible-regions"><span class="nav-number">4.2.6.</span> <span class="nav-text">Thin feasible regions</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%8C%E8%A8%98"><span class="nav-number">5.</span> <span class="nav-text">後記</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YiXi Chen"
+      src="/images/bh-cropped.jpg">
+  <p class="site-author-name" itemprop="name">YiXi Chen</p>
+  <div class="site-description" itemprop="description">目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chenIshi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chenIshi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:chen.ishi@gmail.com" title="E-Mail → mailto:chen.ishi@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXi Chen</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2020/12/29/gurobi-intro/";
+    this.page.identifier = "2020/12/29/gurobi-intro/";
+    this.page.title = "Peek into Gurobi, a mathematical solver";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

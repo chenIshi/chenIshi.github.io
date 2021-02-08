@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Metallurgy in Computer Science</title>
+  <icon>https://chenishi.github.io/icon.png</icon>
+  <subtitle>資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</subtitle>
+  <link href="https://chenishi.github.io/atom.xml" rel="self"/>
+  
+  <link href="https://chenishi.github.io/"/>
+  <updated>2021-02-08T10:31:42.115Z</updated>
+  <id>https://chenishi.github.io/</id>
+  
+  <author>
+    <name>YiXi Chen</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Peek into Gurobi, a mathematical solver</title>
+    <link href="https://chenishi.github.io/2020/12/29/gurobi-intro/"/>
+    <id>https://chenishi.github.io/2020/12/29/gurobi-intro/</id>
+    <published>2020-12-29T15:20:27.000Z</published>
+    <updated>2021-02-08T10:31:42.115Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Gurobi 是一個數學規劃工具，用於解線性規劃 (Linear Programming) 或是二次規劃（Quadratic Programming）&lt;/p&gt;
+&lt;p&gt;使用者首先需要將應用場景以數學描述抽象化（成一次方程式或最多二次方程式），隨後 Gurobi 會根據給定的目標以及條件找出最符合需求的解（如果解存在的話）&lt;/p&gt;
+&lt;p&gt;值得注意的是，電腦科學中不少優化方法都是 non-deterministic 的，以機器學習來說就是 local minimum 與 global minimum 的差異，但是線性規劃是一種確定性的最佳解（再重申一次，前提是要有解）&lt;/p&gt;
+&lt;p&gt;儘管線性規劃乍看之下非常相似國中小學習解方程式組的過程，但是就跟論文研究一樣，從廣到深能夠探討研究的東西還真的不少，並且也需要考慮到「理論與實做的差距」這個老問題&lt;/p&gt;
+&lt;p&gt;以下我會從線性規劃（儘管 Gurobi 能夠支援二次規劃，但是本文不打算討論到那個部份）的背景簡單帶入，&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="numerical" scheme="https://chenishi.github.io/categories/numerical/"/>
+    
+    
+    <category term="mathematical" scheme="https://chenishi.github.io/tags/mathematical/"/>
+    
+    <category term="implementation" scheme="https://chenishi.github.io/tags/implementation/"/>
+    
+    <category term="optimization" scheme="https://chenishi.github.io/tags/optimization/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Peek into modern art as a currency</title>
+    <link href="https://chenishi.github.io/2020/12/20/modern-art-as-currency/"/>
+    <id>https://chenishi.github.io/2020/12/20/modern-art-as-currency/</id>
+    <published>2020-12-20T07:38:49.000Z</published>
+    <updated>2020-12-20T07:57:42.198Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;今天跑去清華台生組的聖誕活動，遇到一個美術學院的博士生，由於他本身已經從事這個行業（辦展覽、賣畫等等）一定時間了，我意外的從他身上更新了我對「當代藝術」的看法，更精確的應該說是「深入思考這個行業的運作邏輯」&lt;/p&gt;
+&lt;p&gt;以下部份主要會講到當代藝術品的「用途」，正如大家所理解的，當代藝術品早就不是藝術為主體的存在，更多是一種投資標的，一種商品&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="finance" scheme="https://chenishi.github.io/categories/finance/"/>
+    
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+    <category term="art" scheme="https://chenishi.github.io/tags/art/"/>
+    
+    <category term="hype" scheme="https://chenishi.github.io/tags/hype/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Peek throught Linux pseudo random generator design</title>
+    <link href="https://chenishi.github.io/2020/12/06/practical-crypto-in-kernel/"/>
+    <id>https://chenishi.github.io/2020/12/06/practical-crypto-in-kernel/</id>
+    <published>2020-12-06T09:56:31.000Z</published>
+    <updated>2020-12-06T10:02:17.043Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近在 LWN 看到 &lt;a href=&quot;https://lwn.net/Articles/828705/&quot;&gt;Theoretical vs. practical cryptography in the kernel&lt;/a&gt; 這篇關於 Linux 中隨機數生成機制的討論，原本是想說簡單寫個翻譯，但沒想到為了 trace 原文 patch 改動而跑去看原始碼，發現看不懂之後看到註解裡面提到這個很神奇的論文&lt;a href=&quot;https://eprint.iacr.org/2012/251.pdf&quot;&gt;The Linux Pseudorandom Number Generator Revisited&lt;/a&gt;，這是一篇兼具實做但是理論分析相當充實（充實到我都看不懂的那種）的「技術文件」（個人覺得，作為菜鳥看這個比直接去 trace code 學到的東西多一點）&lt;/p&gt;
+&lt;p&gt;因此以下會從 LWN 那篇文章作為切入點，希望能夠看懂 LWN 那篇文章是在 &lt;del&gt;吵&lt;/del&gt; 討論什麼，並且簡單討論一下 Linux 隨機數生成的機制（具體機制有效性證明的部份，儘管論文裡有不少都是在討論這個方向，然而由於個人才疏學淺目前還不會 cover 到那塊）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="security" scheme="https://chenishi.github.io/categories/security/"/>
+    
+    
+    <category term="lwn" scheme="https://chenishi.github.io/tags/lwn/"/>
+    
+    <category term="randomness" scheme="https://chenishi.github.io/tags/randomness/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dive into Matrix&#39;s logging system</title>
+    <link href="https://chenishi.github.io/2020/11/21/matrix-logging/"/>
+    <id>https://chenishi.github.io/2020/11/21/matrix-logging/</id>
+    <published>2020-11-20T16:06:35.000Z</published>
+    <updated>2020-12-06T10:00:44.181Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近看到 Rain Wu 提到關於面試常見的問題 &lt;a href=&quot;https://medium.com/random-life-journal/2020-%E8%BB%9F%E9%AB%94%E5%B7%A5%E7%A8%8B%E5%AF%A6%E7%BF%92%E6%B1%82%E8%81%B7%E8%A6%8B%E8%81%9E%E9%8C%84-d0a9c8c91318?source=friends_link&amp;sk=b9b586adb7f2601e87fca6b49bf95c57&quot;&gt;軟體工程實習求職見聞錄&lt;/a&gt;，印象中有一個就是怎麼設計 logging 系統，正好最近看 Matrix federation（也就是服務器間的共識），其中大量與異步 logging 相關，我想這將會是個相當好的切入點&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="system" scheme="https://chenishi.github.io/categories/system/"/>
+    
+    
+    <category term="logging" scheme="https://chenishi.github.io/tags/logging/"/>
+    
+    <category term="software system" scheme="https://chenishi.github.io/tags/software-system/"/>
+    
+    <category term="asynchronized" scheme="https://chenishi.github.io/tags/asynchronized/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Peek into venture capital (as a beginner)</title>
+    <link href="https://chenishi.github.io/2020/11/17/venture-capital-intro/"/>
+    <id>https://chenishi.github.io/2020/11/17/venture-capital-intro/</id>
+    <published>2020-11-17T15:31:53.000Z</published>
+    <updated>2020-11-18T07:13:33.480Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近兩天跟著同學去聽清華經管跟五道口金融學院的課，想說趁記憶還在的時候紀錄一下&lt;/p&gt;
+&lt;p&gt;先聲明我是完全的經濟/金融/投資菜鳥，literally 完全沒有碰過，我會覺得這個很好玩還是要感謝當初去香港城市大學交換的時候跟助教 / 當地學生的交流&lt;/p&gt;
+&lt;p&gt;以下我應該會總結一下我這兩天的認知，非常零散的寫點觀察與心得&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="finance" scheme="https://chenishi.github.io/categories/finance/"/>
+    
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+    <category term="share" scheme="https://chenishi.github.io/tags/share/"/>
+    
+    <category term="debt" scheme="https://chenishi.github.io/tags/debt/"/>
+    
+    <category term="venture capital" scheme="https://chenishi.github.io/tags/venture-capital/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Peek through python twisted -- an asynchronize event handling</title>
+    <link href="https://chenishi.github.io/2020/10/23/python-twisted-trial/"/>
+    <id>https://chenishi.github.io/2020/10/23/python-twisted-trial/</id>
+    <published>2020-10-22T16:24:20.000Z</published>
+    <updated>2020-10-29T17:10:54.003Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近在 trace Matrix 的原始碼，它（目前比較完整的是 Synapse）的底層用到了 python 的事件驅動框架 – Twisted，雖然說不懂底層大概還是可以模糊的理解整體流程，但是這樣對整個非同步的事件處理流程理解上可以說是完全沒有辦法，舉例來說：&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;# We process PDUs and EDUs in parallel. This is important as we don&amp;#39;t&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# want to block things like to device messages from reaching clients&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# behind the potentially expensive handling of PDUs.&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;pdu_results, _ &amp;#x3D; await make_deferred_yieldable(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      defer.gatherResults(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;           [&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;               run_in_background(&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;                   self._handle_pdus_in_txn, origin, transaction, request_time&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;               ),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;               run_in_background(self._handle_edus_in_txn, origin, transaction),&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;           ],&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;           consumeErrors&amp;#x3D;True,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;       ).addErrback(unwrapFirstError)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   )&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;因此在這一篇文章我主要會著重在理解 python twisted 非同步函式呼叫的模型，還有討論一下 python async/await 這個語法糖&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="programming" scheme="https://chenishi.github.io/categories/programming/"/>
+    
+    
+    <category term="python" scheme="https://chenishi.github.io/tags/python/"/>
+    
+    <category term="asynchronous" scheme="https://chenishi.github.io/tags/asynchronous/"/>
+    
+    <category term="syntax sugar" scheme="https://chenishi.github.io/tags/syntax-sugar/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dive into floating point expressions</title>
+    <link href="https://chenishi.github.io/2020/10/17/floating-point/"/>
+    <id>https://chenishi.github.io/2020/10/17/floating-point/</id>
+    <published>2020-10-17T14:40:21.000Z</published>
+    <updated>2020-10-20T15:37:57.554Z</updated>
+    
+    
+    <summary type="html">&lt;img src=&quot;/2020/10/17/floating-point/php-float.png&quot; class=&quot;&quot; title=&quot;Numerical Misbehavior in php&quot;&gt;
+
+&lt;p&gt;最近在靠北工程師上面看到這張梗圖，其實我也沒寫過 PHP，不知道那邊狀況怎樣，但是其實浮點數運算這個議題挺廣泛的，也並不侷限於只有 PHP 有這個「問題」，正好之前在 Jserv 老師課堂上有稍微研究一下這個議題也寫了些筆記（我們自己寫的是&lt;a href=&quot;https://hackmd.io/Z-6yRXzrSp6z6TtH8QH-rw&quot;&gt;浮點數運算和定點數操作&lt;/a&gt;，老師的講義是&lt;a href=&quot;https://hackmd.io/tbHqxe19SdafIq0XdBnJzQ&quot;&gt;你所不知道的 C 語言: 浮點數運算&lt;/a&gt;），現在重新整理一下筆記，並且看能不能順便更新一點內容&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="numerical" scheme="https://chenishi.github.io/categories/numerical/"/>
+    
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+    <category term="bitwise" scheme="https://chenishi.github.io/tags/bitwise/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Dive into the Josephus problem</title>
+    <link href="https://chenishi.github.io/2020/10/07/the-josephus-problem/"/>
+    <id>https://chenishi.github.io/2020/10/07/the-josephus-problem/</id>
+    <published>2020-10-07T14:59:05.000Z</published>
+    <updated>2020-12-20T07:32:43.327Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;The Josephus Problem 似乎是一個相當有名的問題，我則是在 &lt;a href=&quot;https://en.wikipedia.org/wiki/Concrete_Mathematics&quot;&gt;Concrete Math&lt;/a&gt; 這本書上第一次看到，本來針對這麼一個被廣泛討論的問題寫文章好像有點沒意思，但是我邊看感覺問題挺有趣的&lt;/p&gt;
+&lt;p&gt;以下我應該不會著重在怎麼實做，因為說白了它可以很好的簡化成 Rotate-shift，我應該會著重在 Concrete Math 上的觀點跟我的思考&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="numerical" scheme="https://chenishi.github.io/categories/numerical/"/>
+    
+    
+    <category term="recurrent" scheme="https://chenishi.github.io/tags/recurrent/"/>
+    
+    <category term="bitwise" scheme="https://chenishi.github.io/tags/bitwise/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Debug p4lang/tutorial runtime misbehavior</title>
+    <link href="https://chenishi.github.io/2020/10/05/bmv2-debug/"/>
+    <id>https://chenishi.github.io/2020/10/05/bmv2-debug/</id>
+    <published>2020-10-05T14:01:35.000Z</published>
+    <updated>2020-11-18T07:08:57.077Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近寫碩論要用到這東西，雖然說我們實驗室有一兩台可編程交換機（Programmable Switch）的硬體，但是由於想做的是資料中心的場景，所以數量上不去只能用軟體模擬了&lt;/p&gt;
+&lt;p&gt;這篇文章的目的是幫助各位跟我一樣的新手了解要怎麼 debug BMv2 執行時的問題，也就是說下文並不會牽扯到編譯時期的問題（這部份 Bmv2 好像有類似 gdb 的東西），而是純粹「我今天可以編譯過了，但是交換機的行為怎麼不是我想像的那樣？」&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="debug" scheme="https://chenishi.github.io/categories/debug/"/>
+    
+    
+    <category term="bnv2" scheme="https://chenishi.github.io/tags/bnv2/"/>
+    
+    <category term="programmable Switch" scheme="https://chenishi.github.io/tags/programmable-Switch/"/>
+    
+    <category term="mininet" scheme="https://chenishi.github.io/tags/mininet/"/>
+    
+    <category term="p4" scheme="https://chenishi.github.io/tags/p4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Reaching consensus on Matrix room state</title>
+    <link href="https://chenishi.github.io/2020/09/28/matrix-state/"/>
+    <id>https://chenishi.github.io/2020/09/28/matrix-state/</id>
+    <published>2020-09-28T06:26:43.000Z</published>
+    <updated>2020-10-12T15:36:29.685Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;以下資料主要是出自於 &lt;a href=&quot;https://matrix.org/docs/guides/implementing-stateres&quot;&gt;State Resolution v2 for the Hopelessly Unmathematical&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;算法目標&quot;&gt;&lt;a href=&quot;#算法目標&quot; class=&quot;headerlink&quot; title=&quot;算法目標&quot;&gt;&lt;/a&gt;算法目標&lt;/h2&gt;&lt;p&gt;由於所有 Homeserver 都獨自保有一份控制事件樹（有向無環），各自採用一固定算法得到控制狀態，這個算法是為了解決控制狀態不同（通常是因為控制事件亂序）時，協調出一個控制狀態的共識（對控制事件數進行排列）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="algorithm" scheme="https://chenishi.github.io/categories/algorithm/"/>
+    
+    
+    <category term="network" scheme="https://chenishi.github.io/tags/network/"/>
+    
+    <category term="network system" scheme="https://chenishi.github.io/tags/network-system/"/>
+    
+    <category term="consensus" scheme="https://chenishi.github.io/tags/consensus/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>How Matrix Works ?</title>
+    <link href="https://chenishi.github.io/2020/09/26/matrix-brief/"/>
+    <id>https://chenishi.github.io/2020/09/26/matrix-brief/</id>
+    <published>2020-09-26T06:46:00.000Z</published>
+    <updated>2020-10-12T15:36:05.157Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;接續之前在 Medium 寫了一點的 &lt;a href=&quot;https://medium.com/@chen.ishi/what-is-matrix-af0af94c2d86&quot;&gt;Matrix 介紹&lt;/a&gt;，簡單來說 &lt;a href=&quot;https://matrix.org/&quot;&gt;Matrix&lt;/a&gt; 這個東西可以理解成類似 Slack / telegram 的通訊軟體應用，好處是完全去中心化，還有端對端加密（不過這可能不是新聞了），還有它是開源的（方便你去做點事情）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="system" scheme="https://chenishi.github.io/categories/system/"/>
+    
+    
+    <category term="software system" scheme="https://chenishi.github.io/tags/software-system/"/>
+    
+    <category term="network" scheme="https://chenishi.github.io/tags/network/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Move to Hexo from Medium</title>
+    <link href="https://chenishi.github.io/2020/09/25/hexo/"/>
+    <id>https://chenishi.github.io/2020/09/25/hexo/</id>
+    <published>2020-09-25T13:08:10.000Z</published>
+    <updated>2020-11-18T07:08:32.896Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;最近我感覺 Medium 的語法越來越不習慣了，可能是因為我現在極少用 MS Word 等等所見即所得的軟體寫文件，寫進度共筆也偏向用 markdown 的方式寫，或者說寫比較認真的作業報告也是用 Latex 所以像 Medium 這類一定要照它遊戲規則，還要記一些有的沒的快捷鍵，實在有點反人類 / counter-productive&lt;/p&gt;
+&lt;p&gt;因此感謝 &lt;a href=&quot;https://tigercosmos.xyz/&quot;&gt;tigercosmos&lt;/a&gt; 的推薦，下面簡單講一下我目前總體的使用心得&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="web" scheme="https://chenishi.github.io/categories/web/"/>
+    
+    
+    <category term="hexo" scheme="https://chenishi.github.io/tags/hexo/"/>
+    
+    <category term="frontEnd" scheme="https://chenishi.github.io/tags/frontEnd/"/>
+    
+  </entry>
+  
+</feed>
