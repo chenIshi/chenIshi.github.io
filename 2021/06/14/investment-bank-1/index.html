@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Noto Serif TC:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"chenishi.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="研究所實驗室的同屆同學不少有打算去金融業工作，一個家境比較殷實的同學上二年級之後就主要在修金融那方面的課了，而我室友更是打算之後去投資銀行工作，於是我的室友就推薦我去看投資銀行學的網課，以下是我整理看到一半的筆記，以及一些延伸出來的問題 需要注意的一點是，因為 課程 本身是復旦教授開的，因此授課內容偏向中國 2015 時期的，不僅部份制度跟其他地方有出入，一些金融體制在這幾年也有著相當大的變化（像">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Peek into investment banking (briefly)">
+<meta property="og:url" content="https://chenishi.github.io/2021/06/14/investment-bank-1/index.html">
+<meta property="og:site_name" content="Metallurgy in Computer Science">
+<meta property="og:description" content="研究所實驗室的同屆同學不少有打算去金融業工作，一個家境比較殷實的同學上二年級之後就主要在修金融那方面的課了，而我室友更是打算之後去投資銀行工作，於是我的室友就推薦我去看投資銀行學的網課，以下是我整理看到一半的筆記，以及一些延伸出來的問題 需要注意的一點是，因為 課程 本身是復旦教授開的，因此授課內容偏向中國 2015 時期的，不僅部份制度跟其他地方有出入，一些金融體制在這幾年也有著相當大的變化（像">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://chenishi.github.io/2021/06/14/investment-bank-1/float.jpg">
+<meta property="article:published_time" content="2021-06-14T05:45:11.000Z">
+<meta property="article:modified_time" content="2021-06-14T06:06:39.806Z">
+<meta property="article:author" content="YiXi Chen">
+<meta property="article:tag" content="beginners">
+<meta property="article:tag" content="venture capital">
+<meta property="article:tag" content="Chinese">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chenishi.github.io/2021/06/14/investment-bank-1/float.jpg">
+
+<link rel="canonical" href="https://chenishi.github.io/2021/06/14/investment-bank-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-tw'
+  };
+</script>
+
+  <title>Peek into investment banking (briefly) | Metallurgy in Computer Science</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-179024993-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-179024993-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Metallurgy in Computer Science" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Metallurgy in Computer Science</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">資訊冶金，不僅僅是技術上的紀錄，還有一些生活經驗啥的</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-tw">
+    <link itemprop="mainEntityOfPage" href="https://chenishi.github.io/2021/06/14/investment-bank-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/bh-cropped.jpg">
+      <meta itemprop="name" content="YiXi Chen">
+      <meta itemprop="description" content="目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Metallurgy in Computer Science">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Peek into investment banking (briefly)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2021-06-14 13:45:11 / Modified: 14:06:39" itemprop="dateCreated datePublished" datetime="2021-06-14T13:45:11+08:00">2021-06-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/finance/" itemprop="url" rel="index"><span itemprop="name">finance</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/06/14/investment-bank-1/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/06/14/investment-bank-1/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>研究所實驗室的同屆同學不少有打算去金融業工作，一個家境比較殷實的同學上二年級之後就主要在修金融那方面的課了，而我室友更是打算之後去投資銀行工作，於是我的室友就推薦我去看投資銀行學的網課，以下是我整理看到一半的筆記，以及一些延伸出來的問題</p>
+<p>需要注意的一點是，因為 <a target="_blank" rel="noopener" href="https://www.xuetangx.com/course/FDU02031000065/5882662">課程</a> 本身是復旦教授開的，因此授課內容偏向中國 2015 時期的，不僅部份制度跟其他地方有出入，一些金融體制在這幾年也有著相當大的變化（像是由審核制轉往註冊制）；因此我同時也想釐清跟更新這堂課講述的內容</p>
+<p>最後是儘管題目是投資銀行，但是由於我本身完全沒有這方面的基礎（最多也就是聽到同學聊天用到的名詞，並沒有系統性的了解）</p>
+<a id="more"></a>
+
+<h2 id="什麼是「投資銀行」？它跟一般銀行差異在哪？"><a href="#什麼是「投資銀行」？它跟一般銀行差異在哪？" class="headerlink" title="什麼是「投資銀行」？它跟一般銀行差異在哪？"></a>什麼是「投資銀行」？它跟一般銀行差異在哪？</h2><p>以我的理解，簡單來說就是業務不同，同時也導致利潤賺取的環節不同</p>
+<p>商業銀行負責的是「存貸業務」，這是一個以資產/負債為主體的業務，因此賺取利潤的方式是透過「存貸利差」，同時為了保證資產能如期結算，因此「穩健」是一個重要的經營指標</p>
+<p>而投資銀行負責的則是「證券承銷/經紀」業務，因此收入來源為交易過程中產生的「傭金收入」</p>
+<p>一個比較詳細對投資銀行的定義為：經營「除不動產經紀，保險，抵押業務以外所有資本市場的金融機構（如證券發行、承銷、交易，企業重組、兼併與收購，投資分析，風險投資，項目融資等等）」，前面幾種是作為中間人收取傭金，而後幾種則是「自營業務」，投資銀行自身作為投資者下場</p>
+<blockquote>
+<p>不過如果根據上述定義的話，現今許多保險業務應該無法被包裝成投資商品<br>我不確定這是因為時代演變法規改了還是有一些可以繞過去的技倆</p>
+</blockquote>
+<p>簡單來說，一般商業銀行的目標是保守的賺錢，儘管利率低但是一般商業的資金量大的前提下還是能獲得一定收益；而投資銀行則不僅負責擔任投資交易遊戲規則的中間人外，也可以自己跳下場加入（儘管法規說明這類具有風險的自營業務必須有相應的保護機制，像是用獨立且公開的帳戶啥的，<del>但是我還是懷疑實務上大家應該都會想辦法規避掉</del>）</p>
+<h3 id="混業與分業"><a href="#混業與分業" class="headerlink" title="混業與分業"></a>混業與分業</h3><p>你可能會想問（反正我當初就挺好奇的）：「既然商業銀行有這麼多的資金，那麼為什麼它能也跳下場投資呢？」，對比那些資本量小的投資銀行，商業銀行的資本量應該是可以通吃整個市場的阿？</p>
+<p>原因就在於：「制度/法律不准」</p>
+<p>過去 19 世紀末就是因為商業銀行與投資銀行間根本沒有區別（也就是混業），導致商業銀行紛紛跳下場做風險投資，導致大家的存款因為被拿去搞投資，潛在的風險增加，導致後來的金融危機</p>
+<blockquote>
+<p>換種方式理解，我們現在存款的行為也可以算是一種投資的行為<br>其對應的風險就是銀行倒閉/無法支付利息，由於這件事情的概率很低所以存款的利率也低<br>但是今天萬一銀行又把我們全部的錢拿去投資，等於說銀行無法如期支付利息的可能性增加了<br>老實說應該要對應的提昇利率（理論上來說應該也要公告大眾，但我懷疑就算公告了大眾也不會知道，新聞媒體可能也會裝死）<br>另外現行美國對銀行存款好像就有設定一個比率，讓商業銀行可以拿這部份錢去投資</p>
+</blockquote>
+<p>金融危機過後，大家發現應該不能夠像過去一樣混業，於是大多數國家都採取了分業制度（歐洲國家因為歷史因素則繼續採用混業）</p>
+<p>但是最近 1970 年代後金融自由化的提出，大家想透過加強金融監管的手段「算是」回到過去混業的模式</p>
+<blockquote>
+<p>授課老師講說是因為第一政府部門比較熟悉金融業務後監管跟的上了<br>二是有新的跨部門需求導致金融自由化，但是我覺得第二點純粹是幹話<br>這個需求一直都存在只是大家都不敢做而已<br>一個模組化分工的系統肯定比較好維護，但是一旦有更高的效能需求那做一些 workaround 那就是必要的<br>像是想要更高的發包速度那就不能靠作業系統提供的中斷接口，要直接打通底層弄 DPDK 啥的<br>商業與投資銀行的例子也是一樣，整合成一間銀行肯定效率更高，但是以目前監管這種「出包之後再補」的流程，我很懷疑監管機制的有效性</p>
+</blockquote>
+<img src="/2021/06/14/investment-bank-1/float.jpg" class="">
+
+<h2 id="中國投資銀行業的特點"><a href="#中國投資銀行業的特點" class="headerlink" title="中國投資銀行業的特點"></a>中國投資銀行業的特點</h2><p>根據課程描述，截至 2016 年 6 月為止，中國投資銀行<strong>總體規模較小，並且證券相關業務單一，缺乏新的收入來源和有效的營利模式，交易集中度高，而承銷集中度低</strong></p>
+<p>相關的數字包括：</p>
+<ol>
+<li>126 家證券公司總資產為 5.75 萬億元，淨資產1.46 萬億元，受託管理資金本金 14.78 萬億元<ol>
+<li>比較對象包含中國工商銀行這樣的中國商業銀行，其於 2015 年末總資產已經達到 22.2 億元，受託管理資金本金已經達到 13 萬億元</li>
+<li>2007 年（金融危機以前）的高盛投行總資產 1.11 萬億美元</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>如果沒有特別提及，本文用到的貨幣單位都是人民幣</p>
+</blockquote>
+<ol start="2">
+<li><p>收入主要自<strong>證券經紀業務產生的傭金收入</strong></p>
+<ol>
+<li>2015 年 125 家證券公司全年實現營業收入 5751.55 億元，其中一半的營業收入來自代理買賣證券業務 2690.96 億元（其次才是證券投資業務 1413.54 億元）</li>
+</ol>
+</li>
+<li><p>前 10 證券公司合計交易量大約佔總交易量 40%，而承銷業務則佔 80% 以上</p>
+</li>
+</ol>
+<blockquote>
+<p>但是現在的投行還是靠傭金賺錢嗎？聽起來不太可能，收益率太低了<br>所以我去找了相關公司的財報，儘管幾乎根本看不懂財報內容，但我還是盡量</p>
+</blockquote>
+<p>根據 <a target="_blank" rel="noopener" href="http://static.cninfo.com.cn/finalpage/2021-03-31/1209496055.PDF">中金公司 2020 年財報</a>，其「手续费及佣金净收入」以及「投资收益及公允价值变动损益」已經近乎持平（136億 vs 131億），同時看增長比例的話，手續費傭金的增幅只有 42.73% 而投資收益增幅則達到了 87%</p>
+<p>而另外一家 <a target="_blank" rel="noopener" href="http://static.cninfo.com.cn/finalpage/2021-03-27/1209465157.PDF">招商銀行 2020 年財報</a> 顯示其「手续费及佣金净收入」90億（大約佔了總收益的一半），「投资收益及公允价值变动损益」則是 65 億，業務的成長增幅也是投資收益大於手續費收益，符合預期</p>
+<blockquote>
+<p>我第一次做這種財報比較工作，才發現大家財報格式都一樣（估計是有模板）<br>這樣比較起來的確比較方便，並且也發現各家投資銀行的收益總值還是有點差異的阿</p>
+</blockquote>
+<p>同時<a target="_blank" rel="noopener" href="https://www.goldmansachs.com/investor-relations/financials/current/annual-reports/2020-annual-report/multimedia/2020/annual-report-2020.pdf">高盛投行 2020 的年度財報</a> 顯示其傭金收入為 3.548 億美元（接近 22.7 億人民幣）佔總營收的 8% 而已，其最大宗的收益來源第一是 “Marketing making” 也就是做市 15.546 億美元（99.44 億人民幣），第二是 “Interest income” 利息收益的 13.689 億美元（87.56 億人民幣），第三才是 “Investment banking” 9.141 億美元（58.44 億人民幣）</p>
+<p>數值增長率部份，不考慮去年 2019 年因為疫情大多都下跌而對比 2018 年結果的話，做市收益多了 59. 87%，Investment banking 23.03%（investment management 竟然才 5.05%）</p>
+<p>Btw “Investment management” 則是 6.923 億美元（44.28 億人民幣）<br>可以看到收益的話中國投行跟高盛好像已經差不多了？高盛 investment banking + management 是 102.76 億人民幣略少於同年的中金，但是一旦加上做市收益就是 254.65 億人民幣高於中金了</p>
+<blockquote>
+<p>不得不說看英文財報，跟中文財報難度又不一樣了<br>高盛這份財報還用雙欄排版，頁數高達 244 頁，我前面看過來還以為在看論文<br>並且高盛官網還有各季的財報，但是它標題是寫作 “form K-8”，我也是查了之後才發現其實它就是用來公告特定事件給投資者的表格</p>
+</blockquote>
+<p>除此之外，這份財報區分收益也不太一樣，我也因此跑去找了什麼是 <a target="_blank" rel="noopener" href="https://www.wallstreetmojo.com/investment-banking-vs-investment-management/#:~:text=In%20case%20of%20the%20Investment%20banking%2C%20investment%20bankers,way%20by%20performing%20financial%20analysis%2C%20equity%20research%20etc.">investment banking 與 investment management 的區別</a></p>
+<p>簡單來說， Investment banking 負責處理公司營運相關的業務，像是公司想要發行 IPO 首輪股票上市，或是上市後可能的併購等等；而 Investment management 則是幫有資本的投資戶找符合目標（像是滿足一定的獲利率）投資標的</p>
+<blockquote>
+<p>我突然發現看中文網課後，要對應到英語體系還是問題有點大<br>一是用語不同，而且很多英文專有名詞會長得很像一般用語（但是是不同意思，e.g. equities 竟然是「股權」），導致我很容易誤會它的語意<br>另外一點是我不確定中國金融的遊戲規則跟其他地方差別是不是很大，這可能也會導致我理解上有誤差</p>
+</blockquote>
+<p>看完這份財報我還是挺驚訝的，原來<strong>高盛最高的收益來源竟然是做市</strong>，這項業務因為我平常沒聽過所以以為不是很熱門的業務</p>
+<blockquote>
+<p>不過考慮到做市這個業務主要面對企業組織而不是個體散戶，因此我沒什麼聽過好像不意外</p>
+</blockquote>
+<p>另外 investment management 的成長率低到我覺得應該是自然波動的誤差值內，這是不是代表投行對於這種「找投資標的」的業務已經近乎飽和了，但是「公司管理類的投資諮詢」看起來增長空間還是不少？</p>
+<p>最後一個則是高盛竟然有利息收益？高盛竟然還做商業銀行的業務嗎？我不懂為什麼要搞獲利率這麼低的經濟活動</p>
+<p>對沒錯，一種可能是高盛為了平衡投資風險所以也順便做了存貸業務（或者把錢拿去商業銀行存），但是這個收益比不合理阿，只是為了平衡風險結果這部份收益佔總收益的第二？那還搞風險投資幹什麼？</p>
+<p>第二個就是好的投資標的實在太少，或者直白的說錢花不出去，導致只能把錢存起來好歹賺點利息</p>
+<blockquote>
+<p>Btw 我最近也在思考為什麼中國大多數電商，或者說只要跟網路沾邊的公司都想做借貸業務<br>如果今天是想做商業銀行那套像用戶提供存款帳戶方便自己募資那我還可以理解，但是今天是反過來，網路公司想要把自己的資本借出去<br>我不懂的是，如果公司的業務是能賺錢的，那麼其業務的獲利率肯定是大於銀行利息的（不然就直接不要開公司，把這筆錢存銀行就好了）<br>既然這樣為什麼不要把這些資本拿去投入公司生產，而是要把這些資本借出去賺利息？<br>一種可能的原因就是，公司運作其實用不到那麼多的資本，為了讓這些閒置的資本至少有點用，才想提供借貸的服務<br>不過如果真的是這樣的話，中國互聯網各企業都想做借貸是不是也代表這個行業出了點什麼問題？</p>
+</blockquote>
+<hr>
+<p>關於投資銀行的簡單介紹先到這邊，主要是因為課程後大半全部都在介紹二級市場的運作模式，因此我想說再額外寫一篇股市運作的（不然篇幅可能會太長，我 Google doc 筆記都寫了 11 頁了）</p>
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>Welcome to my other publishing channels</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/beginners/" rel="tag"># beginners</a>
+              <a href="/tags/venture-capital/" rel="tag"># venture capital</a>
+              <a href="/tags/Chinese/" rel="tag"># Chinese</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/13/info-theory-intro/" rel="prev" title="info-theory-intro">
+      <i class="fa fa-chevron-left"></i> info-theory-intro
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E3%80%8C%E6%8A%95%E8%B3%87%E9%8A%80%E8%A1%8C%E3%80%8D%EF%BC%9F%E5%AE%83%E8%B7%9F%E4%B8%80%E8%88%AC%E9%8A%80%E8%A1%8C%E5%B7%AE%E7%95%B0%E5%9C%A8%E5%93%AA%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什麼是「投資銀行」？它跟一般銀行差異在哪？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E6%A5%AD%E8%88%87%E5%88%86%E6%A5%AD"><span class="nav-number">1.1.</span> <span class="nav-text">混業與分業</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E5%9C%8B%E6%8A%95%E8%B3%87%E9%8A%80%E8%A1%8C%E6%A5%AD%E7%9A%84%E7%89%B9%E9%BB%9E"><span class="nav-number">2.</span> <span class="nav-text">中國投資銀行業的特點</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YiXi Chen"
+      src="/images/bh-cropped.jpg">
+  <p class="site-author-name" itemprop="name">YiXi Chen</p>
+  <div class="site-description" itemprop="description">目前是興趣使然的做點紀錄，以防之後突然忘記先前做過的東西</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chenIshi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chenIshi" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:chen.ishi@gmail.com" title="E-Mail → mailto:chen.ishi@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiXi Chen</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://https-chenishi-github-io.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://chenishi.github.io/2021/06/14/investment-bank-1/";
+    this.page.identifier = "2021/06/14/investment-bank-1/";
+    this.page.title = "Peek into investment banking (briefly)";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-chenishi-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

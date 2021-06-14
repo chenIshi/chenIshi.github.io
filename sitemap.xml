@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://chenishi.github.io/2021/06/14/investment-bank-1/</loc>
+    
+    <lastmod>2021-06-14</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/2021/03/13/info-theory-intro/</loc>
+    
+    <lastmod>2021-03-15</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://chenishi.github.io/2020/12/29/gurobi-intro/</loc>
     
     <lastmod>2021-02-08</lastmod>
@@ -102,7 +116,7 @@
 
   <url>
     <loc>https://chenishi.github.io/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -110,196 +124,203 @@
   
   <url>
     <loc>https://chenishi.github.io/tags/logging/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/software-system/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/asynchronized/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/lwn/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/bnv2/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/programmable-Switch/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/mininet/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/p4/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/hexo/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/frontEnd/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/network/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/network-system/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/consensus/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/beginners/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/art/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/hype/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/python/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/asynchronous/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/syntax-sugar/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/randomness/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/recurrent/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/bitwise/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/share/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/debt/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/venture-capital/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/mathematical/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/implementation/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/tags/optimization/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://chenishi.github.io/tags/Chinese/</loc>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -308,56 +329,56 @@
   
   <url>
     <loc>https://chenishi.github.io/categories/system/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/debug/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/web/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/algorithm/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/finance/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/programming/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/security/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://chenishi.github.io/categories/numerical/</loc>
-    <lastmod>2021-02-08</lastmod>
+    <lastmod>2021-06-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>

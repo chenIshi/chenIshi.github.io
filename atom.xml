@@ -6,7 +6,7 @@
   <link href="https://chenishi.github.io/atom.xml" rel="self"/>
   
   <link href="https://chenishi.github.io/"/>
-  <updated>2021-02-08T10:31:42.115Z</updated>
+  <updated>2021-06-14T06:06:39.806Z</updated>
   <id>https://chenishi.github.io/</id>
   
   <author>
@@ -15,6 +15,52 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Peek into investment banking (briefly)</title>
+    <link href="https://chenishi.github.io/2021/06/14/investment-bank-1/"/>
+    <id>https://chenishi.github.io/2021/06/14/investment-bank-1/</id>
+    <published>2021-06-14T05:45:11.000Z</published>
+    <updated>2021-06-14T06:06:39.806Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;研究所實驗室的同屆同學不少有打算去金融業工作，一個家境比較殷實的同學上二年級之後就主要在修金融那方面的課了，而我室友更是打算之後去投資銀行工作，於是我的室友就推薦我去看投資銀行學的網課，以下是我整理看到一半的筆記，以及一些延伸出來的問題&lt;/p&gt;
+&lt;p&gt;需要注意的一點是，因為 &lt;a href=&quot;https://www.xuetangx.com/course/FDU02031000065/5882662&quot;&gt;課程&lt;/a&gt; 本身是復旦教授開的，因此授課內容偏向中國 2015 時期的，不僅部份制度跟其他地方有出入，一些金融體制在這幾年也有著相當大的變化（像是由審核制轉往註冊制）；因此我同時也想釐清跟更新這堂課講述的內容&lt;/p&gt;
+&lt;p&gt;最後是儘管題目是投資銀行，但是由於我本身完全沒有這方面的基礎（最多也就是聽到同學聊天用到的名詞，並沒有系統性的了解）&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="finance" scheme="https://chenishi.github.io/categories/finance/"/>
+    
+    
+    <category term="beginners" scheme="https://chenishi.github.io/tags/beginners/"/>
+    
+    <category term="venture capital" scheme="https://chenishi.github.io/tags/venture-capital/"/>
+    
+    <category term="Chinese" scheme="https://chenishi.github.io/tags/Chinese/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>info-theory-intro</title>
+    <link href="https://chenishi.github.io/2021/03/13/info-theory-intro/"/>
+    <id>https://chenishi.github.io/2021/03/13/info-theory-intro/</id>
+    <published>2021-03-13T15:37:50.000Z</published>
+    <updated>2021-03-15T17:05:25.183Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;夏農熵&quot;&gt;&lt;a href=&quot;#夏農熵&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>Peek into Gurobi, a mathematical solver</title>
